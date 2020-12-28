@@ -22,7 +22,7 @@ Note: This library does not include any client libraries (Turbo or Stimulus). Yo
 
 ## Middleware
 
-You can optionally install *turbo_response.middleware.TurboStreamMiddleware*. This adds the attribute *accept_turbo_stream* to your request:
+You can optionally install *turbo_response.middleware.TurboStreamMiddleware*. This adds the attribute *accept_turbo_stream* to your request if the Turbo client adds *Accept: text/html; turbo-stream;* to the header:
 
 
 ```
