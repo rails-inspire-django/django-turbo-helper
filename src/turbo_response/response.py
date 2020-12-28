@@ -8,7 +8,9 @@ from .utils import render_turbo_frame, render_turbo_stream
 
 class TurboStreamResponseMixin:
     def __init__(self, *args, **kwargs):
-        super().__init__(content_type="text/html; turbo-stream;", *args, **kwargs)
+        super().__init__(
+            content_type="text/html; turbo-stream; charset=utf-8", *args, **kwargs
+        )
 
 
 class TurboStreamStreamingResponse(TurboStreamResponseMixin, StreamingHttpResponse):
