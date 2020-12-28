@@ -3,7 +3,12 @@ from django.http import HttpResponse, StreamingHttpResponse
 from django.template.response import TemplateResponse
 
 # Local
-from .utils import render_turbo_frame, render_turbo_stream
+from .utils import (
+    render_turbo_frame,
+    render_turbo_stream,
+    validate_turbo_frame,
+    validate_turbo_stream,
+)
 
 
 class TurboStreamResponseMixin:
@@ -23,7 +28,9 @@ class TurboStreamResponse(TurboStreamResponseMixin, HttpResponse):
 
 
 class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
-    def __init__(self, request, template, context, action, target, **kwargs):
+    def __init__(self, request, template, context, *, action, target, **kwargs):
+
+        validate_turbo_stream(action, target)
 
         super().__init__(
             request,
@@ -49,6 +56,8 @@ class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
 
 class TurboFrameTemplateResponse(TemplateResponse):
     def __init__(self, request, template, context, dom_id, **kwargs):
+
+        validate_turbo_frame(dom_id)
 
         super().__init__(
             request,

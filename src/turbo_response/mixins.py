@@ -1,6 +1,3 @@
-# Django
-from django.core.exceptions import ImproperlyConfigured
-
 # Local
 from .response import (
     TurboFrameResponse,
@@ -33,31 +30,15 @@ class TurboStreamResponseMixin:
     def get_turbo_stream_action(self):
         return self.turbo_stream_action
 
-    def get_turbo_stream_target(self):
-        return self.turbo_stream_target
-
-    def get_turbo_stream_params(self):
-        target = self.get_turbo_stream_target()
-
-        if target is None:
-            raise ImproperlyConfigured("turbo_stream_target must be set")
-
-        action = self.get_turbo_stream_action()
-
-        if action is None:
-            raise ImproperlyConfigured("turbo_stream_action must be set")
-
-        return target, action
-
-    def get_response_content():
+    def get_response_content(self):
         return ""
 
     def render_turbo_stream_response(self):
 
-        target, action = self.get_turbo_stream_params()
-
         return TurboStreamResponse(
-            self.get_response_content(), target=target, action=action,
+            self.get_turbo_stream_action(),
+            self.get_turbo_stream_target(),
+            self.get_response_content(),
         )
 
 
@@ -72,13 +53,11 @@ class TurboStreamTemplateResponseMixin(
         return self.turbo_stream_template or self.get_partial_template_names()
 
     def render_turbo_stream_response(self, **context):
-        target, action = self.get_turbo_stream_params()
-
         return TurboStreamTemplateResponse(
             request=self.request,
             template=self.get_turbo_stream_template_names(),
-            target=target,
-            action=action,
+            target=self.get_turbo_stream_target(),
+            action=self.get_turbo_stream_action(),
             context=self.get_context_data(context),
             using=self.template_engine,
         )
@@ -97,19 +76,12 @@ class TurboFrameResponseMixin:
     def get_turbo_frame_dom_id(self):
         return self.turbo_frame_dom_id
 
-    def get_turbo_frame_params(self):
-        dom_id = self.get_turbo_frame_dom_id()
-
-        if dom_id is None:
-            raise ImproperlyConfigured("turbo_frame_dom_id must be set")
-        return dom_id
-
     def get_response_content(self):
         return ""
 
     def render_turbo_frame_response(self):
         return TurboFrameResponse(
-            self.get_response_content(), dom_id=self.get_turbo_frame_params(),
+            self.get_response_content(), dom_id=self.get_turbo_frame_dom_id(),
         )
 
 
