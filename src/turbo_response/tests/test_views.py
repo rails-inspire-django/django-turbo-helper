@@ -54,6 +54,7 @@ class TestTurboStreamFormView:
         form_class = MyForm
         template_name = "my_form.html"
         turbo_stream_target = "my-form"
+        success_url = "/done/"
 
     def test_get(self, rf):
         req = rf.get("/")
@@ -74,3 +75,8 @@ class TestTurboStreamFormView:
         assert resp.context_data["turbo_stream_target"] == "my-form"
         assert resp.template_name == ["_my_form.html"]
         assert resp.render().content.startswith(b"<turbo-stream")
+
+    def test_post_success(self, rf):
+        req = rf.post("/", {"description": "ok"})
+        resp = self.MyView.as_view()(req)
+        assert resp.url == "/done/"
