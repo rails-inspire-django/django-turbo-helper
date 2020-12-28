@@ -1,5 +1,16 @@
 # Django Turbo Response
-from turbo_response.views import TurboStreamTemplateView, TurboStreamView
+# Django
+from django import forms
+
+from turbo_response.views import (
+    TurboStreamFormView,
+    TurboStreamTemplateView,
+    TurboStreamView,
+)
+
+
+class MyForm(forms.Form):
+    description = forms.CharField()
 
 
 class TestTurboStreamView:
@@ -22,7 +33,7 @@ class TestTurboStreamView:
 class TestTurboStreamTemplateView:
     def test_get(self, rf):
         class MyView(TurboStreamTemplateView):
-            template_name = "_include.html"
+            template_name = "simple.html"
 
         req = rf.get("/")
         resp = MyView.as_view(
@@ -32,7 +43,34 @@ class TestTurboStreamTemplateView:
         assert resp.status_code == 200
         assert "text/html; turbo-stream;" in resp["Content-Type"]
         assert "is_turbo_stream" in resp.context_data
-        assert resp.template_name == ["_include.html"]
+        assert resp.template_name == ["simple.html"]
         assert resp.render().content.startswith(
-            b'<turbo-stream action="replace" target="test"><template><div>hello'
+            b'<turbo-stream action="replace" target="test"><template><div>my content'
         )
+
+
+class TestTurboStreamFormView:
+    class MyView(TurboStreamFormView):
+        form_class = MyForm
+        template_name = "my_form.html"
+        turbo_stream_target = "my-form"
+
+    def test_get(self, rf):
+        req = rf.get("/")
+        resp = self.MyView.as_view()(req)
+        assert resp.status_code == 200
+        assert resp["Content-Type"] == "text/html; charset=utf-8"
+        assert "is_turbo_stream" not in resp.context_data
+        assert "form" in resp.context_data
+        assert resp.template_name == ["my_form.html"]
+
+    def test_post_with_validation_errors(self, rf):
+        req = rf.post("/", {})
+        resp = self.MyView.as_view()(req)
+        assert resp.status_code == 200
+        assert resp["Content-Type"] == "text/html; turbo-stream; charset=utf-8"
+        assert resp.context_data["is_turbo_stream"]
+        assert resp.context_data["turbo_stream_action"] == "replace"
+        assert resp.context_data["turbo_stream_target"] == "my-form"
+        assert resp.template_name == ["_my_form.html"]
+        assert resp.render().content.startswith(b"<turbo-stream")

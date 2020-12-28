@@ -7,33 +7,9 @@ from .response import (
 )
 
 
-class TurboTemplatePartialResolverMixin:
-
-    """Attempts to guess name of template based on prefix.
-    For example, if your template is "todos/todo_form.html"
-    then `get_partial_template_names()` will return
-    "todos/_todo_form.html".
-    """
-
-    partial_template_prefix = "_"
-    turbo_stream_template_name = None
-
-    def get_partial_template_names(self):
-        def resolve_name(name):
-            start, part, end = name.rpartition("/")
-            return "".join([start, part, self.partial_template_prefix, end])
-
-        return [resolve_name(name) for name in self.get_template_names()]
-
-    def get_turbo_stream_template_names(self):
-        return [self.turbo_stream_template] or self.get_partial_template_names()
-
-
 class TurboStreamResponseMixin:
     turbo_stream_action = None
     turbo_stream_target = None
-
-    content_type = "text/html; turbo-stream; charset=utf-8"
 
     def get_turbo_stream_action(self):
         return self.turbo_stream_action
@@ -56,10 +32,13 @@ class TurboStreamResponseMixin:
 class TurboStreamTemplateResponseMixin(TurboStreamResponseMixin):
     """Use with ContextMixin subclass"""
 
+    def get_turbo_stream_template_names(self):
+        return self.get_template_names()
+
     def render_turbo_stream_response(self, **context):
         return TurboStreamTemplateResponse(
             request=self.request,
-            template=self.get_template_names(),
+            template=self.get_turbo_stream_template_names(),
             target=self.get_turbo_stream_target(),
             action=self.get_turbo_stream_action(),
             context=self.get_context_data(**context),
@@ -67,8 +46,27 @@ class TurboStreamTemplateResponseMixin(TurboStreamResponseMixin):
         )
 
 
-class TurboStreamFormMixin(TurboTemplatePartialResolverMixin):
+class TurboStreamFormMixin(TurboStreamTemplateResponseMixin,):
+    turbo_stream_action = "replace"
+    partial_template_prefix = "_"
+    turbo_stream_template_name = None
+
+    def get_partial_template_names(self):
+        def resolve_name(name):
+            start, part, end = name.rpartition("/")
+            return "".join([start, part, self.partial_template_prefix, end])
+
+        return [resolve_name(name) for name in self.get_template_names()]
+
+    def get_turbo_stream_template_names(self):
+        return (
+            [self.turbo_stream_template_name]
+            if self.turbo_stream_template_name
+            else self.get_partial_template_names()
+        )
+
     def form_invalid(self, form):
+        print("form is invalid", form.errors, self.request.method)
         return self.render_turbo_stream_response(form=form)
 
 
