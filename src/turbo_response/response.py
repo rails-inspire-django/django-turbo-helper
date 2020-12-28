@@ -3,7 +3,7 @@ from django.http import HttpResponse, StreamingHttpResponse
 from django.template.response import TemplateResponse
 
 # Local
-from . import render_turbo_frame, render_turbo_stream
+from .utils import render_turbo_frame, render_turbo_stream
 
 
 class TurboStreamResponseMixin:
