@@ -26,7 +26,8 @@ class TurboStreamView(TurboStreamResponseMixin, View):
 
 
 class TurboStreamTemplateView(TurboStreamTemplateResponseMixin, TemplateView):
-    ...
+    def render_to_response(self, context, **response_kwargs):
+        return self.render_turbo_stream_response()
 
 
 class TurboStreamFormView(TurboStreamFormMixin, FormView):

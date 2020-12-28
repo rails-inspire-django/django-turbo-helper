@@ -7,13 +7,16 @@ from .response import (
 )
 
 
-class PartialTemplateResolverMixin:
-    partial_template_prefix = "_"
+class TurboTemplatePartialResolverMixin:
+
     """Attempts to guess name of template based on prefix.
     For example, if your template is "todos/todo_form.html"
     then `get_partial_template_names()` will return
     "todos/_todo_form.html".
     """
+
+    partial_template_prefix = "_"
+    turbo_stream_template_name = None
 
     def get_partial_template_names(self):
         def resolve_name(name):
@@ -22,10 +25,15 @@ class PartialTemplateResolverMixin:
 
         return [resolve_name(name) for name in self.get_template_names()]
 
+    def get_turbo_stream_template_names(self):
+        return [self.turbo_stream_template] or self.get_partial_template_names()
+
 
 class TurboStreamResponseMixin:
     turbo_stream_action = None
     turbo_stream_target = None
+
+    content_type = "text/html; turbo-stream; charset=utf-8"
 
     def get_turbo_stream_action(self):
         return self.turbo_stream_action
@@ -45,30 +53,21 @@ class TurboStreamResponseMixin:
         )
 
 
-class TurboStreamTemplateResponseMixin(
-    PartialTemplateResolverMixin, TurboStreamResponseMixin
-):
+class TurboStreamTemplateResponseMixin(TurboStreamResponseMixin):
     """Use with ContextMixin subclass"""
-
-    turbo_stream_template = None
-
-    def get_turbo_stream_template_names(self):
-        return self.turbo_stream_template or self.get_partial_template_names()
 
     def render_turbo_stream_response(self, **context):
         return TurboStreamTemplateResponse(
             request=self.request,
-            template=self.get_turbo_stream_template_names(),
+            template=self.get_template_names(),
             target=self.get_turbo_stream_target(),
             action=self.get_turbo_stream_action(),
-            context=self.get_context_data(context),
+            context=self.get_context_data(**context),
             using=self.template_engine,
         )
 
 
-class TurboStreamFormMixin(TurboStreamTemplateResponseMixin):
-    """Use with FormView"""
-
+class TurboStreamFormMixin(TurboTemplatePartialResolverMixin):
     def form_invalid(self, form):
         return self.render_turbo_stream_response(form=form)
 
@@ -88,18 +87,13 @@ class TurboFrameResponseMixin:
         )
 
 
-class TurboFrameTemplateResponseMixin(TurboFrameResponseMixin):
+class TurboFrameTemplateResponseMixin:
     """Use with ContextMixin subclass"""
-
-    turbo_frame_template = None
-
-    def get_turbo_frame_template_names(self):
-        return self.turbo_frame_template or self.get_partial_template_names()
 
     def render_turbo_frame_response(self, **context):
         return TurboFrameTemplateResponse(
             request=self.request,
-            template=self.get_turbo_frame_template_names(),
+            template=self.get_template_names(),
             dom_id=self.get_turbo_frame_params(),
             context=self.get_context_data(context),
             using=self.template_engine,
