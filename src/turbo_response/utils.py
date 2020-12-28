@@ -25,12 +25,12 @@ def validate_turbo_stream(action, target):
 
 def render_turbo_stream(action, target, content=""):
     validate_turbo_stream(action, target)
-    return f'<turbo-stream action="{action}" target="{target}"><template>{content}</template></turbo-stream>'
+    return f'<turbo-stream action="{action}" target="{target}"><template>{content.strip()}</template></turbo-stream>'
 
 
 def render_turbo_frame(dom_id, content=""):
     validate_turbo_frame(dom_id)
-    return f'<turbo-frame id="{dom_id}">{content}</turbo-frame>'
+    return f'<turbo-frame id="{dom_id}">{content.strip()}</turbo-frame>'
 
 
 def render_turbo_stream_template(template, context, *, action, target, **kwargs):
@@ -39,8 +39,8 @@ def render_turbo_stream_template(template, context, *, action, target, **kwargs)
         target,
         render_to_string(
             template,
-            context
-            | {
+            {
+                **context,
                 "turbo_stream_target": target,
                 "turbo_stream_action": action,
                 "is_turbo_stream": True,
@@ -55,7 +55,7 @@ def render_turbo_frame_template(template, context, *, dom_id, **kwargs):
         dom_id,
         render_to_string(
             template,
-            context | {"turbo_frame_dom_id": dom_id, "is_turbo_frame": True},
+            {**context, "turbo_frame_dom_id": dom_id, "is_turbo_frame": True},
             **kwargs,
         ),
     )

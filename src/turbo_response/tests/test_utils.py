@@ -5,7 +5,9 @@ import pytest
 from turbo_response.exceptions import InvalidTurboFrame, InvalidTurboStream
 from turbo_response.utils import (
     render_turbo_frame,
+    render_turbo_frame_template,
     render_turbo_stream,
+    render_turbo_stream_template,
     validate_turbo_frame,
     validate_turbo_stream,
 )
@@ -70,4 +72,31 @@ class TestRenderTurboFrame:
 
     def test_render_content(self):
         s = render_turbo_frame(dom_id="test", content="<div>my content</div>",)
+        assert s == '<turbo-frame id="test"><div>my content</div></turbo-frame>'
+
+
+class TestRenderTurboStreamTemplate:
+    def test_invalid(self):
+        with pytest.raises(InvalidTurboStream):
+            render_turbo_stream_template(
+                "simple.html", {}, action="invalid", target=None
+            )
+
+    def test_valid(self):
+        s = render_turbo_stream_template(
+            "simple.html", {}, action="update", target="test"
+        )
+        assert (
+            s
+            == '<turbo-stream action="update" target="test"><template><div>my content</div></template></turbo-stream>'
+        )
+
+
+class TestRenderTurboTemplate:
+    def test_invalid(self):
+        with pytest.raises(InvalidTurboFrame):
+            render_turbo_frame_template("simple.html", {}, dom_id=None)
+
+    def test_valid(self):
+        s = render_turbo_frame_template("simple.html", {}, dom_id="test")
         assert s == '<turbo-frame id="test"><div>my content</div></turbo-frame>'
