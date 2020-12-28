@@ -175,7 +175,7 @@ class CreateTodoView(TurboStreamCreateView):
 create_todo_view = CreateTodoView.as_view()
 ```
 
-This class automatically adopts the convention of using the underscore prefix for any partials, so you could save a lines of code and just write:
+This class automatically adopts the convention of using the underscore prefix for any partials, so you could save a couple lines of code and just write:
 
 ```
 class CreateTodoView(TurboStreamCreateView):
