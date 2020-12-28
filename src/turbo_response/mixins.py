@@ -30,6 +30,9 @@ class TurboStreamResponseMixin:
     def get_turbo_stream_action(self):
         return self.turbo_stream_action
 
+    def get_turbo_stream_target(self):
+        return self.turbo_stream_target
+
     def get_response_content(self):
         return ""
 

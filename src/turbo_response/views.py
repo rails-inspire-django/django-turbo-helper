@@ -18,6 +18,13 @@ from .mixins import (
 )
 
 
+class TurboStreamView(TurboStreamResponseMixin, View):
+    """Renders a simple turbo stream view"""
+
+    def dispatch(self, *args, **kwargs):
+        return self.render_turbo_stream_response()
+
+
 class TurboStreamTemplateView(TurboStreamTemplateResponseMixin, TemplateView):
     ...
 
@@ -32,11 +39,6 @@ class TurboStreamCreateView(TurboStreamFormMixin, CreateView):
 
 class TurboStreamUpdateView(TurboStreamFormMixin, UpdateView):
     ...
-
-
-class TurboStreamView(TurboStreamResponseMixin, View):
-    def dispatch(self, *args, **kwargs):
-        return self.render_turbo_stream_response()
 
 
 class TurboStreamDeleteView(TurboStreamResponseMixin, DeleteView):
