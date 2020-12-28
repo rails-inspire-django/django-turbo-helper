@@ -36,9 +36,9 @@ class TurboStreamResponseMixin:
     def render_turbo_stream_response(self):
 
         return TurboStreamResponse(
-            self.get_turbo_stream_action(),
-            self.get_turbo_stream_target(),
-            self.get_response_content(),
+            action=self.get_turbo_stream_action(),
+            target=self.get_turbo_stream_target(),
+            content=self.get_response_content(),
         )
 
 

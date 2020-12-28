@@ -3,8 +3,10 @@ from turbo_response.response import (
     TurboFrameResponse,
     TurboFrameTemplateResponse,
     TurboStreamResponse,
+    TurboStreamStreamingResponse,
     TurboStreamTemplateResponse,
 )
+from turbo_response.utils import render_turbo_stream
 
 
 class TestTurboStreamResponse:
@@ -56,3 +58,30 @@ class TestTurboFrameTemplateResponse:
         content = resp.render().content
         assert content.startswith(b'<turbo-frame id="test"')
         assert b"my content" in content
+
+
+class TestTurboStreamStreamingResponse:
+    def test_render(self):
+        def render():
+            yield render_turbo_stream(
+                content="test 1", action="replace", target="test_1"
+            )
+            yield render_turbo_stream(
+                content="test 2", action="replace", target="test_2"
+            )
+            yield render_turbo_stream(
+                content="test 3", action="replace", target="test_3"
+            )
+
+        resp = TurboStreamStreamingResponse(render())
+        assert resp["Content-Type"] == "text/html; turbo-stream; charset=utf-8"
+        stream = b"".join(resp.streaming_content)
+        assert (
+            b'<turbo-stream action="replace" target="test_1"><template>test 1' in stream
+        )
+        assert (
+            b'<turbo-stream action="replace" target="test_2"><template>test 2' in stream
+        )
+        assert (
+            b'<turbo-stream action="replace" target="test_3"><template>test 3' in stream
+        )
