@@ -166,6 +166,8 @@ from myapp.todos.forms import TodoForm
 from myapp.todos.models import Todo
 
 class CreateTodoView(TurboStreamCreateView):
+    model = Todo
+    form_class = TodoForm
     template_name = "todos/todo_form.html"
     turbo_stream_template_name = "todos/_todo_form.html"
     turbo_stream_target = "todo-form"
@@ -173,14 +175,15 @@ class CreateTodoView(TurboStreamCreateView):
 create_todo_view = CreateTodoView.as_view()
 ```
 
-This class automatically adopts the convention of using the underscore prefix for any partials, so you could save a line of code and just write:
+This class automatically adopts the convention of using the underscore prefix for any partials, so you could save a lines of code and just write:
 
 ```
 class CreateTodoView(TurboStreamCreateView):
-    template_name = "todos/todo_form.html"
+    model = Todo
+    form_class = TodoForm
     turbo_stream_target = "todo-form"
 ```
-and the turbo stream template will automatically resolve to todos/_todo_form.html.
+and the turbo stream template will automatically resolve to *todos/_todo_form.html* (the *CreateView* of course resolves the default template names as well, based on the model metadata).
 
 ## Response classes
 
