@@ -7,9 +7,9 @@ from .response import (
 )
 from .utils import (
     render_turbo_frame,
-    render_turbo_frame_template_to_string,
+    render_turbo_frame_template,
     render_turbo_stream,
-    render_turbo_stream_template_to_string,
+    render_turbo_stream_template,
 )
 
 __all__ = [
@@ -18,7 +18,7 @@ __all__ = [
     "TurboStreamStreamingResponse",
     "TurboStreamTemplateResponse",
     "render_turbo_frame",
-    "render_turbo_frame_template_to_string",
+    "render_turbo_frame_template",
     "render_turbo_stream",
-    "render_turbo_stream_template_to_string",
+    "render_turbo_stream_template",
 ]
