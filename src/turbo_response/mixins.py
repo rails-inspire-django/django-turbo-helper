@@ -52,7 +52,7 @@ class TurboStreamResponseMixin:
     def get_response_content():
         return ""
 
-    def render_turbo_stream_response(self, **context):
+    def render_turbo_stream_response(self):
 
         target, action = self.get_turbo_stream_params()
 
@@ -107,7 +107,7 @@ class TurboFrameResponseMixin:
     def get_response_content(self):
         return ""
 
-    def render_turbo_frame_response(self, **context):
+    def render_turbo_frame_response(self):
         return TurboFrameResponse(
             self.get_response_content(), dom_id=self.get_turbo_frame_params(),
         )

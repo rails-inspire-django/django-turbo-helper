@@ -177,18 +177,160 @@ create_todo_view = CreateTodoView.as_view()
 
 ## Mixins
 
-## Responding with Multiple Channels
+## Responding with Multiple Streams
+
+Suppose you want to return **multiple** Turbo Streams in a single view. For example, let's say you are building a shopping cart for an e-commerce site.  The shopping cart is presented as a list of items, and you can edit the amount in each and click a "Save" icon next to that amount. When the amount is changed, you want to recalculate the total cost of all the items, and show this total at the bottom of the cart. In addition, there is a little counter on the top navbar which shows the same total across the whole site.
+
+To do this you can use *django.http.StreamingHttpResponse* with a generator. The generator should yield each individual turbo-stream string. To ensure the correct content type is used, this package provides a subclass, *turbo_response.TurboStreamStreamingResponse*.
+
+Taking the example above, we have a page with the shopping cart, that has this snippet:
+
+
+```
+<span id="cart-summary-total">{{ total_amount }}</span>
+```
+
+and in the navbar of our base template:
+
+```
+<span id="nav-cart-total">{{ total_amount }}</span>
+```
+
+In both cases the total amount is precalculated in the initial page load, for example using a context processor.
+
+Each item in the cart has an inline edit form that might look like this:
+
+```
+<td>
+    <form method="post" action="{% url 'update_cart_item' item.id %}">
+        {% csrf_token %}
+        <input type="text" name="amount" value="{{ item.value }}">
+        <button type="submit">Save</button>
+    </form>
+</td>
+```
+
+```
+from turbo_response import TurboStreamStreamingResponse, render_turbo_stream
+
+def update_cart_item(request, item_id):
+    # item saved to e.g. session or db
+    save_cart_item(request, item_id)
+
+    # for brevity, assume "total amount" is returned here as a
+    # correctly formatted string in the correct local currency
+    total_amount = calc_total_cart_amount(request)
+
+    def render_response():
+        yield render_turbo_stream(
+            total_amount,
+            action="replace",
+            target="nav-cart-total"
+            )
+
+        yield render_turbo_stream(
+            total_amount,
+            action="replace",
+            target="cart-summary-total"
+            )
+    return TurboStreamStreamingResponse(render_response())
+```
+
+That's it! Note that here we are returning a very simple string value, so we don't need to wrap the responses in templates. If you want to do so, use *turbo_response.render_stream_template* instead.
+
 
 ## Using Turbo Frames
 
 ## Handling Lazy Turbo Frames
 
+Turbo Frames have a useful feature that allows lazy loading [link to docs]. This is very easy to handle with Django. For example, our e-commerce site includes a list of recommendations at the bottom of some pages based on the customer's prior purchases. We calculate this list using our secret-sauce machine-learning algorithm. Although the results are cached for that user, the initial run can be a bit slow, and we don't want to slow down the rest of the page when the recommendations are recalculated.
+
+This is a good use case for a lazy turbo frame. Our template looks like this, with a fancy loading gif as a placeholder:
+
+```
+<turbo-frame id="recommendations" src="{% url 'recommendations' %}">
+    <img src="{% static 'fancy-loader.gif' %}">
+</turbo-frame>
+```
+
+And our corresponding view:
+
+```
+def recommendations(request):
+    # lazily build recommendations from algorithm and cache result
+    recommended_items = get_recommendations_from_cache(request.user)
+    return TurboFrameTemplateResponse(
+        request,
+        "_recommendations.html",
+        {"items": recommended_items},
+        dom_id="recommendations",
+    )
+```
+
+The template returned is just a plain Django template. The response class automatically wraps the correct tags, s
+so we don't need to include *<turbo-frame>*.
+
+```
+<div class="recommendations">
+    {% for item in items %}
+    <h3><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></h3>
+    {% endfor %}
+</div>
+```
+
 ## Channels
 
-This library can also be used with django-channels Consumers. In particular, you can use the helper functions *render_turbo_stream* and *render_turbo_stream_template* when broadcasting streams:
+This library can also be used with django-channels Consumers. The helper functions *render_turbo_stream* and *render_turbo_stream_template* when broadcasting streams:
+
+```
+class ChatConsumer(AsyncJsonWebsocketConsumer):
+    async def chat_message(self, event):
+
+        message = await self.get_message(event["message"]["id"])
+        num_unread_messages = await self.get_num_unread_messages()
+
+        if message:
+            await self.send(
+                render_turbo_stream(
+                    str(num_unread_messages),
+                    action="replace",
+                    target="unread_message_counter"
+                )
+
+            await self.send(
+                render_turbo_stream_template(
+                    "chat/_message.html",
+                    {"message": message, "user": self.scope['user']},
+                    action="append",
+                    target="messages",
+                )
+            )
+```
+
+See the django-channels documentation for more details on setting up ASGI and channels. Note that you will need to set up your WebSockets in the client, for example in a Stimulus controller:
+
+```
+import { Controller } from 'stimulus';
+import { connectStreamSource, disconnectStreamSource } from '@hotwired/turbo';
+
+export default class extends Controller {
+  static values = {
+    socketUrl: String,
+  };
+
+  connect() {
+    this.source = new WebSocket(this.socketUrlValue);
+    connectStreamSource(this.source);
+  }
+
+  disconnect() {
+    disconnectStreamSource(this.source);
+    this.source = null;
+  }
+}
+```
 
 ## Links
-
 
 
 
