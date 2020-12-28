@@ -46,11 +46,7 @@ class TurboStreamTemplateResponseMixin(TurboStreamResponseMixin):
         )
 
 
-class TurboStreamFormMixin(TurboStreamTemplateResponseMixin,):
-    turbo_stream_action = "replace"
-    partial_template_prefix = "_"
-    turbo_stream_template_name = None
-
+class PartialTemplateResolverMixin(TurboStreamTemplateResponseMixin):
     def get_partial_template_names(self):
         def resolve_name(name):
             start, part, end = name.rpartition("/")
@@ -64,6 +60,12 @@ class TurboStreamFormMixin(TurboStreamTemplateResponseMixin,):
             if self.turbo_stream_template_name
             else self.get_partial_template_names()
         )
+
+
+class TurboStreamFormMixin(PartialTemplateResolverMixin):
+    turbo_stream_action = "replace"
+    partial_template_prefix = "_"
+    turbo_stream_template_name = None
 
     def form_invalid(self, form):
         print("form is invalid", form.errors, self.request.method)
