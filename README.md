@@ -279,8 +279,8 @@ def recommendations(request):
     )
 ```
 
-The template returned is just a plain Django template. The response class automatically wraps the correct tags, s
-so we don't need to include *<turbo-frame>*.
+The template returned is just a plain Django template. The response class automatically wraps the correct tags, so we don't need to include `<turbo-frame>`.
+
 
 ```
 <div class="recommendations">
