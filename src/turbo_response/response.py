@@ -25,6 +25,8 @@ class TurboStreamResponse(TurboStreamResponseMixin, HttpResponse):
 
 
 class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
+    is_turbo_stream = True
+
     def __init__(self, request, template, context, *, action, target, **kwargs):
 
         super().__init__(
@@ -57,6 +59,8 @@ class TurboFrameResponse(HttpResponse):
 
 
 class TurboFrameTemplateResponse(TemplateResponse):
+    is_turbo_frame = True
+
     def __init__(self, request, template, context, *, dom_id, **kwargs):
 
         super().__init__(
