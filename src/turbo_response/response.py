@@ -37,8 +37,8 @@ class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
             template,
             context
             | {
-                "turbo_stream_target": target,
                 "turbo_stream_action": action,
+                "turbo_stream_target": target,
                 "is_turbo_stream": True,
             },
             **kwargs,
