@@ -173,6 +173,15 @@ class CreateTodoView(TurboStreamCreateView):
 create_todo_view = CreateTodoView.as_view()
 ```
 
+This class automatically adopts the convention of using the underscore prefix for any partialsto it could just be written:
+
+```
+class CreateTodoView(TurboStreamCreateView):
+    template_name = "todos/todo_form.html"
+    turbo_stream_target = "todo-form"
+```
+and the turbo stream template will automatically resolve to todos/_todo_form.html.
+
 ## Response classes
 
 ## Mixins
