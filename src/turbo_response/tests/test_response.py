@@ -1,6 +1,7 @@
 # Django Turbo Response
 from turbo_response.response import (
     TurboFrameResponse,
+    TurboFrameTemplateResponse,
     TurboStreamResponse,
     TurboStreamTemplateResponse,
 )
@@ -38,4 +39,20 @@ class TestTurboStreamTemplateResponse:
         assert resp.context_data["testvar"] == 1
         content = resp.render().content
         assert content.startswith(b'<turbo-stream action="update" target="test"')
+        assert b"my content" in content
+
+
+class TestTurboFrameTemplateResponse:
+    def test_render(self, rf):
+        req = rf.get("/")
+        resp = TurboFrameTemplateResponse(
+            req, "simple.html", {"testvar": 1}, dom_id="test"
+        )
+        assert resp.status_code == 200
+        assert resp["Content-Type"] == "text/html; charset=utf-8"
+        assert resp.context_data["is_turbo_frame"]
+        assert resp.context_data["turbo_frame_dom_id"] == "test"
+        assert resp.context_data["testvar"] == 1
+        content = resp.render().content
+        assert content.startswith(b'<turbo-frame id="test"')
         assert b"my content" in content

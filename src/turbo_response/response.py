@@ -62,7 +62,7 @@ class TurboFrameTemplateResponse(TemplateResponse):
         super().__init__(
             request,
             template,
-            context | {"turbo_frame_dom_id": dom_id, "is_turbo_frame": True},
+            {**context, "turbo_frame_dom_id": dom_id, "is_turbo_frame": True},
             **kwargs,
         )
 
