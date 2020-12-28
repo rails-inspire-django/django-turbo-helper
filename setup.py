@@ -14,7 +14,7 @@ setup(
     long_description=open("README.md").read() + "\n\n" + open("CHANGES.md").read(),
     license="AGPL license",
     requires=["django (>=3.1)"],
-    packages=["turbo_response"],
+    packages=["src/turbo_response"],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Framework :: Django",
