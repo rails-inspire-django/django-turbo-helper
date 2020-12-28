@@ -30,8 +30,8 @@ class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
         super().__init__(
             request,
             template,
-            context
-            | {
+            {
+                **context,
                 "turbo_stream_action": action,
                 "turbo_stream_target": target,
                 "is_turbo_stream": True,
