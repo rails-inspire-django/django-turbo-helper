@@ -25,10 +25,10 @@ def validate_turbo_stream(action, target):
 
 def render_turbo_stream(action, target, content=""):
     validate_turbo_stream(action, target)
-    return f'<turbo-stream target="{target}" action="{action}"><template>{content}</template></turbo-stream>'
+    return f'<turbo-stream action="{action}" target="{target}"><template>{content}</template></turbo-stream>'
 
 
-def render_turbo_frame(dom_id, content):
+def render_turbo_frame(dom_id, content=""):
     validate_turbo_frame(dom_id)
     return f'<turbo-frame id="{dom_id}">{content}</turbo-frame>'
 
