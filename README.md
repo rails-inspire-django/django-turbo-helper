@@ -4,7 +4,19 @@ This package offers helpers for server-side rendering of hotwire-turbo streams a
 
 ## Requirements
 
+This library is tested for Python 3.8+.
+
 ## Getting Started
+
+> pip install django-turbo-response
+
+To install from Git:
+
+> git clone https://github.com/danjac/django-turbo-response
+
+> cd django-turbo-response
+
+> python setup.py install
 
 Note: This library does not include any client libraries (Turbo or Stimulus). You may wish to add these yourself using your preferred Javascript build tool, or use a CDN. Please refer to the Hotwire documentation on installing these libraries.
 
