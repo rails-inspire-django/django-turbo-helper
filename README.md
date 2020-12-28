@@ -10,6 +10,27 @@ Note: This library does not include any client libraries (Turbo or Stimulus). Yo
 
 ## Middleware
 
+You can optionally install *turbo_response.middleware.TurboStreamMiddleware*. This adds the attribute *accept_turbo_stream* to your request:
+
+
+```
+MIDDLEWARE = [
+    ...
+    "turbo_response.middleware.TurboStreamMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    ...
+]
+```
+
+This is useful if you want to check if a stream is requested, so you can optionally return a stream or a normal response:
+
+```
+if request.accept_turbo_stream:
+    return TurboStreamResponse(action="remove", target="item")
+else:
+    return redirect("index")
+```
+
 ## Form Validation
 
 The most common pattern for server-side validation in a Django view consists of:
