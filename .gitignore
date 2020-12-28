@@ -1,0 +1,43 @@
+*.pyc
+*.egg
+
+*.lock
+
+*.sqlite3
+*.db
+
+*.DS_Store
+
+.cache
+__pycache__
+.mypy_cache/
+.pytest_cache/
+.vscode/
+.coverage
+
+node_modules/
+
+*.bak
+
+logs
+*log
+npm-debug.log*
+
+# Translations
+# *.mo
+*.pot
+
+# Django media/static dirs
+media/
+static/dist/
+static/dev/
+
+.ipython/
+.env
+
+celerybeat.pid
+celerybeat-schedule
+
+# Common typos
+:w
+'

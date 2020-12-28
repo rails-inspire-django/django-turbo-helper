@@ -1,0 +1,17 @@
+# Copyright (c) 2020 by Dan Jacob
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+root = true
+
+# top-most EditorConfig file
+root = true
+
+[*]
+trim_trailing_whitespace = true
+insert_final_newline = true
+indent_style = space
+charset = utf-8
+indent_size = 2
+
+[*.py]
+indent_size = 4
