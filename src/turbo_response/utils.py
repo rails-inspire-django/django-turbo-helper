@@ -10,7 +10,7 @@ def render_turbo_frame(dom_id, content):
     return f'<turbo-frame id="{dom_id}">{content}</turbo-frame>'
 
 
-def render_turbo_stream_template_to_string(template, context, action, target, **kwargs):
+def render_turbo_stream_template(template, context, action, target, **kwargs):
     return render_turbo_stream(
         action,
         target,
@@ -27,7 +27,7 @@ def render_turbo_stream_template_to_string(template, context, action, target, **
     )
 
 
-def render_turbo_frame_template_to_string(template, context, dom_id, **kwargs):
+def render_turbo_frame_template(template, context, dom_id, **kwargs):
     return render_turbo_frame(
         dom_id,
         render_to_string(

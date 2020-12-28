@@ -173,7 +173,6 @@ class CreateTodoView(TurboStreamCreateView):
 create_todo_view = CreateTodoView.as_view()
 ```
 
-
 ## Response classes
 
 ## Mixins
