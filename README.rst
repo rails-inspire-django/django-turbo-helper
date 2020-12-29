@@ -1,4 +1,4 @@
-This package provides helpers for server-side rendering of Hotwired/Turbo streams and frames.
+This package provides helpers for server-side rendering of `Hotwired/Turbo <https://turbo.hotwire.dev/>`_ streams and frames.
 
 **Disclaimer**: the Hotwired/Turbo client libraries are, at time of writing, still in Beta. We expect there will be breaking changes until the first stable release. This package, and the Turbo client, should therefore be used with caution in a production environment. The version used in testing is *@hotwired/turbo==7.0.0-beta.1*.
 
@@ -403,7 +403,7 @@ If we wanted to use CBVs instead:
 Handling Lazy Turbo Frames
 ==========================
 
-Turbo Frames have a useful feature that allows lazy loading [link to docs]. This is very easy to handle with Django. For example, our e-commerce site includes a list of recommendations at the bottom of some pages based on the customer's prior purchases. We calculate this list using our secret-sauce machine-learning algorithm. Although the results are cached for that user, the initial run can be a bit slow, and we don't want to slow down the rest of the page when the recommendations are recalculated.
+Turbo Frames have a useful feature that allows `lazy loading <https://turbo.hotwire.dev/handbook/frames>`_. This is very easy to handle with Django. For example, our e-commerce site includes a list of recommendations at the bottom of some pages based on the customer's prior purchases. We calculate this list using our secret-sauce machine-learning algorithm. Although the results are cached for that user, the initial run can be a bit slow, and we don't want to slow down the rest of the page when the recommendations are recalculated.
 
 This is a good use case for a lazy turbo frame. Our template looks like this, with a fancy loading gif as a placeholder:
 
@@ -442,13 +442,18 @@ The template returned is just a plain Django template. The response class automa
 Channels
 ========
 
-This library can also be used with django-channels Consumers. The helper functions *render_turbo_stream* and *render_turbo_stream_template* when broadcasting streams:
+This library can also be used with `django-channels <https://channels.readthedocs.io/en/stable/>`_ Consumers with the helper functions *render_turbo_stream* and *render_turbo_stream_template* when broadcasting streams:
 
 .. code-block:: python
 
+  from turbo_response import render_turbo_stream, render_turbo_stream_template
+  from channels.generic.websocket import AsyncJsonWebsocketConsumer
+
   class ChatConsumer(AsyncJsonWebsocketConsumer):
+
       async def chat_message(self, event):
 
+          # DB methods omitted for brevity
           message = await self.get_message(event["message"]["id"])
           num_unread_messages = await self.get_num_unread_messages()
 
