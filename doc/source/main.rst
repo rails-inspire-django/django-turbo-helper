@@ -444,7 +444,7 @@ The template returned is just a plain Django template. The response class automa
 Channels
 ========
 
-This library can also be used with `django-channels <https://channels.readthedocs.io/en/stable/>`_ Consumers with the helper functions *render_turbo_stream* and *render_turbo_stream_template* when broadcasting streams:
+This library can also be used with `django-channels <https://channels.readthedocs.io/en/stable/>`_ Consumers with the helper functions **render_turbo_stream** and **render_turbo_stream_template** when broadcasting streams:
 
 .. code-block:: python
 
