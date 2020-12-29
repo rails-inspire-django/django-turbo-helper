@@ -2,6 +2,9 @@ name: Runs tests
 
 on:
   pull_request:
+  push:
+    branches:
+      - main
 
 jobs:
   runtests:
