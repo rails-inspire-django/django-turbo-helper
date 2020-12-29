@@ -35,18 +35,22 @@ class TurboStreamTemplateResponseMixin(TurboStreamResponseMixin):
     def get_turbo_stream_template_names(self):
         return self.get_template_names()
 
-    def render_turbo_stream_response(self, **context):
+    def render_turbo_stream_response(self, context, **response_kwargs):
         return TurboStreamTemplateResponse(
             request=self.request,
             template=self.get_turbo_stream_template_names(),
             target=self.get_turbo_stream_target(),
             action=self.get_turbo_stream_action(),
-            context=self.get_context_data(**context),
+            context=context,
             using=self.template_engine,
         )
 
 
 class PartialTemplateResolverMixin(TurboStreamTemplateResponseMixin):
+
+    partial_template_prefix = "_"
+    turbo_stream_template_name = None
+
     def get_partial_template_names(self):
         def resolve_name(name):
             start, part, end = name.rpartition("/")
@@ -64,12 +68,9 @@ class PartialTemplateResolverMixin(TurboStreamTemplateResponseMixin):
 
 class TurboStreamFormMixin(PartialTemplateResolverMixin):
     turbo_stream_action = "replace"
-    partial_template_prefix = "_"
-    turbo_stream_template_name = None
 
     def form_invalid(self, form):
-        print("form is invalid", form.errors, self.request.method)
-        return self.render_turbo_stream_response(form=form)
+        return self.render_turbo_stream_response(self.get_context_data(form=form))
 
 
 class TurboFrameResponseMixin:
@@ -81,20 +82,24 @@ class TurboFrameResponseMixin:
     def get_response_content(self):
         return ""
 
-    def render_turbo_frame_response(self):
+    def render_turbo_frame_response(self, **response_kwargs):
+
         return TurboFrameResponse(
-            self.get_response_content(), dom_id=self.get_turbo_frame_dom_id(),
+            content=self.get_response_content(),
+            dom_id=self.get_turbo_frame_dom_id(),
+            **response_kwargs
         )
 
 
-class TurboFrameTemplateResponseMixin:
+class TurboFrameTemplateResponseMixin(TurboFrameResponseMixin):
     """Use with ContextMixin subclass"""
 
-    def render_turbo_frame_response(self, **context):
+    def render_turbo_frame_response(self, context, **response_kwargs):
         return TurboFrameTemplateResponse(
             request=self.request,
             template=self.get_template_names(),
-            dom_id=self.get_turbo_frame_params(),
-            context=self.get_context_data(context),
+            dom_id=self.get_turbo_frame_dom_id(),
+            context=context,
             using=self.template_engine,
+            **response_kwargs
         )

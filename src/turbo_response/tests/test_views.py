@@ -8,6 +8,8 @@ import pytest
 from turbo_response.tests.testapp.forms import TodoForm
 from turbo_response.tests.testapp.models import TodoItem
 from turbo_response.views import (
+    TurboFrameTemplateView,
+    TurboFrameView,
     TurboStreamCreateView,
     TurboStreamDeleteView,
     TurboStreamFormView,
@@ -177,5 +179,40 @@ class TestTurboStreamDeleteView:
     def test_post(self, rf, todo):
         req = rf.post("/")
         resp = self.MyView.as_view()(req, pk=todo.pk)
+        assert resp.status_code == 200
         assert resp["Content-Type"] == "text/html; turbo-stream; charset=utf-8"
         assert TodoItem.objects.count() == 0
+
+
+class TestTurboFrameView:
+    class MyView(TurboFrameView):
+        turbo_frame_dom_id = "test"
+
+        def get_response_content(self):
+            return "done"
+
+    def test_get(self, rf):
+        req = rf.get("/")
+        resp = self.MyView.as_view()(req)
+        assert resp.status_code == 200
+        assert resp["Content-Type"] == "text/html; charset=utf-8"
+        assert resp.content == b'<turbo-frame id="test">done</turbo-frame>'
+
+
+class TestTurboFrameTemplateView:
+    class MyView(TurboFrameTemplateView):
+        turbo_frame_dom_id = "test"
+        template_name = "simple.html"
+
+        def get_response_content(self):
+            return "done"
+
+    def test_get(self, rf):
+        req = rf.get("/")
+        resp = self.MyView.as_view()(req)
+        assert resp.status_code == 200
+        assert resp["Content-Type"] == "text/html; charset=utf-8"
+        assert (
+            resp.render().content
+            == b'<turbo-frame id="test"><div>my content</div></turbo-frame>'
+        )
