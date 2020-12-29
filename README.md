@@ -1,4 +1,4 @@
-This package provides helpers for server-side rendering of `Hotwired/Turbo <https://turbo.hotwire.dev/>`_ streams and frames.
+This package provides helpers for server-side rendering of [Hotwired/Turbo](https://turbo.hotwire.dev/) streams and frames.
 
 **Disclaimer**: the Hotwired/Turbo client libraries are, at time of writing, still in Beta. We expect there will be breaking changes until the first stable release. This package, and the Turbo client, should therefore be used with caution in a production environment. The version used in testing is *@hotwired/turbo==7.0.0-beta.1*.
 
