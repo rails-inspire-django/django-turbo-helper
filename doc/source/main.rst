@@ -175,7 +175,7 @@ If the form contains errors, the response should look something like this:
     </template>
   </turbo-stream>
 
-If you prefer class-based views (CBVs) you can do the same with the *TurboStreamFormMixin*:
+If you prefer class-based views (CBVs) you can do the same with the **TurboStreamFormMixin** class:
 
 .. code-block:: python
 
@@ -195,7 +195,7 @@ If you prefer class-based views (CBVs) you can do the same with the *TurboStream
 
   create_todo_view = CreateTodoView.as_view()
 
-Note that the default target for this mixin is "replace", so you don't need to set it here.
+Note that the default action for this mixin is "replace", so you don't need to set it here.
 
 To save typing you can just use **TurboStreamCreateView**:
 
