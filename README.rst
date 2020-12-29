@@ -28,7 +28,7 @@ To install from Git:
 Middleware
 ==========
 
-You can optionally install *turbo_response.middleware.TurboStreamMiddleware*. This adds the attribute *accept_turbo_stream* to your request if the Turbo client adds *Accept: text/html; turbo-stream;* to the header:
+You can optionally install **turbo_response.middleware.TurboStreamMiddleware**. This adds the attribute *accept_turbo_stream* to your request if the Turbo client adds *Accept: text/html; turbo-stream;* to the header:
 
 
 .. code-block:: python
@@ -197,7 +197,7 @@ If you prefer class-based views (CBVs) you can do the same with the *TurboStream
 
 Note that the default target for this mixin is "replace", so you don't need to set it here.
 
-To save typing you can just use *TurboStreamCreateView*:
+To save typing you can just use **TurboStreamCreateView**:
 
 
 .. code-block:: python
@@ -236,7 +236,7 @@ Responding with Multiple Streams
 
 Suppose you want to return **multiple** Turbo Streams in a single view. For example, let's say you are building a shopping cart for an e-commerce site.  The shopping cart is presented as a list of items, and you can edit the amount in each and click a "Save" icon next to that amount. When the amount is changed, you want to recalculate the total cost of all the items, and show this total at the bottom of the cart. In addition, there is a little counter on the top navbar which shows the same total across the whole site.
 
-To do this you can use *django.http.StreamingHttpResponse* with a generator. The generator should yield each individual turbo-stream string. To ensure the correct content type is used, this package provides a subclass, *turbo_response.TurboStreamStreamingResponse*.
+To do this you can use *django.http.StreamingHttpResponse* with a generator. The generator should yield each individual turbo-stream string. To ensure the correct content type is used, this package provides a subclass, **turbo_response.TurboStreamStreamingResponse**.
 
 Taking the example above, we have a page with the shopping cart, that has this snippet:
 
@@ -291,7 +291,7 @@ Each item in the cart has an inline edit form that might look like this:
               )
       return TurboStreamStreamingResponse(render_response())
 
-That's it! In this example are returning a very simple string value, so we don't need to wrap the responses in templates. If you want to do so, use *turbo_response.render_stream_template* instead.
+That's it! In this example are returning a very simple string value, so we don't need to wrap the responses in templates. If you want to do so, use **turbo_response.render_stream_template** instead.
 
 Note that this technique is something of an anti-pattern; if you have to update multiple parts of a page, a full refresh (i.e. a normal Turbo visit) is probably a better idea. It's useful though in some edge cases where you need to avoid this.
 
