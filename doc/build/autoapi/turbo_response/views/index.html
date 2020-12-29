@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>turbo_response.views &#8212; django-turbo-response  documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-turbo_response.views">
+<span id="turbo-response-views"></span><h1><a class="reference internal" href="#module-turbo_response.views" title="turbo_response.views"><code class="xref py py-mod docutils literal notranslate"><span class="pre">turbo_response.views</span></code></a><a class="headerlink" href="#module-turbo_response.views" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#turbo_response.views.TurboStreamView" title="turbo_response.views.TurboStreamView"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TurboStreamView</span></code></a></p></td>
+<td><p>Renders a simple turbo stream view</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#turbo_response.views.TurboStreamTemplateView" title="turbo_response.views.TurboStreamTemplateView"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TurboStreamTemplateView</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#turbo_response.views.TurboStreamFormView" title="turbo_response.views.TurboStreamFormView"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TurboStreamFormView</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#turbo_response.views.TurboStreamCreateView" title="turbo_response.views.TurboStreamCreateView"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TurboStreamCreateView</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#turbo_response.views.TurboStreamUpdateView" title="turbo_response.views.TurboStreamUpdateView"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TurboStreamUpdateView</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#turbo_response.views.TurboStreamDeleteView" title="turbo_response.views.TurboStreamDeleteView"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TurboStreamDeleteView</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#turbo_response.views.TurboFrameView" title="turbo_response.views.TurboFrameView"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TurboFrameView</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#turbo_response.views.TurboFrameTemplateView" title="turbo_response.views.TurboFrameTemplateView"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TurboFrameTemplateView</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="turbo_response.views.TurboStreamView">
+<em class="property">class </em><code class="sig-prename descclassname">turbo_response.views.</code><code class="sig-name descname">TurboStreamView</code><a class="headerlink" href="#turbo_response.views.TurboStreamView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../mixins/index.html#turbo_response.mixins.TurboStreamResponseMixin" title="turbo_response.mixins.TurboStreamResponseMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">turbo_response.mixins.TurboStreamResponseMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">django.views.generic.View</span></code></p>
+<p>Renders a simple turbo stream view</p>
+<dl class="py method">
+<dt id="turbo_response.views.TurboStreamView.dispatch">
+<code class="sig-name descname">dispatch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#turbo_response.views.TurboStreamView.dispatch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="turbo_response.views.TurboStreamTemplateView">
+<em class="property">class </em><code class="sig-prename descclassname">turbo_response.views.</code><code class="sig-name descname">TurboStreamTemplateView</code><a class="headerlink" href="#turbo_response.views.TurboStreamTemplateView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../mixins/index.html#turbo_response.mixins.TurboStreamTemplateResponseMixin" title="turbo_response.mixins.TurboStreamTemplateResponseMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">turbo_response.mixins.TurboStreamTemplateResponseMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">django.views.generic.TemplateView</span></code></p>
+<dl class="py method">
+<dt id="turbo_response.views.TurboStreamTemplateView.render_to_response">
+<code class="sig-name descname">render_to_response</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">context</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">response_kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#turbo_response.views.TurboStreamTemplateView.render_to_response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="turbo_response.views.TurboStreamFormView">
+<em class="property">class </em><code class="sig-prename descclassname">turbo_response.views.</code><code class="sig-name descname">TurboStreamFormView</code><a class="headerlink" href="#turbo_response.views.TurboStreamFormView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../mixins/index.html#turbo_response.mixins.TurboStreamFormMixin" title="turbo_response.mixins.TurboStreamFormMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">turbo_response.mixins.TurboStreamFormMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">django.views.generic.FormView</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="turbo_response.views.TurboStreamCreateView">
+<em class="property">class </em><code class="sig-prename descclassname">turbo_response.views.</code><code class="sig-name descname">TurboStreamCreateView</code><a class="headerlink" href="#turbo_response.views.TurboStreamCreateView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../mixins/index.html#turbo_response.mixins.TurboStreamFormMixin" title="turbo_response.mixins.TurboStreamFormMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">turbo_response.mixins.TurboStreamFormMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">django.views.generic.CreateView</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="turbo_response.views.TurboStreamUpdateView">
+<em class="property">class </em><code class="sig-prename descclassname">turbo_response.views.</code><code class="sig-name descname">TurboStreamUpdateView</code><a class="headerlink" href="#turbo_response.views.TurboStreamUpdateView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../mixins/index.html#turbo_response.mixins.TurboStreamFormMixin" title="turbo_response.mixins.TurboStreamFormMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">turbo_response.mixins.TurboStreamFormMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">django.views.generic.UpdateView</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="turbo_response.views.TurboStreamDeleteView">
+<em class="property">class </em><code class="sig-prename descclassname">turbo_response.views.</code><code class="sig-name descname">TurboStreamDeleteView</code><a class="headerlink" href="#turbo_response.views.TurboStreamDeleteView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../mixins/index.html#turbo_response.mixins.TurboStreamResponseMixin" title="turbo_response.mixins.TurboStreamResponseMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">turbo_response.mixins.TurboStreamResponseMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">django.views.generic.DeleteView</span></code></p>
+<dl class="py attribute">
+<dt id="turbo_response.views.TurboStreamDeleteView.turbo_stream_action">
+<code class="sig-name descname">turbo_stream_action</code><em class="property"> = remove</em><a class="headerlink" href="#turbo_response.views.TurboStreamDeleteView.turbo_stream_action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="turbo_response.views.TurboStreamDeleteView.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#turbo_response.views.TurboStreamDeleteView.delete" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="turbo_response.views.TurboFrameView">
+<em class="property">class </em><code class="sig-prename descclassname">turbo_response.views.</code><code class="sig-name descname">TurboFrameView</code><a class="headerlink" href="#turbo_response.views.TurboFrameView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../mixins/index.html#turbo_response.mixins.TurboFrameResponseMixin" title="turbo_response.mixins.TurboFrameResponseMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">turbo_response.mixins.TurboFrameResponseMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">django.views.generic.View</span></code></p>
+<dl class="py method">
+<dt id="turbo_response.views.TurboFrameView.dispatch">
+<code class="sig-name descname">dispatch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#turbo_response.views.TurboFrameView.dispatch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="turbo_response.views.TurboFrameTemplateView">
+<em class="property">class </em><code class="sig-prename descclassname">turbo_response.views.</code><code class="sig-name descname">TurboFrameTemplateView</code><a class="headerlink" href="#turbo_response.views.TurboFrameTemplateView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../mixins/index.html#turbo_response.mixins.TurboFrameTemplateResponseMixin" title="turbo_response.mixins.TurboFrameTemplateResponseMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">turbo_response.mixins.TurboFrameTemplateResponseMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">django.views.generic.TemplateView</span></code></p>
+<dl class="py method">
+<dt id="turbo_response.views.TurboFrameTemplateView.render_to_response">
+<code class="sig-name descname">render_to_response</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">context</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">response_kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#turbo_response.views.TurboFrameTemplateView.render_to_response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">django-turbo-response</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Dan Jacob.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../../_sources/autoapi/turbo_response/views/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

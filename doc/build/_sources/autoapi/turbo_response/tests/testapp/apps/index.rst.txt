@@ -1,0 +1,33 @@
+:mod:`turbo_response.tests.testapp.apps`
+========================================
+
+.. py:module:: turbo_response.tests.testapp.apps
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   turbo_response.tests.testapp.apps.TestAppConfig
+
+
+
+.. py:class:: TestAppConfig
+
+   Bases: :class:`django.apps.AppConfig`
+
+   .. attribute:: name
+      :annotation: = turbo_response.tests.testapp
+
+      
+
+   .. attribute:: verbose_name
+      :annotation: = TestApp
+
+      
+
+

@@ -1,0 +1,29 @@
+:mod:`turbo_response.tests.settings`
+====================================
+
+.. py:module:: turbo_response.tests.settings
+
+
+Module Contents
+---------------
+
+.. data:: SECRET_KEY
+   :annotation: = o7pb3_ibyl@3%jhc85qj*dgh5etxmzxpg89%$85$#v92&8e0ub
+
+   
+
+.. data:: DATABASES
+   
+
+   
+
+.. data:: TEMPLATES
+   
+
+   
+
+.. data:: INSTALLED_APPS
+   :annotation: = ['django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes', 'django.contrib.sessions', 'django.contrib.sites', 'turbo_response.tests.testapp.apps.TestAppConfig']
+
+   
+

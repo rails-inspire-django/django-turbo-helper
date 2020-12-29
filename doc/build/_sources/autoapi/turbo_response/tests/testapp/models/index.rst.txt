@@ -1,0 +1,28 @@
+:mod:`turbo_response.tests.testapp.models`
+==========================================
+
+.. py:module:: turbo_response.tests.testapp.models
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   turbo_response.tests.testapp.models.TodoItem
+
+
+
+.. py:class:: TodoItem
+
+   Bases: :class:`django.db.models.Model`
+
+   .. attribute:: description
+      
+
+      
+
+

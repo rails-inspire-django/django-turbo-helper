@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>turbo_response.mixins &#8212; django-turbo-response  documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-turbo_response.mixins">
+<span id="turbo-response-mixins"></span><h1><a class="reference internal" href="#module-turbo_response.mixins" title="turbo_response.mixins"><code class="xref py py-mod docutils literal notranslate"><span class="pre">turbo_response.mixins</span></code></a><a class="headerlink" href="#module-turbo_response.mixins" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#turbo_response.mixins.TurboStreamResponseMixin" title="turbo_response.mixins.TurboStreamResponseMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TurboStreamResponseMixin</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#turbo_response.mixins.TurboStreamTemplateResponseMixin" title="turbo_response.mixins.TurboStreamTemplateResponseMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TurboStreamTemplateResponseMixin</span></code></a></p></td>
+<td><p>Use with ContextMixin subclass</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#turbo_response.mixins.PartialTemplateResolverMixin" title="turbo_response.mixins.PartialTemplateResolverMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PartialTemplateResolverMixin</span></code></a></p></td>
+<td><p>Use with ContextMixin subclass</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#turbo_response.mixins.TurboStreamFormMixin" title="turbo_response.mixins.TurboStreamFormMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TurboStreamFormMixin</span></code></a></p></td>
+<td><p>Use with ContextMixin subclass</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#turbo_response.mixins.TurboFrameResponseMixin" title="turbo_response.mixins.TurboFrameResponseMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TurboFrameResponseMixin</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#turbo_response.mixins.TurboFrameTemplateResponseMixin" title="turbo_response.mixins.TurboFrameTemplateResponseMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TurboFrameTemplateResponseMixin</span></code></a></p></td>
+<td><p>Use with ContextMixin subclass</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="turbo_response.mixins.TurboStreamResponseMixin">
+<em class="property">class </em><code class="sig-prename descclassname">turbo_response.mixins.</code><code class="sig-name descname">TurboStreamResponseMixin</code><a class="headerlink" href="#turbo_response.mixins.TurboStreamResponseMixin" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt id="turbo_response.mixins.TurboStreamResponseMixin.turbo_stream_action">
+<code class="sig-name descname">turbo_stream_action</code><a class="headerlink" href="#turbo_response.mixins.TurboStreamResponseMixin.turbo_stream_action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="turbo_response.mixins.TurboStreamResponseMixin.turbo_stream_target">
+<code class="sig-name descname">turbo_stream_target</code><a class="headerlink" href="#turbo_response.mixins.TurboStreamResponseMixin.turbo_stream_target" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="turbo_response.mixins.TurboStreamResponseMixin.get_turbo_stream_action">
+<code class="sig-name descname">get_turbo_stream_action</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#turbo_response.mixins.TurboStreamResponseMixin.get_turbo_stream_action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="turbo_response.mixins.TurboStreamResponseMixin.get_turbo_stream_target">
+<code class="sig-name descname">get_turbo_stream_target</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#turbo_response.mixins.TurboStreamResponseMixin.get_turbo_stream_target" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="turbo_response.mixins.TurboStreamResponseMixin.get_response_content">
+<code class="sig-name descname">get_response_content</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#turbo_response.mixins.TurboStreamResponseMixin.get_response_content" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="turbo_response.mixins.TurboStreamResponseMixin.render_turbo_stream_response">
+<code class="sig-name descname">render_turbo_stream_response</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">response_kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#turbo_response.mixins.TurboStreamResponseMixin.render_turbo_stream_response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="turbo_response.mixins.TurboStreamTemplateResponseMixin">
+<em class="property">class </em><code class="sig-prename descclassname">turbo_response.mixins.</code><code class="sig-name descname">TurboStreamTemplateResponseMixin</code><a class="headerlink" href="#turbo_response.mixins.TurboStreamTemplateResponseMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#turbo_response.mixins.TurboStreamResponseMixin" title="turbo_response.mixins.TurboStreamResponseMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">turbo_response.mixins.TurboStreamResponseMixin</span></code></a></p>
+<p>Use with ContextMixin subclass</p>
+<dl class="py method">
+<dt id="turbo_response.mixins.TurboStreamTemplateResponseMixin.get_turbo_stream_template_names">
+<code class="sig-name descname">get_turbo_stream_template_names</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#turbo_response.mixins.TurboStreamTemplateResponseMixin.get_turbo_stream_template_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="turbo_response.mixins.TurboStreamTemplateResponseMixin.render_turbo_stream_response">
+<code class="sig-name descname">render_turbo_stream_response</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">context</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">response_kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#turbo_response.mixins.TurboStreamTemplateResponseMixin.render_turbo_stream_response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="turbo_response.mixins.PartialTemplateResolverMixin">
+<em class="property">class </em><code class="sig-prename descclassname">turbo_response.mixins.</code><code class="sig-name descname">PartialTemplateResolverMixin</code><a class="headerlink" href="#turbo_response.mixins.PartialTemplateResolverMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#turbo_response.mixins.TurboStreamTemplateResponseMixin" title="turbo_response.mixins.TurboStreamTemplateResponseMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">turbo_response.mixins.TurboStreamTemplateResponseMixin</span></code></a></p>
+<p>Use with ContextMixin subclass</p>
+<dl class="py attribute">
+<dt id="turbo_response.mixins.PartialTemplateResolverMixin.partial_template_prefix">
+<code class="sig-name descname">partial_template_prefix</code><em class="property"> = _</em><a class="headerlink" href="#turbo_response.mixins.PartialTemplateResolverMixin.partial_template_prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="turbo_response.mixins.PartialTemplateResolverMixin.turbo_stream_template_name">
+<code class="sig-name descname">turbo_stream_template_name</code><a class="headerlink" href="#turbo_response.mixins.PartialTemplateResolverMixin.turbo_stream_template_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="turbo_response.mixins.PartialTemplateResolverMixin.get_partial_template_names">
+<code class="sig-name descname">get_partial_template_names</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#turbo_response.mixins.PartialTemplateResolverMixin.get_partial_template_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="turbo_response.mixins.PartialTemplateResolverMixin.get_turbo_stream_template_names">
+<code class="sig-name descname">get_turbo_stream_template_names</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#turbo_response.mixins.PartialTemplateResolverMixin.get_turbo_stream_template_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="turbo_response.mixins.TurboStreamFormMixin">
+<em class="property">class </em><code class="sig-prename descclassname">turbo_response.mixins.</code><code class="sig-name descname">TurboStreamFormMixin</code><a class="headerlink" href="#turbo_response.mixins.TurboStreamFormMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#turbo_response.mixins.PartialTemplateResolverMixin" title="turbo_response.mixins.PartialTemplateResolverMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">turbo_response.mixins.PartialTemplateResolverMixin</span></code></a></p>
+<p>Use with ContextMixin subclass</p>
+<dl class="py attribute">
+<dt id="turbo_response.mixins.TurboStreamFormMixin.turbo_stream_action">
+<code class="sig-name descname">turbo_stream_action</code><em class="property"> = replace</em><a class="headerlink" href="#turbo_response.mixins.TurboStreamFormMixin.turbo_stream_action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="turbo_response.mixins.TurboStreamFormMixin.form_invalid">
+<code class="sig-name descname">form_invalid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">form</span></em><span class="sig-paren">)</span><a class="headerlink" href="#turbo_response.mixins.TurboStreamFormMixin.form_invalid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="turbo_response.mixins.TurboFrameResponseMixin">
+<em class="property">class </em><code class="sig-prename descclassname">turbo_response.mixins.</code><code class="sig-name descname">TurboFrameResponseMixin</code><a class="headerlink" href="#turbo_response.mixins.TurboFrameResponseMixin" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt id="turbo_response.mixins.TurboFrameResponseMixin.turbo_frame_dom_id">
+<code class="sig-name descname">turbo_frame_dom_id</code><a class="headerlink" href="#turbo_response.mixins.TurboFrameResponseMixin.turbo_frame_dom_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="turbo_response.mixins.TurboFrameResponseMixin.get_turbo_frame_dom_id">
+<code class="sig-name descname">get_turbo_frame_dom_id</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#turbo_response.mixins.TurboFrameResponseMixin.get_turbo_frame_dom_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="turbo_response.mixins.TurboFrameResponseMixin.get_response_content">
+<code class="sig-name descname">get_response_content</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#turbo_response.mixins.TurboFrameResponseMixin.get_response_content" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="turbo_response.mixins.TurboFrameResponseMixin.render_turbo_frame_response">
+<code class="sig-name descname">render_turbo_frame_response</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">response_kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#turbo_response.mixins.TurboFrameResponseMixin.render_turbo_frame_response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="turbo_response.mixins.TurboFrameTemplateResponseMixin">
+<em class="property">class </em><code class="sig-prename descclassname">turbo_response.mixins.</code><code class="sig-name descname">TurboFrameTemplateResponseMixin</code><a class="headerlink" href="#turbo_response.mixins.TurboFrameTemplateResponseMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#turbo_response.mixins.TurboFrameResponseMixin" title="turbo_response.mixins.TurboFrameResponseMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">turbo_response.mixins.TurboFrameResponseMixin</span></code></a></p>
+<p>Use with ContextMixin subclass</p>
+<dl class="py method">
+<dt id="turbo_response.mixins.TurboFrameTemplateResponseMixin.render_turbo_frame_response">
+<code class="sig-name descname">render_turbo_frame_response</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">context</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">response_kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#turbo_response.mixins.TurboFrameTemplateResponseMixin.render_turbo_frame_response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">django-turbo-response</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Dan Jacob.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../../_sources/autoapi/turbo_response/mixins/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

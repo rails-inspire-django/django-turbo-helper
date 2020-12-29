@@ -1,0 +1,262 @@
+:mod:`turbo_response.tests.test_views`
+======================================
+
+.. py:module:: turbo_response.tests.test_views
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   turbo_response.tests.test_views.MyForm
+   turbo_response.tests.test_views.TestTurboStreamView
+   turbo_response.tests.test_views.TestTurboStreamTemplateView
+   turbo_response.tests.test_views.TestTurboStreamCreateView
+   turbo_response.tests.test_views.TestTurboStreamUpdateView
+   turbo_response.tests.test_views.TestTurboStreamFormView
+   turbo_response.tests.test_views.TestTurboStreamDeleteView
+   turbo_response.tests.test_views.TestTurboFrameView
+   turbo_response.tests.test_views.TestTurboFrameTemplateView
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   turbo_response.tests.test_views.todo
+
+
+.. data:: pytestmark
+   
+
+   
+
+.. function:: todo()
+
+
+.. py:class:: MyForm
+
+   Bases: :class:`django.forms.Form`
+
+   .. attribute:: description
+      
+
+      
+
+
+.. py:class:: TestTurboStreamView
+
+   .. method:: test_get(self, rf)
+
+
+
+.. py:class:: TestTurboStreamTemplateView
+
+   .. method:: test_get(self, rf)
+
+
+
+.. py:class:: TestTurboStreamCreateView
+
+   .. py:class:: MyView
+
+      Bases: :class:`turbo_response.views.TurboStreamCreateView`
+
+      Use with ContextMixin subclass
+
+      .. attribute:: form_class
+         
+
+         
+
+      .. attribute:: model
+         
+
+         
+
+      .. attribute:: template_name
+         :annotation: = my_form.html
+
+         
+
+      .. attribute:: turbo_stream_target
+         :annotation: = my-form
+
+         
+
+      .. attribute:: success_url
+         :annotation: = /done/
+
+         
+
+
+   .. method:: test_get(self, rf)
+
+
+   .. method:: test_post_with_validation_errors(self, rf)
+
+
+   .. method:: test_post_success(self, rf)
+
+
+
+.. py:class:: TestTurboStreamUpdateView
+
+   .. py:class:: MyView
+
+      Bases: :class:`turbo_response.views.TurboStreamUpdateView`
+
+      Use with ContextMixin subclass
+
+      .. attribute:: form_class
+         
+
+         
+
+      .. attribute:: model
+         
+
+         
+
+      .. attribute:: template_name
+         :annotation: = my_form.html
+
+         
+
+      .. attribute:: turbo_stream_target
+         :annotation: = my-form
+
+         
+
+      .. attribute:: success_url
+         :annotation: = /done/
+
+         
+
+
+   .. method:: test_get(self, rf, todo)
+
+
+   .. method:: test_post_with_validation_errors(self, rf, todo)
+
+
+   .. method:: test_post_success(self, rf, todo)
+
+
+
+.. py:class:: TestTurboStreamFormView
+
+   .. py:class:: MyView
+
+      Bases: :class:`turbo_response.views.TurboStreamFormView`
+
+      Use with ContextMixin subclass
+
+      .. attribute:: form_class
+         
+
+         
+
+      .. attribute:: template_name
+         :annotation: = my_form.html
+
+         
+
+      .. attribute:: turbo_stream_target
+         :annotation: = my-form
+
+         
+
+      .. attribute:: success_url
+         :annotation: = /done/
+
+         
+
+
+   .. method:: test_get(self, rf)
+
+
+   .. method:: test_post_with_validation_errors(self, rf)
+
+
+   .. method:: test_post_success(self, rf)
+
+
+
+.. py:class:: TestTurboStreamDeleteView
+
+   .. py:class:: MyView
+
+      Bases: :class:`turbo_response.views.TurboStreamDeleteView`
+
+      .. attribute:: template_name
+         :annotation: = simple.html
+
+         
+
+      .. attribute:: turbo_stream_target
+         :annotation: = item
+
+         
+
+      .. attribute:: model
+         
+
+         
+
+
+   .. method:: test_post(self, rf, todo)
+
+
+
+.. py:class:: TestTurboFrameView
+
+   .. py:class:: MyView
+
+      Bases: :class:`turbo_response.views.TurboFrameView`
+
+      .. attribute:: turbo_frame_dom_id
+         :annotation: = test
+
+         
+
+      .. method:: get_response_content(self)
+
+
+
+   .. method:: test_get(self, rf)
+
+
+
+.. py:class:: TestTurboFrameTemplateView
+
+   .. py:class:: MyView
+
+      Bases: :class:`turbo_response.views.TurboFrameTemplateView`
+
+      Use with ContextMixin subclass
+
+      .. attribute:: turbo_frame_dom_id
+         :annotation: = test
+
+         
+
+      .. attribute:: template_name
+         :annotation: = simple.html
+
+         
+
+      .. method:: get_response_content(self)
+
+
+
+   .. method:: test_get(self, rf)
+
+
+

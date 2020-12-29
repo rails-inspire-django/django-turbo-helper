@@ -1,0 +1,27 @@
+:mod:`turbo_response.middleware`
+================================
+
+.. py:module:: turbo_response.middleware
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   turbo_response.middleware.TurboStreamMiddleware
+
+
+
+.. py:class:: TurboStreamMiddleware(get_response)
+
+   Adds bool attribute 'accept_turbo_stream' to request
+   if the Turbo Stream accept header is present
+
+   .. method:: __call__(self, request)
+
+
+
