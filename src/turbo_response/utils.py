@@ -6,6 +6,8 @@ from django.template.loader import render_to_string
 
 
 class Action(enum.Enum):
+    """Turbo-Stream action parameter"""
+
     APPEND = "append"
     PREPEND = "prepend"
     REMOVE = "remove"
@@ -14,6 +16,16 @@ class Action(enum.Enum):
 
 
 def render_turbo_stream(action, target, content=""):
+    """Wraps content in correct <turbo-stream> tags.
+
+    :param: action: Action, action type
+    :param: target: the DOM ID target of the stream
+    :param: content: string. Can be empty.
+
+    :return: *<turbo-stream>* string
+    :rtype: str
+
+    """
     return f'<turbo-stream action="{action.value}" target="{target}"><template>{content.strip()}</template></turbo-stream>'
 
 

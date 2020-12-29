@@ -1,6 +1,5 @@
 class TurboStreamMiddleware:
-    """Adds bool attribute 'accept_turbo_stream' to request
-    if the Turbo Stream accept header is present
+    """Adds bool attribute 'accept_turbo_stream' to request if the Turbo Stream accept header is present.
     """
 
     def __init__(self, get_response):
