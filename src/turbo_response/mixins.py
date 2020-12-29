@@ -20,12 +20,13 @@ class TurboStreamResponseMixin:
     def get_response_content(self):
         return ""
 
-    def render_turbo_stream_response(self):
+    def render_turbo_stream_response(self, **response_kwargs):
 
         return TurboStreamResponse(
             action=self.get_turbo_stream_action(),
             target=self.get_turbo_stream_target(),
             content=self.get_response_content(),
+            **response_kwargs
         )
 
 
