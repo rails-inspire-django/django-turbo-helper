@@ -19,8 +19,7 @@ jobs:
         python-version: '3.x'
     - name: Install dependencies
       run: |
-        apt-get install python3.8
-        pip install tox
+        pip install tox tox-gh-actions
     - name: Run tests
       run: |
         tox
