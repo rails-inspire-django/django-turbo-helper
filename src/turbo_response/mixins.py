@@ -177,8 +177,16 @@ class TurboStreamFormMixin(PartialTemplateResolverMixin):
     turbo_stream_action = Action.REPLACE
 
     def form_invalid(self, form):
-        self.turbo_stream_target = self.get_turbo_stream_target()
         return self.render_turbo_stream_response(self.get_context_data(form=form))
+
+    def get_context_data(self, **context):
+        """Adds the target to both templates, so we can keep them consistent"""
+        self.turbo_stream_target = self.get_turbo_stream_target()
+
+        return {
+            **super().get_context_data(),
+            "turbo_stream_target": self.turbo_stream_target,
+        }
 
 
 class TurboFrameResponseMixin:

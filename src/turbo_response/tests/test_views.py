@@ -80,6 +80,7 @@ class TestTurboStreamCreateView:
         assert resp["Content-Type"] == "text/html; charset=utf-8"
         assert "is_turbo_stream" not in resp.context_data
         assert "form" in resp.context_data
+        assert resp.context_data["turbo_stream_target"] == "testapp-todoitem-form"
         assert resp.template_name == ["testapp/todoitem_form.html"]
 
     def test_post_with_validation_errors(self, rf):
@@ -113,6 +114,10 @@ class TestTurboStreamUpdateView:
         assert resp["Content-Type"] == "text/html; charset=utf-8"
         assert "is_turbo_stream" not in resp.context_data
         assert "form" in resp.context_data
+        assert (
+            resp.context_data["turbo_stream_target"]
+            == f"testapp-todoitem-{todo.id}-form"
+        )
         assert resp.template_name == ["testapp/todoitem_form.html"]
 
     def test_post_with_validation_errors(self, rf, todo):
