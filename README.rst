@@ -179,7 +179,7 @@ If you prefer class-based views (CBVs) you can do the same with the *TurboStream
 
 .. code-block:: python
 
-  from django.contrib.auth.mixins import LoginRequired
+  from django.contrib.auth.mixins import LoginRequiredMixin
   from django.views.generic.edit import CreateView
 
   from turbo_response.mixins import TurboStreamFormMixin
@@ -188,7 +188,7 @@ If you prefer class-based views (CBVs) you can do the same with the *TurboStream
   from myapp.todos.models import Todo
 
 
-  class CreateTodoView(TurboStreamFormMixin, CreateView):
+  class CreateTodoView(TurboStreamFormMixin, LoginRequiredMixin, CreateView):
       template_name = "todos/todo_form.html"
       turbo_stream_template_name = "todos/_todo_form.html"
       turbo_stream_target = "todo-form"
@@ -202,7 +202,7 @@ To save typing you can just use **TurboStreamCreateView**:
 
 .. code-block:: python
 
-  from django.contrib.auth.mixins import LoginRequired
+  from django.contrib.auth.mixins import LoginRequiredMixin
   from django.views.generic.edit import CreateView
 
   from turbo_response.views import TurboStreamCreateView
@@ -210,7 +210,7 @@ To save typing you can just use **TurboStreamCreateView**:
   from myapp.todos.forms import TodoForm
   from myapp.todos.models import Todo
 
-  class CreateTodoView(TurboStreamCreateView):
+  class CreateTodoView(LoginRequiredMixin, TurboStreamCreateView):
       model = Todo
       form_class = TodoForm
       template_name = "todos/todo_form.html"
@@ -223,7 +223,7 @@ This class automatically adopts the convention of using the underscore prefix fo
 
 .. code-block:: python
 
-  class CreateTodoView(TurboStreamCreateView):
+  class CreateTodoView(LoginRequiredMixin, TurboStreamCreateView):
       model = Todo
       form_class = TodoForm
 
