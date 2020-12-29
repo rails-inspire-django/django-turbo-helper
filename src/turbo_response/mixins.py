@@ -1,3 +1,7 @@
+# Django
+from django.core.exceptions import ImproperlyConfigured
+from django.db import models
+
 # Local
 from . import Action
 from .response import (
@@ -57,7 +61,7 @@ class TurboStreamResponseMixin:
             action=action,
             target=target,
             content=self.get_response_content(),
-            **response_kwargs
+            **response_kwargs,
         )
 
 
@@ -127,6 +131,45 @@ class PartialTemplateResolverMixin(TurboStreamTemplateResponseMixin):
         )
 
 
+class TurboStreamAutoTargetMixin:
+    """Generates the stream target DOM ID based on model metadata.
+
+    If *self.object* is present the DOM ID will be:
+
+    *<app-name>-<model-name>-<object_id>*
+
+    otherwise:
+
+    *<app-name>-<model-name>*
+
+    You can override by explicitly setting **turbo_stream_target**.
+    """
+
+    turbo_stream_target_suffix = ""
+
+    def get_turbo_stream_target(self):
+        if self.turbo_stream_target is not None:
+            return self.turbo_stream_target
+
+        if hasattr(self, "object") and isinstance(self.object, models.Model):
+            target = [
+                self.object._meta.app_label,
+                self.object._meta.model_name,
+            ]
+            if self.object.pk:
+                target.append(str(self.object.pk))
+
+            return "-".join(target) + self.turbo_stream_target_suffix
+
+        elif hasattr(self, "model") and issubclass(self.model, models.Model):
+            return (
+                "-".join([self.model._meta.app_label, self.model._meta.model_name,])
+                + self.turbo_stream_target_suffix
+            )
+
+        raise ImproperlyConfigured("No Django model instance found")
+
+
 class TurboStreamFormMixin(PartialTemplateResolverMixin):
     """Mixin for handling form validation. If the form is
     invalid, returns a turbo-stream response instead."""
@@ -134,6 +177,7 @@ class TurboStreamFormMixin(PartialTemplateResolverMixin):
     turbo_stream_action = Action.REPLACE
 
     def form_invalid(self, form):
+        self.turbo_stream_target = self.get_turbo_stream_target()
         return self.render_turbo_stream_response(self.get_context_data(form=form))
 
 
@@ -155,7 +199,7 @@ class TurboFrameResponseMixin:
         return TurboFrameResponse(
             content=self.get_response_content(),
             dom_id=self.get_turbo_frame_dom_id(),
-            **response_kwargs
+            **response_kwargs,
         )
 
 
@@ -176,5 +220,5 @@ class TurboFrameTemplateResponseMixin(TurboFrameResponseMixin):
             dom_id=self.get_turbo_frame_dom_id(),
             context=context,
             using=self.template_engine,
-            **response_kwargs
+            **response_kwargs,
         )
