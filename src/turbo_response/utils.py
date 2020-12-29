@@ -18,9 +18,13 @@ class Action(enum.Enum):
 def render_turbo_stream(action, target, content=""):
     """Wraps content in correct <turbo-stream> tags.
 
-    :param: action: Action, action type
-    :param: target: the DOM ID target of the stream
-    :param: content: string. Can be empty.
+    :param action: action type
+    :param target: the DOM ID target of the stream
+    :param content: content to be wrapped. Can be empty.
+
+    :type action: Action
+    :type target: str
+    :type content: str
 
     :return: *<turbo-stream>* string
     :rtype: str
