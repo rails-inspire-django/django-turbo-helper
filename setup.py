@@ -11,7 +11,7 @@ setup(
     author_email="danjac2018@gmail.com",
     url="https://github.com/danjac/django-turbo-response",
     description="Hotwired/Turbo response helpers for Django",
-    long_description=open("README.md").read() + "\n\n" + open("CHANGES.md").read(),
+    long_description=open("README.rst").read() + "\n\n" + open("CHANGES.rst").read(),
     license="AGPL license",
     requires=["django (>=3.1)"],
     packages=["turbo_response"],

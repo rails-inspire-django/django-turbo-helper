@@ -7,7 +7,7 @@ from turbo_response import (
     TurboStreamStreamingResponse,
     TurboStreamTemplateResponse,
 )
-from turbo_response.utils import render_turbo_stream
+from turbo_response.renderers import render_turbo_stream
 
 
 class TestTurboStreamResponse:

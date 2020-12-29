@@ -71,7 +71,7 @@ def render_turbo_stream_template(
             {
                 **context,
                 "turbo_stream_target": target,
-                "turbo_stream_action": action,
+                "turbo_stream_action": action.value,
                 "is_turbo_stream": True,
             },
             **template_kwargs,

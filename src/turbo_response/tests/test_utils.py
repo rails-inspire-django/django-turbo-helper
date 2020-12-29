@@ -1,5 +1,5 @@
 # Django Turbo Response
-from turbo_response.utils import (
+from turbo_response.renderers import (
     Action,
     render_turbo_frame,
     render_turbo_frame_template,

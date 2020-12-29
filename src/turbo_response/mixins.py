@@ -45,7 +45,7 @@ class TurboStreamResponseMixin:
         """
 
         action = self.get_turbo_stream_action()
-        target = self.get_turbo_stream_action()
+        target = self.get_turbo_stream_target()
 
         if action is None:
             raise ValueError("action must be specified")
