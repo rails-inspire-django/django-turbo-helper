@@ -1,6 +1,6 @@
 ## Introduction
 
-This package offers helpers for server-side rendering of hotwire-turbo streams and frames.
+This package offers helpers for server-side rendering of Hotwired/Turbo streams and frames.
 
 ## Requirements
 
@@ -38,7 +38,7 @@ This is useful if you want to check if a stream is requested, so you can optiona
 
 ```
 if request.accept_turbo_stream:
-    return TurboStreamResponse(action="remove", target="item")
+    return TurboStreamResponse(action=Action.REPLACE, target="item")
 else:
     return redirect("index")
 ```
@@ -52,7 +52,7 @@ The most common pattern for server-side validation in a Django view consists of:
 3. If any validation errors, re-render the form with errors and user input
 4. If no validation errors, save to the database (and/or any other actions) and redirect
 
-This pattern however does not work with @hotwire-turbo. If you return HTML from a form post, a Javascript error will be thrown by the Turbo Drive library as it only accepts a redirect. Furthermore, you cannot exempt a form with the *data-turbo="false"* attribute as you can with links. Both of these issues, as of writing, are being addressed by the Hotwire team and should be fixed in a future release. In the meantime, the acceptable approach for "traditional" form validation is:
+This pattern however does not work with Turbo. If you return HTML from a form post, a Javascript error will be thrown by the Turbo Drive library as it only accepts a redirect. Furthermore, you cannot exempt a form with the *data-turbo="false"* attribute as you can with links. Both of these issues, as of writing, are being addressed by the Hotwire team and should be fixed in a future release. In the meantime, the acceptable approach for "traditional" form validation is:
 
 1. Render the initial form. The form, or surrounding tag, must have an "id".
 2. Validate on POST as usual
@@ -101,7 +101,7 @@ To make this work with Turbo, you would have to make these changes:
 from django.contrib.auth.decorators import login_required
 from django.template.response import TemplateResponse
 
-from turbo_response import TurboStreamTemplateResponse
+from turbo_response import Action, TurboStreamTemplateResponse
 
 from myapp.todos.forms import TodoForm
 
@@ -120,7 +120,7 @@ def create_todo(request):
             {
                 "form": form,
             },
-            action="replace",
+            action=Action.REPLACE,
             target="todo-form",
           )
 
@@ -252,7 +252,7 @@ Each item in the cart has an inline edit form that might look like this:
 ```
 
 ```
-from turbo_response import TurboStreamStreamingResponse, render_turbo_stream
+from turbo_response import Action, TurboStreamStreamingResponse, render_turbo_stream
 
 def update_cart_item(request, item_id):
     # item saved to e.g. session or db
@@ -265,13 +265,13 @@ def update_cart_item(request, item_id):
     def render_response():
         yield render_turbo_stream(
             total_amount,
-            action="replace",
+            action=Action.REPLACE,
             target="nav-cart-total"
             )
 
         yield render_turbo_stream(
             total_amount,
-            action="replace",
+            action=Action.REPLACE,
             target="cart-summary-total"
             )
     return TurboStreamStreamingResponse(render_response())
@@ -334,7 +334,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             await self.send(
                 render_turbo_stream(
                     str(num_unread_messages),
-                    action="replace",
+                    action=Action.REPLACE,
                     target="unread_message_counter"
                 )
 
@@ -342,7 +342,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 render_turbo_stream_template(
                     "chat/_message.html",
                     {"message": message, "user": self.scope['user']},
-                    action="append",
+                    action=Action.APPEND,
                     target="messages",
                 )
             )
@@ -373,5 +373,8 @@ export default class extends Controller {
 
 ## Links
 
+Hotwired: https://turbo.hotwire.dev/
 
+## License
 
+This project is covered by GNU Affero General Public License (AGPL).
