@@ -29,23 +29,24 @@ Middleware
 You can optionally install *turbo_response.middleware.TurboStreamMiddleware*. This adds the attribute *accept_turbo_stream* to your request if the Turbo client adds *Accept: text/html; turbo-stream;* to the header:
 
 
-``
-MIDDLEWARE = [
-    ...
-    "turbo_response.middleware.TurboStreamMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    ...
-]
-``
+.. code-block:: python
+
+  MIDDLEWARE = [
+      ...
+      "turbo_response.middleware.TurboStreamMiddleware",
+      "django.middleware.common.CommonMiddleware",
+      ...
+  ]
+
 
 This is useful if you want to check if a stream is requested, so you can optionally return a stream or a normal response:
 
-``
-if request.accept_turbo_stream:
-    return TurboStreamResponse(action=Action.REPLACE, target="item")
-else:
-    return redirect("index")
-``
+.. code-block:: python
+
+  if request.accept_turbo_stream:
+      return TurboStreamResponse(action=Action.REPLACE, target="item")
+  else:
+      return redirect("index")
 
 ===============
 Form Validation
@@ -67,161 +68,164 @@ This pattern however does not work with Turbo. If you return HTML from a form po
 
 As an example, let's take a typical function-based view (FBV):
 
-``
-from django.contrib.auth.decorators import login_required
-from django.template.response import TemplateResponse
+.. code-block:: python
 
-from myapp.todos.forms import TodoForm
+  from django.contrib.auth.decorators import login_required
+  from django.template.response import TemplateResponse
 
-@login_required
-def create_todo(request):
-    if request.method == "POST":
-        form = TodoForm(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.owner = request.user
-            instance.save()
-    else:
-        form = TodoForm()
+  from myapp.todos.forms import TodoForm
 
-    return TemplateResponse(request, "todos/todo_form.html", {"form": form})
-``
+  @login_required
+  def create_todo(request):
+      if request.method == "POST":
+          form = TodoForm(request.POST)
+          if form.is_valid():
+              instance = form.save(commit=False)
+              instance.owner = request.user
+              instance.save()
+      else:
+          form = TodoForm()
+
+      return TemplateResponse(request, "todos/todo_form.html", {"form": form})
 
 Our template *todos/todo_form.html* looks something like this:
 
-``
-{% extends "base.html" %}
-{% block content %}
-<h1>Add your todo here!</h1>
-<form method="post" action="{% url 'todos:create_todo' %}">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Save</button>
-</form>
-{% endblock content %}
-``
+.. code-block:: html
+
+  {% extends "base.html" %}
+  {% block content %}
+  <h1>Add your todo here!</h1>
+  <form method="post" action="{% url 'todos:create_todo' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
+  {% endblock content %}
 
 To make this work with Turbo, you would have to make these changes:
 
-``
-from django.contrib.auth.decorators import login_required
-from django.template.response import TemplateResponse
+.. code-block:: python
 
-from turbo_response import Action, TurboStreamTemplateResponse
+  from django.contrib.auth.decorators import login_required
+  from django.template.response import TemplateResponse
 
-from myapp.todos.forms import TodoForm
+  from turbo_response import Action, TurboStreamTemplateResponse
 
-@login_required
-def create_todo(request):
-    if request.method == "POST":
-        form = TodoForm(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.owner = request.user
-            instance.save()
-        # return the invalid form in a stream
-        return TurboStreamTemplateResponse(
-            request,
-            "todos/_todo_form.html",
-            {
-                "form": form,
-            },
-            action=Action.REPLACE,
-            target="todo-form",
-          )
+  from myapp.todos.forms import TodoForm
 
-    else:
-        form = TodoForm()
-    return TemplateResponse(request, "todos/todo_form.html", {"form": form})
-``
+  @login_required
+  def create_todo(request):
+      if request.method == "POST":
+          form = TodoForm(request.POST)
+          if form.is_valid():
+              instance = form.save(commit=False)
+              instance.owner = request.user
+              instance.save()
+          # return the invalid form in a stream
+          return TurboStreamTemplateResponse(
+              request,
+              "todos/_todo_form.html",
+              {
+                  "form": form,
+              },
+              action=Action.REPLACE,
+              target="todo-form",
+            )
+
+      else:
+          form = TodoForm()
+      return TemplateResponse(request, "todos/todo_form.html", {"form": form})
+
 
 We break up our *todo_form.html* template, extracting the HTML into a partial include containing the form. A common convention is to use an initial underscore to distinguish partial templates but you can use any naming scheme you wish:
 
 *todos/todo_form.html*
 
-``
-{% extends "base.html" %}
-{% block content %}
-<h1>Add your todo here!</h1>
-{% include "todos/_todo_form.html" %}
-{% endblock content %}
-``
+.. code-block:: html
+
+  {% extends "base.html" %}
+  {% block content %}
+  <h1>Add your todo here!</h1>
+  {% include "todos/_todo_form.html" %}
+  {% endblock content %}
 
 *todos/_todo_form.html*
 
-``
-<form method="post" action="{% url 'todos:create_todo' %}" id="todo-form">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Save</button>
-</form>
-``
+.. code-block:: html
+
+  <form method="post" action="{% url 'todos:create_todo' %}" id="todo-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
 
 Notice the ID on the form tag. In addition, the template must render with a single top-level tag.
 
 If the form contains errors, the response should look something like this:
 
-``
-<turbo-stream action="replace" target="todo-form">
-  <template>
-    <form method="post" ...>
-    form body with error messages goes here...
-    </form>
-  </template>
-</turbo-stream>
-``
+.. code-block:: html
+
+  <turbo-stream action="replace" target="todo-form">
+    <template>
+      <form method="post" ...>
+      form body with error messages goes here...
+      </form>
+    </template>
+  </turbo-stream>
 
 If you prefer class-based views (CBVs) you can do the same with the *TurboStreamFormMixin*:
 
-``
-from django.contrib.auth.mixins import LoginRequired
-from django.views.generic.edit import CreateView
+.. code-block:: python
 
-from turbo_response.mixins import TurboStreamFormMixin
+  from django.contrib.auth.mixins import LoginRequired
+  from django.views.generic.edit import CreateView
 
-from myapp.todos.forms import TodoForm
-from myapp.todos.models import Todo
+  from turbo_response.mixins import TurboStreamFormMixin
+
+  from myapp.todos.forms import TodoForm
+  from myapp.todos.models import Todo
 
 
-class CreateTodoView(TurboStreamFormMixin, CreateView):
-    template_name = "todos/todo_form.html"
-    turbo_stream_template_name = "todos/_todo_form.html"
-    turbo_stream_target = "todo-form"
+  class CreateTodoView(TurboStreamFormMixin, CreateView):
+      template_name = "todos/todo_form.html"
+      turbo_stream_template_name = "todos/_todo_form.html"
+      turbo_stream_target = "todo-form"
 
-create_todo_view = CreateTodoView.as_view()
-``
+  create_todo_view = CreateTodoView.as_view()
 
 Note that the default target for this mixin is "replace", so you don't need to set it here.
 
 To save typing you can just use *TurboStreamCreateView*:
 
-``
-from django.contrib.auth.mixins import LoginRequired
-from django.views.generic.edit import CreateView
 
-from turbo_response.views import TurboStreamCreateView
+.. code-block:: python
 
-from myapp.todos.forms import TodoForm
-from myapp.todos.models import Todo
+  from django.contrib.auth.mixins import LoginRequired
+  from django.views.generic.edit import CreateView
 
-class CreateTodoView(TurboStreamCreateView):
-    model = Todo
-    form_class = TodoForm
-    template_name = "todos/todo_form.html"
-    turbo_stream_template_name = "todos/_todo_form.html"
-    turbo_stream_target = "todo-form"
+  from turbo_response.views import TurboStreamCreateView
 
-create_todo_view = CreateTodoView.as_view()
-``
+  from myapp.todos.forms import TodoForm
+  from myapp.todos.models import Todo
+
+  class CreateTodoView(TurboStreamCreateView):
+      model = Todo
+      form_class = TodoForm
+      template_name = "todos/todo_form.html"
+      turbo_stream_template_name = "todos/_todo_form.html"
+      turbo_stream_target = "todo-form"
+
+  create_todo_view = CreateTodoView.as_view()
 
 This class automatically adopts the convention of using the underscore prefix for any partials, so you could save a couple lines of code and just write:
 
-``
-class CreateTodoView(TurboStreamCreateView):
-    model = Todo
-    form_class = TodoForm
-    turbo_stream_target = "todo-form"
-``
+.. code-block:: python
+
+  class CreateTodoView(TurboStreamCreateView):
+      model = Todo
+      form_class = TodoForm
+      turbo_stream_target = "todo-form"
+
 and the turbo stream template will automatically resolve to *todos/_todo_form.html* (the *CreateView* of course resolves the default template names as well, based on the model metadata).
 
 Responding with Multiple Streams
@@ -233,55 +237,55 @@ To do this you can use *django.http.StreamingHttpResponse* with a generator. The
 Taking the example above, we have a page with the shopping cart, that has this snippet:
 
 
-``
-<span id="cart-summary-total">{{ total_amount }}</span>
-``
+.. code-block:: html
+
+  <span id="cart-summary-total">{{ total_amount }}</span>
 
 and in the navbar of our base template:
 
-``
-<span id="nav-cart-total">{{ total_amount }}</span>
-``
+.. code-block:: html
+
+  <span id="nav-cart-total">{{ total_amount }}</span>
 
 In both cases the total amount is precalculated in the initial page load, for example using a context processor.
 
 Each item in the cart has an inline edit form that might look like this:
 
-``
-<td>
-    <form method="post" action="{% url 'update_cart_item' item.id %}">
-        {% csrf_token %}
-        <input type="text" name="amount" value="{{ item.value }}">
-        <button type="submit">Save</button>
-    </form>
-</td>
-``
+.. code-block:: html
 
-``
-from turbo_response import Action, TurboStreamStreamingResponse, render_turbo_stream
+  <td>
+      <form method="post" action="{% url 'update_cart_item' item.id %}">
+          {% csrf_token %}
+          <input type="text" name="amount" value="{{ item.value }}">
+          <button type="submit">Save</button>
+      </form>
+  </td>
 
-def update_cart_item(request, item_id):
-    # item saved to e.g. session or db
-    save_cart_item(request, item_id)
+.. code-block:: python
 
-    # for brevity, assume "total amount" is returned here as a
-    # correctly formatted string in the correct local currency
-    total_amount = calc_total_cart_amount(request)
+  from turbo_response import Action, TurboStreamStreamingResponse, render_turbo_stream
 
-    def render_response():
-        yield render_turbo_stream(
-            total_amount,
-            action=Action.REPLACE,
-            target="nav-cart-total"
-            )
+  def update_cart_item(request, item_id):
+      # item saved to e.g. session or db
+      save_cart_item(request, item_id)
 
-        yield render_turbo_stream(
-            total_amount,
-            action=Action.REPLACE,
-            target="cart-summary-total"
-            )
-    return TurboStreamStreamingResponse(render_response())
-``
+      # for brevity, assume "total amount" is returned here as a
+      # correctly formatted string in the correct local currency
+      total_amount = calc_total_cart_amount(request)
+
+      def render_response():
+          yield render_turbo_stream(
+              total_amount,
+              action=Action.REPLACE,
+              target="nav-cart-total"
+              )
+
+          yield render_turbo_stream(
+              total_amount,
+              action=Action.REPLACE,
+              target="cart-summary-total"
+              )
+      return TurboStreamStreamingResponse(render_response())
 
 That's it! In this example are returning a very simple string value, so we don't need to wrap the responses in templates. If you want to do so, use *turbo_response.render_stream_template* instead.
 
@@ -301,36 +305,36 @@ Turbo Frames have a useful feature that allows lazy loading [link to docs]. This
 
 This is a good use case for a lazy turbo frame. Our template looks like this, with a fancy loading gif as a placeholder:
 
-``
-<turbo-frame id="recommendations" src="{% url 'recommendations' %}">
-    <img src="{% static 'fancy-loader.gif' %}">
-</turbo-frame>
-``
+.. code-block:: html
+
+  <turbo-frame id="recommendations" src="{% url 'recommendations' %}">
+      <img src="{% static 'fancy-loader.gif' %}">
+  </turbo-frame>
 
 And our corresponding view:
 
-``
-def recommendations(request):
-    # lazily build recommendations from algorithm and cache result
-    recommended_items = get_recommendations_from_cache(request.user)
-    return TurboFrameTemplateResponse(
-        request,
-        "_recommendations.html",
-        {"items": recommended_items},
-        dom_id="recommendations",
-    )
-``
+.. code-block:: python
+
+  def recommendations(request):
+      # lazily build recommendations from algorithm and cache result
+      recommended_items = get_recommendations_from_cache(request.user)
+      return TurboFrameTemplateResponse(
+          request,
+          "_recommendations.html",
+          {"items": recommended_items},
+          dom_id="recommendations",
+      )
 
 The template returned is just a plain Django template. The response class automatically wraps the correct tags, so we don't need to include `<turbo-frame>`.
 
 
-``
-<div class="recommendations">
-    {% for item in items %}
-    <h3><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></h3>
-    {% endfor %}
-</div>
-``
+.. code-block:: html
+
+  <div class="recommendations">
+      {% for item in items %}
+      <h3><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></h3>
+      {% endfor %}
+  </div>
 
 ========
 Channels
@@ -338,53 +342,53 @@ Channels
 
 This library can also be used with django-channels Consumers. The helper functions *render_turbo_stream* and *render_turbo_stream_template* when broadcasting streams:
 
-``
-class ChatConsumer(AsyncJsonWebsocketConsumer):
-    async def chat_message(self, event):
+.. code-block:: python
 
-        message = await self.get_message(event["message"]["id"])
-        num_unread_messages = await self.get_num_unread_messages()
+  class ChatConsumer(AsyncJsonWebsocketConsumer):
+      async def chat_message(self, event):
 
-        if message:
-            await self.send(
-                render_turbo_stream(
-                    str(num_unread_messages),
-                    action=Action.REPLACE,
-                    target="unread_message_counter"
-                )
+          message = await self.get_message(event["message"]["id"])
+          num_unread_messages = await self.get_num_unread_messages()
 
-            await self.send(
-                render_turbo_stream_template(
-                    "chat/_message.html",
-                    {"message": message, "user": self.scope['user']},
-                    action=Action.APPEND,
-                    target="messages",
-                )
-            )
-``
+          if message:
+              await self.send(
+                  render_turbo_stream(
+                      str(num_unread_messages),
+                      action=Action.REPLACE,
+                      target="unread_message_counter"
+                  )
+
+              await self.send(
+                  render_turbo_stream_template(
+                      "chat/_message.html",
+                      {"message": message, "user": self.scope['user']},
+                      action=Action.APPEND,
+                      target="messages",
+                  )
+              )
 
 See the django-channels documentation for more details on setting up ASGI and channels. Note that you will need to set up your WebSockets in the client, for example in a Stimulus controller:
 
-``
-import { Controller } from 'stimulus';
-import { connectStreamSource, disconnectStreamSource } from '@hotwired/turbo';
+.. code-block:: javascript
 
-export default class extends Controller {
-  static values = {
-    socketUrl: String,
-  };
+  import { Controller } from 'stimulus';
+  import { connectStreamSource, disconnectStreamSource } from '@hotwired/turbo';
 
-  connect() {
-    this.source = new WebSocket(this.socketUrlValue);
-    connectStreamSource(this.source);
+  export default class extends Controller {
+    static values = {
+      socketUrl: String,
+    };
+
+    connect() {
+      this.source = new WebSocket(this.socketUrlValue);
+      connectStreamSource(this.source);
+    }
+
+    disconnect() {
+      disconnectStreamSource(this.source);
+      this.source = null;
+    }
   }
-
-  disconnect() {
-    disconnectStreamSource(this.source);
-    this.source = null;
-  }
-}
-``
 
 =====
 Links
