@@ -34,8 +34,9 @@ def render_turbo_stream(action, target, content=""):
 
 
 def render_turbo_frame(dom_id, content=""):
-    """Wraps a response in correct *<turbo-frame>* tags.
+    """
 
+    Wraps a response in correct *<turbo-frame>* tags.
 
     :param dom_id: a DOM ID present in the content
     :param content: content of the turbo-frame

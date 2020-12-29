@@ -1,5 +1,7 @@
 This package provides helpers for server-side rendering of Hotwired/Turbo streams and frames.
 
+**Disclaimer**: the Hotwired/Turbo client libraries are, at time of writing, still in Beta. We expect there will be breaking changes until the first stable release. This package, and the Turbo client, should therefore be used with caution in a production environment. The version used in testing is *@hotwired/turbo==7.0.0-beta.1*.
+
 ============
 Requirements
 ============
@@ -10,17 +12,17 @@ This library is tested for Python 3.8+.
 Getting Started
 ===============
 
-> pip install django-turbo-response
+``pip install django-turbo-response``
 
 To install from Git:
 
-> git clone https://github.com/danjac/django-turbo-response
+``git clone https://github.com/danjac/django-turbo-response``
 
-> cd django-turbo-response
+``cd django-turbo-response``
 
-> python setup.py install
+``python setup.py install``
 
-Note: This library does not include any client libraries (Turbo or Stimulus). You may wish to add these yourself using your preferred Javascript build tool, or use a CDN. Please refer to the Hotwire documentation on installing these libraries.
+**Note**: This library does not include any client libraries (Turbo or Stimulus). You may wish to add these yourself using your preferred Javascript build tool, or use a CDN. Please refer to the Hotwire documentation on installing these libraries.
 
 ==========
 Middleware
@@ -295,7 +297,107 @@ Note that this technique is something of an anti-pattern; if you have to update 
 Using Turbo Frames
 ==================
 
-*TBD*
+Rendering Turbo Frames is straightforward. Let's say you have a "Subscribe" button in your page. When the button is clicked, you want the "Subscribe" label to be changed to "Unsubscribe"; when the button is clicked again it should turn back to "Subscribe."
+
+Our template looks something like this:
+
+.. code-block:: html
+
+  {% extends "base.html" %}
+  {% block content %}
+  <h1>Welcome to my blog</h1>
+  {{ blog.description }}
+  {% if user.is_authenticated %}
+  <turbo-frame id="subscribe">
+    {% include "_subscribe.html" %}
+  </turbo-frame>
+  {% endif %}
+  {% endblock %}
+
+Note that we surround the partial template with the *<turbo-frame>* tags. These will be replaced by Turbo when a Turbo Frame response matching the DOM ID "subscribe" is returned from the server.
+
+Our partial template, *_subscribe.html* looks like this:
+
+.. code-block:: html
+
+  <form method="post" action="{% url 'toggle_subscribe' blog.id %}">
+    {% csrf_token %}
+    <button>{{ is_subscribed|yesno:"Unsubscribe,Subscribe" }}</button>
+  </form>
+
+Note that the button uses a POST form to handle the toggle. As it's a POST we also need to include the CSRF token, or we'll get a 403 error.
+
+
+Here are the views:
+
+.. code-block:: python
+
+  from django.contrib.auth.decorators import login_required
+  from django.template.response import TemplateResponse
+  from django.shortcuts import get_object_or_404
+
+  from turbo_response import TurboFrameResponse
+
+  from myapp.blogs.models import Blog
+
+  def blog_detail(request, blog_id):
+      blog = get_object_or_404(Blog, pk=blog_id)
+      is_subscribed = blog.is_subscribed(request.user)
+      return TemplateResponse(
+          request,
+          "blogs/detail.html",
+          {"blog": blog, "is_subscribed": is_subscribed}
+      )
+
+  @login_required
+  def subscribe(request, blog_id):
+      blog = get_object_or_404(Blog, pk=blog_id)
+      is_subscribed = blog.toggle_subscribe(request.user)
+      return TurboFrameResponse(
+           request,
+          "blogs/_subscribe.html",
+          {"blog": blog, "is_subscribed": is_subscribed},
+          dom_id="subscribe",
+      )
+
+The *subscribe* view returns a response wrapped in the *<turbo-frame>* tag with the DOM id "subscribe". Turbo will look for a corresponding frame in the HTML body with the matching ID, and replace the frame with the one returned from the server. Unlike a full Turbo visit, we don't need to return the entire body - just the snippet we want to update.
+
+If we wanted to use CBVs instead:
+
+.. code-block:: python
+
+  from django.contrib.auth.mixins import LoginRequiredMixin
+  from django.views.generic.detail import DetailView, SingleObjectMixin
+
+  from turbo_response.views import TurboFrameTemplateView
+
+  from myapp.blogs.models import Blog
+
+  class BlogDetail(DetailView):
+      model = Blog
+      template_name = "blogs/detail.html"
+
+      def get_context_data(self, **context):
+          return {
+              **context,
+              "is_subscribed": blog.is_subscribed(request.user)
+          }
+
+  class Subscribe(LoginRequiredMixin,
+                  SingleObjectMixin,
+                  TurboFrameTemplateView):
+
+    turbo_frame_dom_id = "subscribe"
+    template_name = "blogs/_subscribe.html"
+
+    def post(request, pk):
+        blog = self.get_object()
+        is_subscribed = blog.toggle_subscribe(request.user)
+
+        return self.render_to_response(
+            {"blog": blog, "is_subscribed": is_subscribed},
+        )
+
 
 ==========================
 Handling Lazy Turbo Frames
