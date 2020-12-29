@@ -1,5 +1,6 @@
 # Django Turbo Response
-from turbo_response.response import (
+from turbo_response import (
+    Action,
     TurboFrameResponse,
     TurboFrameTemplateResponse,
     TurboStreamResponse,
@@ -11,7 +12,7 @@ from turbo_response.utils import render_turbo_stream
 
 class TestTurboStreamResponse:
     def test_render(self):
-        resp = TurboStreamResponse("OK", action="remove", target="test")
+        resp = TurboStreamResponse("OK", action=Action.REMOVE, target="test")
         assert resp.status_code == 200
         assert resp["Content-Type"] == "text/html; turbo-stream; charset=utf-8"
         assert resp.content.startswith(
@@ -31,7 +32,7 @@ class TestTurboStreamTemplateResponse:
     def test_render(self, rf):
         req = rf.get("/")
         resp = TurboStreamTemplateResponse(
-            req, "simple.html", {"testvar": 1}, action="update", target="test"
+            req, "simple.html", {"testvar": 1}, action=Action.UPDATE, target="test"
         )
         assert resp.status_code == 200
         assert resp["Content-Type"] == "text/html; turbo-stream; charset=utf-8"
@@ -64,13 +65,13 @@ class TestTurboStreamStreamingResponse:
     def test_render(self):
         def render():
             yield render_turbo_stream(
-                content="test 1", action="replace", target="test_1"
+                content="test 1", action=Action.REPLACE, target="test_1"
             )
             yield render_turbo_stream(
-                content="test 2", action="replace", target="test_2"
+                content="test 2", action=Action.REPLACE, target="test_2"
             )
             yield render_turbo_stream(
-                content="test 3", action="replace", target="test_3"
+                content="test 3", action=Action.REPLACE, target="test_3"
             )
 
         resp = TurboStreamStreamingResponse(render())

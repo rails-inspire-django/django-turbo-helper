@@ -14,8 +14,7 @@ class Action(enum.Enum):
 
 
 def render_turbo_stream(action, target, content=""):
-    action = action.value if isinstance(action, Action) else action
-    return f'<turbo-stream action="{action}" target="{target}"><template>{content.strip()}</template></turbo-stream>'
+    return f'<turbo-stream action="{action.value}" target="{target}"><template>{content.strip()}</template></turbo-stream>'
 
 
 def render_turbo_frame(dom_id, content=""):

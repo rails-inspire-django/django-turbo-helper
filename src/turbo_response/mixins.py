@@ -1,4 +1,5 @@
 # Local
+from . import Action
 from .response import (
     TurboFrameResponse,
     TurboFrameTemplateResponse,
@@ -68,7 +69,7 @@ class PartialTemplateResolverMixin(TurboStreamTemplateResponseMixin):
 
 
 class TurboStreamFormMixin(PartialTemplateResolverMixin):
-    turbo_stream_action = "replace"
+    turbo_stream_action = Action.REPLACE
 
     def form_invalid(self, form):
         return self.render_turbo_stream_response(self.get_context_data(form=form))

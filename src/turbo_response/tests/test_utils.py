@@ -16,13 +16,6 @@ class TestRenderTurboStream:
             == '<turbo-stream action="remove" target="test"><template></template></turbo-stream>'
         )
 
-    def test_render_empty_stream_action_as_str(self):
-        s = render_turbo_stream(action="remove", target="test")
-        assert (
-            s
-            == '<turbo-stream action="remove" target="test"><template></template></turbo-stream>'
-        )
-
     def test_render_content(self):
         s = render_turbo_stream(
             action=Action.REPLACE, target="test", content="<div>my content</div>",
@@ -46,7 +39,7 @@ class TestRenderTurboFrame:
 class TestRenderTurboStreamTemplate:
     def test_render(self):
         s = render_turbo_stream_template(
-            "simple.html", {}, action="update", target="test"
+            "simple.html", {}, action=Action.UPDATE, target="test"
         )
         assert (
             s
