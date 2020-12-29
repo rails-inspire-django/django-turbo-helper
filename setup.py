@@ -9,7 +9,7 @@ setup(
     version=version,
     author="Dan Jacob",
     author_email="danjac2018@gmail.com",
-    url="https://github.com/danjac/django-turbo-response",
+    url="https://github.com/hotwire-django/django-turbo-response",
     description="Hotwired/Turbo response helpers for Django",
     long_description=open("README.rst").read() + "\n\n" + open("CHANGES.rst").read(),
     license="AGPL license",
