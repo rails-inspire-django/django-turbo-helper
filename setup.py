@@ -13,7 +13,7 @@ setup(
     description="Hotwired/Turbo response helpers for Django",
     long_description=open("README.rst").read() + "\n\n" + open("CHANGES.rst").read(),
     long_description_content_type="text/x-rst",
-    license="MIT license",
+    license="MIT",
     python_requires=">=3.8",
     requires=["django (>=3.1)"],
     packages=["turbo_response"],
