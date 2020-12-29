@@ -2,6 +2,8 @@
 *.egg
 *.egg-info
 
+doc/build
+
 *.lock
 
 *.sqlite3
