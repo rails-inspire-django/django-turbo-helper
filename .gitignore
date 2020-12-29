@@ -3,6 +3,8 @@
 *.egg-info
 
 doc/build
+dist
+build
 
 *.lock
 
