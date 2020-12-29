@@ -378,4 +378,4 @@ Hotwired: https://turbo.hotwire.dev/
 
 ## License
 
-This project is covered by GNU Affero General Public License (AGPL).
+This project is covered by the MIT license.
