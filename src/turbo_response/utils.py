@@ -1,35 +1,24 @@
+# Standard Library
+import enum
+
 # Django
 from django.template.loader import render_to_string
 
-# Local
-from .exceptions import InvalidTurboFrame, InvalidTurboStream
 
-STREAM_ACTIONS = ("append", "prepend", "replace", "update", "remove")
-
-
-def validate_turbo_frame(dom_id):
-    if not dom_id:
-        raise InvalidTurboFrame("DOM ID must be provided")
-
-
-def validate_turbo_stream(action, target):
-    if not action:
-        raise InvalidTurboStream("action must be provided")
-
-    if action not in STREAM_ACTIONS:
-        raise InvalidTurboStream(f"action must be one of {', '.join(STREAM_ACTIONS)}")
-
-    if not target:
-        raise InvalidTurboStream("target to DOM ID must be provided")
+class Action(enum.Enum):
+    APPEND = "append"
+    PREPEND = "prepend"
+    REMOVE = "remove"
+    REPLACE = "replace"
+    UPDATE = "update"
 
 
 def render_turbo_stream(action, target, content=""):
-    validate_turbo_stream(action, target)
+    action = action.value if isinstance(action, Action) else action
     return f'<turbo-stream action="{action}" target="{target}"><template>{content.strip()}</template></turbo-stream>'
 
 
 def render_turbo_frame(dom_id, content=""):
-    validate_turbo_frame(dom_id)
     return f'<turbo-frame id="{dom_id}">{content.strip()}</turbo-frame>'
 
 

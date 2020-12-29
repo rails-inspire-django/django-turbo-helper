@@ -9,6 +9,7 @@ from django.views.generic import (
 )
 
 # Local
+from . import Action
 from .mixins import (
     TurboFrameResponseMixin,
     TurboFrameTemplateResponseMixin,
@@ -43,7 +44,7 @@ class TurboStreamUpdateView(TurboStreamFormMixin, UpdateView):
 
 
 class TurboStreamDeleteView(TurboStreamResponseMixin, DeleteView):
-    turbo_stream_action = "remove"
+    turbo_stream_action = Action.REMOVE
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()

@@ -5,6 +5,7 @@ from django import forms
 import pytest
 
 # Django Turbo Response
+from turbo_response import Action
 from turbo_response.tests.testapp.forms import TodoForm
 from turbo_response.tests.testapp.models import TodoItem
 from turbo_response.views import (
@@ -38,7 +39,7 @@ class TestTurboStreamView:
 
         req = rf.get("/")
         resp = MyView.as_view(
-            turbo_stream_target="test", turbo_stream_action="replace"
+            turbo_stream_target="test", turbo_stream_action=Action.REPLACE
         )(req)
         assert resp.status_code == 200
         assert "text/html; turbo-stream;" in resp["Content-Type"]
@@ -54,7 +55,7 @@ class TestTurboStreamTemplateView:
 
         req = rf.get("/")
         resp = MyView.as_view(
-            turbo_stream_target="test", turbo_stream_action="replace"
+            turbo_stream_target="test", turbo_stream_action=Action.REPLACE
         )(req)
 
         assert resp.status_code == 200
