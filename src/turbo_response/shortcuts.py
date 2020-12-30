@@ -101,7 +101,7 @@ class TurboFrame:
         return render_turbo_frame(dom_id=self.dom_id, content=content)
 
     def response(self, content=""):
-        return TurboFrameResponse(dom=self.dom_id, content=content)
+        return TurboFrameResponse(dom_id=self.dom_id, content=content)
 
     def template(self, template_name, context=None, **template_kwargs):
         return TurboFrameTemplateProxy(
@@ -121,10 +121,11 @@ class TurboFrameTemplateProxy:
             self.template_name, self.context, dom_id=self.dom_id, **self.template_kwargs
         )
 
-    def response(self):
+    def response(self, request):
         return TurboFrameTemplateResponse(
+            request,
             self.template_name,
             self.context,
-            dom_id=self.self.dom_id,
+            dom_id=self.dom_id,
             **self.template_kwargs
         )
