@@ -56,7 +56,7 @@ Rendering streams and frames
 ============================
 
 
-To render a *<turbo-stream>* or *<turbo-frame>* tag, you can use two functions, **render_turbo_stream** and **render_turbo_frame**:
+To render a *<turbo-stream>* or *<turbo-frame>* tag, you can use two functions, **render_turbo_stream()** and **render_turbo_frame()** respectively:
 
 
 .. code-block:: python
@@ -76,7 +76,7 @@ Note that "content" can be empty, for example:
    render_turbo_stream(action=Action.REMOVE, target="msg")
 
 
-If you want to render a Django template, use **render_turbo_stream_template** and **render_turbo_frame_template** instead:
+If you want to render a Django template, use **render_turbo_stream_template()** and **render_turbo_frame_template()** instead:
 
 .. code-block:: python
 
@@ -112,6 +112,10 @@ Finally if you wish to render Django templates in the response, use **TurboStrea
   def my_tmpl_frame(request):
       return TurboFrameTemplateResponse("msg.html", {"msg": "OK"}, dom_id="msg")
 
+Note that these two classes subclass **django.template.response.TemplateResponse**.
+
+The response classes will ensure the correct content type header *text/html; turbo-stream;* is added to the response, so the Turbo client library knows how to handle these responses correctly.
+
 ===========================
 TurboFrame and TurboStream
 ===========================
@@ -143,7 +147,7 @@ The classes and functions above are a bit verbose for common operations. A coupl
       return TurboFrame("msg").response("OK")
 
   def my_tmpl_stream(request):
-      return TurboStream("msg").template("msg.html", {"msg": "OK"}).response(request)
+      return TurboStream("msg").replace.template("msg.html", {"msg": "OK"}).response(request)
 
   def my_tmpl_frame(request):
       return TurboFrame("msg").template("msg.html", {"msg": "OK"}).response(request)
@@ -229,7 +233,7 @@ To make this work with Turbo, you would have to make these changes:
               {
                   "form": form,
               },
-            )
+            ).response(request)
 
       else:
           form = TodoForm()
@@ -535,7 +539,7 @@ The template returned is just a plain Django template. The response class automa
 Channels
 ========
 
-This library can also be used with `django-channels <https://channels.readthedocs.io/en/stable/>`_ Consumers with the helper functions **render_turbo_stream** and **render_turbo_stream_template** when broadcasting streams:
+This library can also be used with `django-channels <https://channels.readthedocs.io/en/stable/>`_ Consumers with the helper functions **render_turbo_stream()** and **render_turbo_stream_template()** when broadcasting streams (or the equivalent **TurboStream** methods):
 
 .. code-block:: python
 
