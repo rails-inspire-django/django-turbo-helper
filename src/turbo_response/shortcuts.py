@@ -79,8 +79,9 @@ class TurboStreamTemplateProxy:
             **self.template_kwargs
         )
 
-    def response(self):
+    def response(self, request):
         return TurboStreamTemplateResponse(
+            request,
             self.template_name,
             self.context,
             action=self.action,
