@@ -71,6 +71,9 @@ class TurboStreamTemplateProxy:
         self.template_kwargs = template_kwargs
 
     def __str__(self):
+        return self.render()
+
+    def render(self):
         return render_turbo_stream_template(
             self.template_name,
             self.context,
@@ -119,6 +122,9 @@ class TurboFrameTemplateProxy:
         self.dom_id = dom_id
 
     def __str__(self):
+        return self.render()
+
+    def render(self):
         return render_turbo_frame_template(
             self.template_name, self.context, dom_id=self.dom_id, **self.template_kwargs
         )
