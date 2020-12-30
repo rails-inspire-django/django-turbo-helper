@@ -4,9 +4,7 @@ from turbo_response.renderers import (
     render_turbo_frame,
     render_turbo_frame_template,
     render_turbo_stream,
-    render_turbo_stream_replace,
     render_turbo_stream_template,
-    render_turbo_stream_update_template,
 )
 
 
@@ -22,13 +20,6 @@ class TestRenderTurboStream:
         s = render_turbo_stream(
             action=Action.REPLACE, target="test", content="<div>my content</div>",
         )
-        assert (
-            s
-            == '<turbo-stream action="replace" target="test"><template><div>my content</div></template></turbo-stream>'
-        )
-
-    def test_render_partial(self):
-        s = render_turbo_stream_replace(target="test", content="<div>my content</div>",)
         assert (
             s
             == '<turbo-stream action="replace" target="test"><template><div>my content</div></template></turbo-stream>'
@@ -50,13 +41,6 @@ class TestRenderTurboStreamTemplate:
         s = render_turbo_stream_template(
             "simple.html", {}, action=Action.UPDATE, target="test"
         )
-        assert (
-            s
-            == '<turbo-stream action="update" target="test"><template><div>my content</div></template></turbo-stream>'
-        )
-
-    def test_partial(self):
-        s = render_turbo_stream_update_template("simple.html", {}, target="test")
         assert (
             s
             == '<turbo-stream action="update" target="test"><template><div>my content</div></template></turbo-stream>'
