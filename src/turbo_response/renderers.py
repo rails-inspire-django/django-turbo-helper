@@ -1,5 +1,6 @@
 # Standard Library
 import enum
+import functools
 
 # Django
 from django.template.loader import render_to_string
@@ -101,3 +102,44 @@ def render_turbo_frame_template(template, context, *, dom_id, **kwargs):
             **kwargs,
         ),
     )
+
+
+render_turbo_stream_append = functools.partial(
+    render_turbo_stream, action=Action.APPEND
+)
+
+render_turbo_stream_prepend = functools.partial(
+    render_turbo_stream, action=Action.PREPEND
+)
+
+render_turbo_stream_remove = functools.partial(
+    render_turbo_stream, action=Action.REMOVE
+)
+
+render_turbo_stream_replace = functools.partial(
+    render_turbo_stream, action=Action.REPLACE
+)
+
+render_turbo_stream_update = functools.partial(
+    render_turbo_stream, action=Action.UPDATE
+)
+
+render_turbo_stream_append_template = functools.partial(
+    render_turbo_stream_template, action=Action.APPEND
+)
+
+render_turbo_stream_prepend_template = functools.partial(
+    render_turbo_stream_template, action=Action.PREPEND
+)
+
+render_turbo_stream_remove_template = functools.partial(
+    render_turbo_stream_template, action=Action.REMOVE
+)
+
+render_turbo_stream_replace_template = functools.partial(
+    render_turbo_stream_template, action=Action.REPLACE
+)
+
+render_turbo_stream_update_template = functools.partial(
+    render_turbo_stream_template, action=Action.UPDATE
+)
