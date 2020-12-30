@@ -228,7 +228,6 @@ To make this work with Turbo, you would have to make these changes:
               instance.save()
           # return the invalid form in a stream
           return TurboStream("todo-form").replace.template(
-              request,
               "todos/_todo_form.html",
               {
                   "form": form,
