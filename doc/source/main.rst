@@ -136,9 +136,9 @@ The classes and functions above are a bit verbose for common operations. A coupl
   # first argument is the DOM ID
   TurboFrame("msg").render("OK")
 
-  TurboStream("msg").replace.template("msg.html", {"msg": "hello"})
+  TurboStream("msg").replace.template("msg.html", {"msg": "hello"}).render()
 
-  TurboFrame("msg").template("msg.html", {"msg": "hello"})
+  TurboFrame("msg").template("msg.html", {"msg": "hello"}).render()
 
   def my_stream(request):
       return TurboStream("msg").replace.response("OK")
