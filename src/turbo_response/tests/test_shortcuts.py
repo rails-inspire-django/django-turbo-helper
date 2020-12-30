@@ -7,12 +7,8 @@ class TestTurboFrame:
         s = TurboFrame("my-form").render("OK")
         assert s == '<turbo-frame id="my-form">OK</turbo-frame>'
 
-    def test_str(self):
-        s = str(TurboFrame("my-form"))
-        assert s == '<turbo-frame id="my-form"></turbo-frame>'
-
     def test_template(self):
-        s = str(TurboFrame("my-form").template("simple.html", {}))
+        s = TurboFrame("my-form").template("simple.html", {}).render()
         assert "my content" in s
         assert '<turbo-frame id="my-form">' in s
 
@@ -40,15 +36,8 @@ class TestTurboStream:
             == '<turbo-stream action="append" target="my-form"><template>OK</template></turbo-stream>'
         )
 
-    def test_str(self):
-        s = str(TurboStream("my-form").remove)
-        assert (
-            s
-            == '<turbo-stream action="remove" target="my-form"><template></template></turbo-stream>'
-        )
-
     def test_template(self):
-        s = str(TurboStream("my-form").append.template("simple.html", {}))
+        s = TurboStream("my-form").append.template("simple.html", {}).render()
         assert "my content" in s
         assert '<turbo-stream action="append" target="my-form">' in s
 

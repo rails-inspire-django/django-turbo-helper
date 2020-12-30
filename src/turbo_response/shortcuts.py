@@ -39,9 +39,6 @@ class TurboStreamAction:
         self.action = action
         self.target = target
 
-    def __str__(self):
-        return self.render()
-
     def render(self, content=""):
         return render_turbo_stream(
             action=self.action, target=self.target, content=content
@@ -70,9 +67,6 @@ class TurboStreamTemplateProxy:
         self.context = context
         self.template_kwargs = template_kwargs
 
-    def __str__(self):
-        return self.render()
-
     def render(self):
         return render_turbo_stream_template(
             self.template_name,
@@ -97,9 +91,6 @@ class TurboFrame:
     def __init__(self, dom_id):
         self.dom_id = dom_id
 
-    def __str__(self):
-        return self.render()
-
     def render(self, content=""):
         return render_turbo_frame(dom_id=self.dom_id, content=content)
 
@@ -120,9 +111,6 @@ class TurboFrameTemplateProxy:
         self.context = context
         self.template_kwargs = template_kwargs
         self.dom_id = dom_id
-
-    def __str__(self):
-        return self.render()
 
     def render(self):
         return render_turbo_frame_template(
