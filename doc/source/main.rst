@@ -50,6 +50,105 @@ This is useful if you want to check if a stream is requested, so you can optiona
   else:
       return redirect("index")
 
+
+============================
+Rendering streams and frames
+============================
+
+
+To render a *<turbo-stream>* or *<turbo-frame>* tag, you can use two functions, **render_turbo_stream** and **render_turbo_frame**:
+
+
+.. code-block:: python
+
+   from turbo_response import Action, render_turbo_stream, render_turbo_frame
+
+   # returns <turbo-stream action="replace" target="msg><template>OK</template></turbo-stream>
+   render_turbo_stream(action=Action.REPLACE, target="msg", content="OK")
+
+   # returns <turbo-frame id="msg>OK</turbo-frame>
+   render_turbo_frame(dom_id="msg", content="OK")
+
+Note that "content" can be empty, for example:
+
+.. code-block:: python
+
+   render_turbo_stream(action=Action.REMOVE, target="msg")
+
+
+If you want to render a Django template, use **render_turbo_stream_template** and **render_turbo_frame_template** instead:
+
+.. code-block:: python
+
+   from turbo_response import Action, render_turbo_stream_template, render_turbo_frame_template
+
+   render_turbo_stream_template("msg.html", {"msg": "hello"}, action=Action.REPLACE, target="msg")
+
+   render_turbo_frame_template("msg.html", {"msg": "hello"}, dom_id="msg")
+
+If you want to render a stream or target to an HTTP response, use the classes **TurboStreamResponse** and **TurboFrameResponse**:
+
+
+.. code-block:: python
+
+  from turbo_response import Action, TurboStreamResponse, TurboFrameResponse
+
+  def my_stream(request):
+      return TurboStreamResponse(action=Action.REPLACE, target="msg", content="OK")
+
+  def my_frame(request):
+      return TurboFrameResponse(dom_id="msg", content="OK")
+
+
+Finally if you wish to render Django templates in the response, use **TurboStreamTemplateResponse** and **TurboFrameTemplateResponse**:
+
+.. code-block:: python
+
+  from turbo_response import Action, TurboStreamTemplateResponse, TurboFrameTemplateResponse
+
+  def my_tmpl_stream(request):
+      return TurboStreamTemplateResponse("msg.html", {"msg": "OK"}, action=Action.REPLACE, target="msg")
+
+  def my_tmpl_frame(request):
+      return TurboFrameTemplateResponse("msg.html", {"msg": "OK"}, dom_id="msg")
+
+===========================
+TurboFrame and TurboStream
+===========================
+
+The classes and functions above are a bit verbose for common operations. A couple of helper classes, **TurboFrame** and **TurboStream**, provide a more ergonomic API. Let's rewrite the above examples using these helpers:
+
+.. code-block:: python
+
+  from turbo_response import TurboFrame, TurboStream
+
+  # first argument is the target
+  TurboStream("msg").replace.render("OK")
+
+  # you can also just do TurboStream("msg").remove if result will
+  # be resolved as string
+  TurboStream("msg").remove.render()
+
+  # first argument is the DOM ID
+  TurboFrame("msg").render("OK")
+
+  TurboStream("msg").replace.template("msg.html", {"msg": "hello"})
+
+  TurboFrame("msg").template("msg.html", {"msg": "hello"})
+
+  def my_stream(request):
+      return TurboStream("msg").replace.response("OK")
+
+  def my_frame(request):
+      return TurboFrame("msg").response("OK")
+
+  def my_tmpl_stream(request):
+      return TurboStream("msg").template("msg.html", {"msg": "OK"}).response(request)
+
+  def my_tmpl_frame(request):
+      return TurboFrame("msg").template("msg.html", {"msg": "OK"}).response(request)
+
+
 ===============
 Form Validation
 ===============
@@ -111,7 +210,7 @@ To make this work with Turbo, you would have to make these changes:
   from django.contrib.auth.decorators import login_required
   from django.template.response import TemplateResponse
 
-  from turbo_response import Action, TurboStreamTemplateResponse
+  from turbo_response import TurboStream
 
   from myapp.todos.forms import TodoForm
 
@@ -124,14 +223,12 @@ To make this work with Turbo, you would have to make these changes:
               instance.owner = request.user
               instance.save()
           # return the invalid form in a stream
-          return TurboStreamTemplateResponse(
+          return TurboStream("todo-form").replace.template(
               request,
               "todos/_todo_form.html",
               {
                   "form": form,
               },
-              action=Action.REPLACE,
-              target="todo-form",
             )
 
       else:
@@ -274,7 +371,7 @@ Each item in the cart has an inline edit form that might look like this:
 
 .. code-block:: python
 
-  from turbo_response import Action, TurboStreamStreamingResponse, render_turbo_stream
+  from turbo_response import TurboStreamStreamingResponse, TurboStream
 
   def update_cart_item(request, item_id):
       # item saved to e.g. session or db
@@ -285,17 +382,8 @@ Each item in the cart has an inline edit form that might look like this:
       total_amount = calc_total_cart_amount(request)
 
       def render_response():
-          yield render_turbo_stream(
-              total_amount,
-              action=Action.REPLACE,
-              target="nav-cart-total"
-              )
-
-          yield render_turbo_stream(
-              total_amount,
-              action=Action.REPLACE,
-              target="cart-summary-total"
-              )
+          yield TurboStream("nav-cart-total").replace.render(total_amount)
+          yield TurboStream("cart-summary-total").replace.render(total_amount)
       return TurboStreamStreamingResponse(render_response())
 
 That's it! In this example are returning a very simple string value, so we don't need to wrap the responses in templates. If you want to do so, use **turbo_response.render_stream_template** instead.
@@ -345,7 +433,7 @@ Here are the views:
   from django.template.response import TemplateResponse
   from django.shortcuts import get_object_or_404
 
-  from turbo_response import TurboFrameResponse
+  from turbo_response import TurboFrame
 
   from myapp.blogs.models import Blog
 
@@ -362,12 +450,10 @@ Here are the views:
   def subscribe(request, blog_id):
       blog = get_object_or_404(Blog, pk=blog_id)
       is_subscribed = blog.toggle_subscribe(request.user)
-      return TurboFrameResponse(
-           request,
+      return TurboFrame("subscribe").template(
           "blogs/_subscribe.html",
           {"blog": blog, "is_subscribed": is_subscribed},
-          dom_id="subscribe",
-      )
+      ).response(request)
 
 The *subscribe* view returns a response wrapped in the *<turbo-frame>* tag with the DOM id "subscribe". Turbo will look for a corresponding frame in the HTML body with the matching ID, and replace the frame with the one returned from the server. Unlike a full Turbo visit, we don't need to return the entire body - just the snippet we want to update.
 
@@ -429,12 +515,10 @@ And our corresponding view:
   def recommendations(request):
       # lazily build recommendations from algorithm and cache result
       recommended_items = get_recommendations_from_cache(request.user)
-      return TurboFrameTemplateResponse(
-          request,
+      return TurboFrame("recommendations").template(
           "_recommendations.html",
           {"items": recommended_items},
-          dom_id="recommendations",
-      )
+      ).response(request)
 
 The template returned is just a plain Django template. The response class automatically wraps the correct tags, so we don't need to include `<turbo-frame>`.
 

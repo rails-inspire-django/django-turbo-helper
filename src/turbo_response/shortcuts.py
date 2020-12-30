@@ -47,9 +47,9 @@ class TurboStreamAction:
             action=self.action, target=self.target, content=content
         )
 
-    def response(self, content=""):
+    def response(self, content="", **response_kwargs):
         return TurboStreamResponse(
-            action=self.action, target=self.target, content=content
+            action=self.action, target=self.target, content=content, **response_kwargs
         )
 
     def template(self, template_name, context=None, **template_kwargs):
@@ -79,14 +79,14 @@ class TurboStreamTemplateProxy:
             **self.template_kwargs
         )
 
-    def response(self, request):
+    def response(self, request, **kwargs):
         return TurboStreamTemplateResponse(
             request,
             self.template_name,
             self.context,
             action=self.action,
             target=self.target,
-            **self.template_kwargs
+            **{**self.template_kwargs, **kwargs}
         )
 
 
@@ -100,8 +100,10 @@ class TurboFrame:
     def render(self, content=""):
         return render_turbo_frame(dom_id=self.dom_id, content=content)
 
-    def response(self, content=""):
-        return TurboFrameResponse(dom_id=self.dom_id, content=content)
+    def response(self, content="", **response_kwargs):
+        return TurboFrameResponse(
+            dom_id=self.dom_id, content=content, **response_kwargs
+        )
 
     def template(self, template_name, context=None, **template_kwargs):
         return TurboFrameTemplateProxy(
@@ -121,11 +123,11 @@ class TurboFrameTemplateProxy:
             self.template_name, self.context, dom_id=self.dom_id, **self.template_kwargs
         )
 
-    def response(self, request):
+    def response(self, request, **kwargs):
         return TurboFrameTemplateResponse(
             request,
             self.template_name,
             self.context,
             dom_id=self.dom_id,
-            **self.template_kwargs
+            **{**self.template_kwargs, **kwargs}
         )
