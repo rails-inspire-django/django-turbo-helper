@@ -129,7 +129,6 @@ The classes and functions above are a bit verbose for common operations. A coupl
   # first argument is the target
   TurboStream("msg").replace.render("OK")
 
-  # you can also just do TurboStream("msg").remove if result will
   # be resolved as string
   TurboStream("msg").remove.render()
 
