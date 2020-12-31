@@ -174,6 +174,7 @@ As an example, let's take a typical function-based view (FBV):
 
 .. code-block:: python
 
+  from django.shortcuts import redirect
   from django.contrib.auth.decorators import login_required
   from django.template.response import TemplateResponse
 
@@ -187,6 +188,7 @@ As an example, let's take a typical function-based view (FBV):
               instance = form.save(commit=False)
               instance.owner = request.user
               instance.save()
+              return redirect(instance)
       else:
           form = TodoForm()
 
@@ -210,6 +212,7 @@ To make this work with Turbo, you would have to make these changes:
 
 .. code-block:: python
 
+  from django.shortcuts import redirect
   from django.contrib.auth.decorators import login_required
   from django.template.response import TemplateResponse
 
@@ -225,6 +228,7 @@ To make this work with Turbo, you would have to make these changes:
               instance = form.save(commit=False)
               instance.owner = request.user
               instance.save()
+              return redirect(instance)
           # return the invalid form in a stream
           return TurboStream("todo-form").replace.template(
               "todos/_todo_form.html",
