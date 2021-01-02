@@ -25,6 +25,6 @@ Full documentation on ReadTheDocs:
 
 https://django-turbo-response.readthedocs.io/en/latest/
 
-# License
+## License
 
 This project is covered by the MIT license.
