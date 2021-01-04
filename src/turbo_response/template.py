@@ -42,7 +42,7 @@ def render_turbo_frame_template(template, context, *, dom_id, **kwargs):
 
     :param template: template name or names
     :param context: template context
-    :param dom: turbo-frame DOM ID
+    :param dom_id: turbo-frame DOM ID
     :type template: list or str
     :type context: dict
     :type dom_id: str
