@@ -85,7 +85,7 @@ class TurboStreamAction:
         :param content: enclosed content
         :type content: str
 
-        :return: a *<turbo-stream>* HTTP response
+        :return: a *<turbo-stream>* HTTP response wrapper
         :rtype: turbo_response.TurboStreamResponse
         """
         return TurboStreamResponse(
@@ -100,7 +100,7 @@ class TurboStreamAction:
         :type template_name: str or list
         :type context: dict
 
-        :return: a *<turbo-stream>* HTTP response
+        :return: a *<turbo-stream>* template wrapper
         :rtype: TurboStreamTemplateProxy
         """
         return TurboStreamTemplateProxy(
