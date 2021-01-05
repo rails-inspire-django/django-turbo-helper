@@ -91,7 +91,7 @@ class TurboStreamTemplateResponseMixin(TurboStreamResponseMixin):
         )
 
 
-class TurboStreamFormMixin:
+class TurboFormMixin:
     """Mixin for handling form validation. Ensures response
     has 422 status on invalid"""
 

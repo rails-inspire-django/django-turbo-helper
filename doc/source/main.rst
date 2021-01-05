@@ -1,6 +1,6 @@
 This package provides helpers for server-side rendering of `Hotwired/Turbo <https://turbo.hotwire.dev/>`_ streams and frames.
 
-**Disclaimer**: the Hotwired/Turbo client libraries are, at time of writing, still in Beta. We expect there will be breaking changes until the first stable release. This package, and the Turbo client, should therefore be used with caution in a production environment. The version used in testing is *@hotwired/turbo==7.0.0-beta.1*.
+**Disclaimer**: the Hotwired/Turbo client libraries are, at time of writing, still in Beta. We expect there will be breaking changes until the first stable release. This package, and the Turbo client, should therefore be used with caution in a production environment. The version used in testing is *@hotwired/turbo==7.0.0-beta.2*.
 
 ============
 Requirements
@@ -163,182 +163,126 @@ The most common pattern for server-side validation in a Django view consists of:
 3. If any validation errors, re-render the form with errors and user input
 4. If no validation errors, save to the database (and/or any other actions) and redirect
 
-This pattern however does not work with Turbo. If you return HTML from a form post, a Javascript error will be thrown by the Turbo Drive library as it only accepts a redirect. Furthermore, you cannot exempt a form with the *data-turbo="false"* attribute as you can with links. Both of these issues, as of writing, are being addressed by the Hotwire team and should be fixed in a future release. In the meantime, the acceptable approach for "traditional" form validation is:
+In order to make this work with Turbo you can do one of two things (**Note**: these require **@hotwired/turbo 7.0.0-beta.2**):
 
-1. Render the initial form. The form, or surrounding tag, must have an "id".
-2. Validate on POST as usual
-3. If any validation errors, pass back an HTML fragment containing the errors and user input in a Turbo Stream response with a target matching the HTML id and a "replace" or "update" action.
-4. If no validation errors, save and redirect as usual.
+1. When the form is invalid, return with a 4** status response.
+2. Add *data-turbo="false"* to your `<form>` tag.
 
-As an example, let's take a typical function-based view (FBV):
+If neither of these options are set, Turbo will throw an error if your view returns any response that isn't a redirect.
 
-.. code-block:: python
+Note that if you set *data-turbo="false"* on your form like so:
 
-  from django.shortcuts import redirect
-  from django.contrib.auth.decorators import login_required
-  from django.template.response import TemplateResponse
-
-  from myapp.todos.forms import TodoForm
-
-  @login_required
-  def create_todo(request):
-      if request.method == "POST":
-          form = TodoForm(request.POST)
-          if form.is_valid():
-              instance = form.save(commit=False)
-              instance.owner = request.user
-              instance.save()
-              return redirect(instance)
-      else:
-          form = TodoForm()
-
-      return TemplateResponse(request, "todos/todo_form.html", {"form": form})
-
-Our template *todos/todo_form.html* looks something like this:
 
 .. code-block:: html
 
-  {% extends "base.html" %}
-  {% block content %}
-  <h1>Add your todo here!</h1>
-  <form method="post" action="{% url 'todos:create_todo' %}">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-  </form>
-  {% endblock content %}
+   <form method="post" action="..." data-turbo="false">
 
-To make this work with Turbo, you would have to make these changes:
+Turbo will force a full-page refresh, just as the same attribute does to link behavior. This might be acceptable however when working with views and forms e.g. in 3rd party packages where you don't want to change the default workflow.
+
+If you want to continue using forms with Turbo just change the response status to a 4**, e.g. 422:
+
+
+.. code-block:: python
+
+  import http
+
+  from django.shortcuts import redirect
+  from django.template.response import TemplateResponse
+
+  from myapp import MyForm
+
+  def my_view(request):
+      if request.method == "POST":
+          form = MyForm(request.POST)
+          if form.is_valid():
+              # save data etc...
+              return redirect("/")
+          status = http.HTTPStatus.UNPROCESSABLE_ENTITY
+      else:
+          form = MyForm()
+          status = http.HTTPStatus.OK
+      return TemplateResponse("my_form.html", {"form": my_form}, status=status)
+
+
+If you are using CBVs, this package has a mixin class, **turbo_response.mixins.TurboFormMixin** that sets the correct status automatically to 422 for an invalid form:
+
+
+.. code-block:: python
+
+  from django.views.generic import FormView
+
+  from turbo_response.mixins import TurboFormMixin
+
+  from myapp import MyForm
+
+  class MyView(TurboFormMixin, FormView):
+      template_name = "my_form.html"
+
+      def form_valid(self, form):
+          return redirect("/")
+
+In addition you can just subclass these views for common cases:
+
+- **turbo_response.views.TurboFormView**
+- **turbo_response.views.TurboCreateView**
+- **turbo_response.views.TurboUpdateView**
+
+In some cases you may wish to return a turbo-stream response containing just the form when the form is invalid instead of a full page visit. In this case just return a stream rendering the form partial in the usual manner. For example:
 
 .. code-block:: python
 
   from django.shortcuts import redirect
-  from django.contrib.auth.decorators import login_required
   from django.template.response import TemplateResponse
+  from django.views.generic import FormView
 
   from turbo_response import TurboStream
 
-  from myapp.todos.forms import TodoForm
+  from myapp import MyForm
 
-  @login_required
-  def create_todo(request):
+  def my_view(request):
       if request.method == "POST":
-          form = TodoForm(request.POST)
+          form = MyForm(request.POST)
           if form.is_valid():
-              instance = form.save(commit=False)
-              instance.owner = request.user
-              instance.save()
-              return redirect(instance)
-          # return the invalid form in a stream
-          return TurboStream("todo-form").replace.template(
-              "todos/_todo_form.html",
-              {
-                  "form": form,
-              },
-            ).response(request)
-
+              # save data etc...
+              return redirect("/")
+          return TurboStream("form-target").replace.template("_my_form.html").render(request)
       else:
-          form = TodoForm()
-      return TemplateResponse(request, "todos/todo_form.html", {"form": form})
+          form = MyForm()
+      return TemplateResponse("my_form.html", {"form": my_form})
 
+  # or CBV...
 
-We break up our *todo_form.html* template, extracting the HTML into a partial include containing the form. A common convention is to use an initial underscore to distinguish partial templates but you can use any naming scheme you wish:
+  class MyView(TurboFormMixin, FormView):
+      template_name = "my_form.html"
 
-*todos/todo_form.html*
+      def form_valid(self, form):
+          return redirect("/")
+
+      def form_invalid(self, form):
+          return TurboStream("form-target").replace.template("_my_form.html").render(request)
+
+And your templates would look like this:
+
+*my_form.html*
 
 .. code-block:: html
 
   {% extends "base.html" %}
+
   {% block content %}
-  <h1>Add your todo here!</h1>
-  {% include "todos/_todo_form.html" %}
+  <h1>my form goes here..</h1>
+  {% include "_my_form.html" %}
   {% endblock content %}
 
-*todos/_todo_form.html*
+*_my_form.html*
 
 .. code-block:: html
 
-  <form method="post" action="{% url 'todos:create_todo' %}" id="todo-form">
+  <form method="POST" id="form-target" action="/my-form">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Save</button>
   </form>
 
-Notice the ID on the form tag. In addition, the template must render with a single top-level tag.
-
-If the form contains errors, the response should look something like this:
-
-.. code-block:: html
-
-  <turbo-stream action="replace" target="todo-form">
-    <template>
-      <form method="post" ...>
-      form body with error messages goes here...
-      </form>
-    </template>
-  </turbo-stream>
-
-If you prefer class-based views (CBVs) you can do the same with the **TurboStreamFormMixin** class:
-
-.. code-block:: python
-
-  from django.contrib.auth.mixins import LoginRequiredMixin
-  from django.views.generic.edit import CreateView
-
-  from turbo_response.mixins import TurboStreamFormMixin
-
-  from myapp.todos.forms import TodoForm
-  from myapp.todos.models import Todo
-
-
-  class CreateTodoView(TurboStreamFormMixin, LoginRequiredMixin, CreateView):
-      template_name = "todos/todo_form.html"
-      turbo_stream_template_name = "todos/_todo_form.html"
-      turbo_stream_target = "todo-form"
-
-  create_todo_view = CreateTodoView.as_view()
-
-Note that the default action for this mixin is "replace", so you don't need to set it here.
-
-To save typing you can just use **TurboStreamCreateView**:
-
-
-.. code-block:: python
-
-  from django.contrib.auth.mixins import LoginRequiredMixin
-  from django.views.generic.edit import CreateView
-
-  from turbo_response.views import TurboStreamCreateView
-
-  from myapp.todos.forms import TodoForm
-  from myapp.todos.models import Todo
-
-  class CreateTodoView(LoginRequiredMixin, TurboStreamCreateView):
-      model = Todo
-      form_class = TodoForm
-      template_name = "todos/todo_form.html"
-      turbo_stream_template_name = "todos/_todo_form.html"
-      turbo_stream_target = "todo-form"
-
-  create_todo_view = CreateTodoView.as_view()
-
-This class automatically adopts the convention of using the underscore prefix for any partials, so you could save a couple lines of code and just write:
-
-.. code-block:: python
-
-  class CreateTodoView(LoginRequiredMixin, TurboStreamCreateView):
-      model = Todo
-      form_class = TodoForm
-
-and the turbo stream template will automatically resolve to *todos/_todo_form.html* (the *CreateView* of course resolves the default template names as well, based on the model metadata). The turbo-stream target is auto-generated based on the model meta info: in this case *myapp-todo-form*. If we use **TurboStreamUpdateView** then it will be *myapp-todo-<todo_id>-form*. If you don't want your DOM IDs autogenerated, just set **turbo_stream_target** explictly in your view, or override **get_turbo_stream_target()**. The target is passed to all templates as the variable *turbo_stream_target*, so you can use that in your form markup to keep things consistent:
-
-.. code-block:: html
-
-  <form method="post" action="{% url 'todos:create_todo' %}" id="{{ turbo_stream_target }}">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-  </form>
 
 ================================
 Responding with Multiple Streams
