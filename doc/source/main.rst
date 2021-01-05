@@ -163,7 +163,7 @@ The most common pattern for server-side validation in a Django view consists of:
 3. If any validation errors, re-render the form with errors and user input
 4. If no validation errors, save to the database (and/or any other actions) and redirect
 
-In order to make this work with Turbo you can do one of two things (**Note**: these require **@hotwired/turbo 7.0.0-beta.2**):
+In order to make this work with Turbo you can do one of two things (**Note**: requires **@hotwired/turbo 7.0.0-beta.2**):
 
 1. When the form is invalid, return with a 4** status response.
 2. Add *data-turbo="false"* to your `<form>` tag.
@@ -283,6 +283,26 @@ And your templates would look like this:
     {{ form.as_p }}
   </form>
 
+A further point re: forms: Turbo processes forms using the FormData API and only includes inputs with a value. This means all buttons, inputs etc. must have a value. For example suppose you have a button like this:
+
+.. code-block:: html
+
+  <button name="send_action">Do this</button>
+
+If your view code checks for this value:
+
+.. code-block:: python
+
+  if "send_action" in request.POST:
+      ...
+
+it will consistently fail. You should have something like:
+
+.. code-block:: html
+
+  <button name="send_action" value="true">Do this</button>
+
+to ensure the FormData object includes the button value.
 
 ================================
 Responding with Multiple Streams
