@@ -33,15 +33,15 @@ class TurboStreamTemplateView(TurboStreamTemplateResponseMixin, TemplateView):
         return self.render_turbo_stream_response(context, **response_kwargs)
 
 
-class TurboStreamFormView(TurboFormMixin, FormView):
+class TurboFormView(TurboFormMixin, FormView):
     ...
 
 
-class TurboStreamCreateView(TurboFormMixin, CreateView):
+class TurboCreateView(TurboFormMixin, CreateView):
     ...
 
 
-class TurboStreamUpdateView(TurboFormMixin, UpdateView):
+class TurboUpdateView(TurboFormMixin, UpdateView):
     ...
 
 

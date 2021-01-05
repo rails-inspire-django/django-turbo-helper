@@ -12,14 +12,14 @@ from turbo_response import Action
 from turbo_response.tests.testapp.forms import TodoForm
 from turbo_response.tests.testapp.models import TodoItem
 from turbo_response.views import (
+    TurboCreateView,
+    TurboFormView,
     TurboFrameTemplateView,
     TurboFrameView,
-    TurboStreamCreateView,
     TurboStreamDeleteView,
-    TurboStreamFormView,
     TurboStreamTemplateView,
-    TurboStreamUpdateView,
     TurboStreamView,
+    TurboUpdateView,
 )
 
 pytestmark = pytest.mark.django_db
@@ -70,8 +70,8 @@ class TestTurboStreamTemplateView:
         )
 
 
-class TestTurboStreamCreateView:
-    class MyView(TurboStreamCreateView):
+class TestTurboCreateView:
+    class MyView(TurboCreateView):
         form_class = TodoForm
         model = TodoItem
         success_url = "/done/"
@@ -107,8 +107,8 @@ class TestTurboStreamCreateView:
         assert TodoItem.objects.count() == 1
 
 
-class TestTurboStreamUpdateView:
-    class MyView(TurboStreamUpdateView):
+class TestTurboUpdateView:
+    class MyView(TurboUpdateView):
         form_class = TodoForm
         model = TodoItem
         success_url = "/done/"
@@ -134,8 +134,8 @@ class TestTurboStreamUpdateView:
         assert todo.description == "updated!"
 
 
-class TestTurboStreamFormView:
-    class MyView(TurboStreamFormView):
+class TestTurboFormView:
+    class MyView(TurboFormView):
         form_class = MyForm
         template_name = "my_form.html"
         success_url = "/done/"
