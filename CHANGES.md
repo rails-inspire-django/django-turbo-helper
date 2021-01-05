@@ -6,7 +6,8 @@ Update form handling for changes in @hotwired/turbo 7.0.0-beta.2:
 
   - **TurboStreamFormMixin** class and supporting classes removed
   - **TurboFormMixin** class added that just returns a 422 response on invalid
-  - **Turbo
+  - **TurboStreamFormView**, **TurboStreamCreateView** and **TurboStreamUpdateView** classes removed
+  - **TurboFormView**, **TurboCreateView** and **TurboUpdateView** classes added, using new **TurboFormMixin**
 
 ## [0.0.10] - 2020-12-30
 
