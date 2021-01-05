@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.0.12] - 2021-5-1
+## [0.0.12] - 2021-1-5
 
 Update form handling for changes in @hotwired/turbo 7.0.0-beta.2:
 
