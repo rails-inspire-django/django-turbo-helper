@@ -1,9 +1,7 @@
-# Django
-from django.core.exceptions import ImproperlyConfigured
-from django.db import models
+# Standard Library
+import http
 
 # Local
-from . import Action
 from .response import (
     TurboFrameResponse,
     TurboFrameTemplateResponse,
@@ -93,100 +91,14 @@ class TurboStreamTemplateResponseMixin(TurboStreamResponseMixin):
         )
 
 
-class PartialTemplateResolverMixin(TurboStreamTemplateResponseMixin):
-    """Handles automatic template name resolution for partial
-    include templates. This is useful for views that may return a normal
-    HttpResponse (e.g. a full-page HTML document or redirect) but
-    may also return a turbo-stream, for example a form partial with
-    validation errors.
-
-    The class will automatically prepend an underscore to your template name.
-
-    For example, if your main template is *myapp/my_form.html*, the turbo-stream
-    response will look for the template *my_app/_my_form.html*.
-    """
-
-    partial_template_prefix = "_"
-    turbo_stream_template_name = None
-
-    def get_partial_template_names(self):
-        def resolve_name(name):
-            start, part, end = name.rpartition("/")
-            return "".join([start, part, self.partial_template_prefix, end])
-
-        return [resolve_name(name) for name in self.get_template_names()]
-
-    def get_turbo_stream_template_names(self):
-        """Returns list of template names. Names will be automatically
-        prefixed with underscore. If you want to use a specific template name
-        instead, just set the property **turbo_stream_template_name**.
-
-        :rtype: list
-        """
-
-        return (
-            [self.turbo_stream_template_name]
-            if self.turbo_stream_template_name
-            else self.get_partial_template_names()
-        )
-
-
-class TurboStreamAutoTargetMixin:
-    """Generates the stream target DOM ID based on model metadata.
-
-    If *self.object* is present the DOM ID will be:
-
-    *<app-name>-<model-name>-<object_id>*
-
-    otherwise:
-
-    *<app-name>-<model-name>*
-
-    You can override by explicitly setting **turbo_stream_target**.
-    """
-
-    turbo_stream_target_suffix = ""
-
-    def get_turbo_stream_target(self):
-        if self.turbo_stream_target is not None:
-            return self.turbo_stream_target
-
-        if hasattr(self, "object") and isinstance(self.object, models.Model):
-            target = [
-                self.object._meta.app_label,
-                self.object._meta.model_name,
-            ]
-            if self.object.pk:
-                target.append(str(self.object.pk))
-
-            return "-".join(target) + self.turbo_stream_target_suffix
-
-        elif hasattr(self, "model") and issubclass(self.model, models.Model):
-            return (
-                "-".join([self.model._meta.app_label, self.model._meta.model_name,])
-                + self.turbo_stream_target_suffix
-            )
-
-        raise ImproperlyConfigured("No Django model instance found")
-
-
-class TurboStreamFormMixin(PartialTemplateResolverMixin):
-    """Mixin for handling form validation. If the form is
-    invalid, returns a turbo-stream response instead."""
-
-    turbo_stream_action = Action.REPLACE
+class TurboStreamFormMixin:
+    """Mixin for handling form validation. Ensures response
+    has 422 status on invalid"""
 
     def form_invalid(self, form):
-        return self.render_turbo_stream_response(self.get_context_data(form=form))
-
-    def get_context_data(self, **context):
-        """Adds the target to both templates, so we can keep them consistent"""
-        self.turbo_stream_target = self.get_turbo_stream_target()
-
-        return {
-            **super().get_context_data(),
-            "turbo_stream_target": self.turbo_stream_target,
-        }
+        response = super().form_invalid(form)
+        response.status_code = http.HTTPStatus.UNPROCESSABLE_ENTITY
+        return response
 
 
 class TurboFrameResponseMixin:

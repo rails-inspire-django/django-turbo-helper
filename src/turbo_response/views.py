@@ -13,7 +13,6 @@ from . import Action
 from .mixins import (
     TurboFrameResponseMixin,
     TurboFrameTemplateResponseMixin,
-    TurboStreamAutoTargetMixin,
     TurboStreamFormMixin,
     TurboStreamResponseMixin,
     TurboStreamTemplateResponseMixin,
@@ -38,16 +37,12 @@ class TurboStreamFormView(TurboStreamFormMixin, FormView):
     ...
 
 
-class TurboStreamCreateView(
-    TurboStreamAutoTargetMixin, TurboStreamFormMixin, CreateView
-):
-    turbo_stream_target_suffix = "-form"
+class TurboStreamCreateView(TurboStreamFormMixin, CreateView):
+    ...
 
 
-class TurboStreamUpdateView(
-    TurboStreamAutoTargetMixin, TurboStreamFormMixin, UpdateView
-):
-    turbo_stream_target_suffix = "-form"
+class TurboStreamUpdateView(TurboStreamFormMixin, UpdateView):
+    ...
 
 
 class TurboStreamDeleteView(TurboStreamResponseMixin, DeleteView):

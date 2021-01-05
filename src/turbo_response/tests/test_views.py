@@ -1,3 +1,6 @@
+# Standard Library
+import http
+
 # Django
 from django import forms
 
@@ -41,7 +44,7 @@ class TestTurboStreamView:
         resp = MyView.as_view(
             turbo_stream_target="test", turbo_stream_action=Action.REPLACE
         )(req)
-        assert resp.status_code == 200
+        assert resp.status_code == http.HTTPStatus.OK
         assert "text/html; turbo-stream;" in resp["Content-Type"]
         assert resp.content.startswith(
             b'<turbo-stream action="replace" target="test"><template>hello'
@@ -58,7 +61,7 @@ class TestTurboStreamTemplateView:
             turbo_stream_target="test", turbo_stream_action=Action.REPLACE
         )(req)
 
-        assert resp.status_code == 200
+        assert resp.status_code == http.HTTPStatus.OK
         assert "text/html; turbo-stream;" in resp["Content-Type"]
         assert "is_turbo_stream" in resp.context_data
         assert resp.template_name == ["simple.html"]
@@ -76,44 +79,26 @@ class TestTurboStreamCreateView:
     def test_get(self, rf):
         req = rf.get("/")
         resp = self.MyView.as_view()(req)
-        assert resp.status_code == 200
+        assert resp.status_code == http.HTTPStatus.OK
         assert resp["Content-Type"] == "text/html; charset=utf-8"
         assert "is_turbo_stream" not in resp.context_data
         assert "form" in resp.context_data
-        assert resp.context_data["turbo_stream_target"] == "testapp-todoitem-form"
         assert resp.template_name == ["testapp/todoitem_form.html"]
 
     def test_get_with_explicit_target(self, rf):
         req = rf.get("/")
-        resp = self.MyView.as_view(turbo_stream_target="my-form")(req)
-        assert resp.status_code == 200
+        resp = self.MyView.as_view()(req)
+        assert resp.status_code == http.HTTPStatus.OK
         assert resp["Content-Type"] == "text/html; charset=utf-8"
         assert "is_turbo_stream" not in resp.context_data
         assert "form" in resp.context_data
-        assert resp.context_data["turbo_stream_target"] == "my-form"
         assert resp.template_name == ["testapp/todoitem_form.html"]
 
     def test_post_with_validation_errors(self, rf):
         req = rf.post("/", {})
         resp = self.MyView.as_view()(req)
-        assert resp.status_code == 200
-        assert resp["Content-Type"] == "text/html; turbo-stream; charset=utf-8"
-        assert resp.context_data["is_turbo_stream"]
-        assert resp.context_data["turbo_stream_action"] == "replace"
-        assert resp.context_data["turbo_stream_target"] == "testapp-todoitem-form"
-        assert resp.template_name == ["testapp/_todoitem_form.html"]
-        assert resp.render().content.startswith(b"<turbo-stream")
-
-    def test_post_with_validation_errors_with_explicit_target(self, rf):
-        req = rf.post("/", {})
-        resp = self.MyView.as_view(turbo_stream_target="my-form")(req)
-        assert resp.status_code == 200
-        assert resp["Content-Type"] == "text/html; turbo-stream; charset=utf-8"
-        assert resp.context_data["is_turbo_stream"]
-        assert resp.context_data["turbo_stream_action"] == "replace"
-        assert resp.context_data["turbo_stream_target"] == "my-form"
-        assert resp.template_name == ["testapp/_todoitem_form.html"]
-        assert resp.render().content.startswith(b"<turbo-stream")
+        assert resp.status_code == http.HTTPStatus.UNPROCESSABLE_ENTITY
+        assert resp.template_name == ["testapp/todoitem_form.html"]
 
     def test_post_success(self, rf):
         req = rf.post("/", {"description": "ok"})
@@ -131,50 +116,15 @@ class TestTurboStreamUpdateView:
     def test_get(self, rf, todo):
         req = rf.get("/")
         resp = self.MyView.as_view()(req, pk=todo.pk)
-        assert resp.status_code == 200
-        assert resp["Content-Type"] == "text/html; charset=utf-8"
-        assert "is_turbo_stream" not in resp.context_data
+        assert resp.status_code == http.HTTPStatus.OK
         assert "form" in resp.context_data
-        assert (
-            resp.context_data["turbo_stream_target"]
-            == f"testapp-todoitem-{todo.id}-form"
-        )
-        assert resp.template_name == ["testapp/todoitem_form.html"]
-
-    def test_get_with_explicit_target(self, rf, todo):
-        req = rf.get("/")
-        resp = self.MyView.as_view(turbo_stream_target="my-form")(req, pk=todo.pk)
-        assert resp.status_code == 200
-        assert resp["Content-Type"] == "text/html; charset=utf-8"
-        assert "is_turbo_stream" not in resp.context_data
-        assert "form" in resp.context_data
-        assert resp.context_data["turbo_stream_target"] == "my-form"
         assert resp.template_name == ["testapp/todoitem_form.html"]
 
     def test_post_with_validation_errors(self, rf, todo):
         req = rf.post("/", {})
         resp = self.MyView.as_view()(req, pk=todo.pk)
-        assert resp.status_code == 200
-        assert resp["Content-Type"] == "text/html; turbo-stream; charset=utf-8"
-        assert resp.context_data["is_turbo_stream"]
-        assert resp.context_data["turbo_stream_action"] == "replace"
-        assert (
-            resp.context_data["turbo_stream_target"]
-            == f"testapp-todoitem-{todo.id}-form"
-        )
-        assert resp.template_name == ["testapp/_todoitem_form.html"]
-        assert resp.render().content.startswith(b"<turbo-stream")
-
-    def test_post_with_validation_errors_with_explicit_target(self, rf, todo):
-        req = rf.post("/", {})
-        resp = self.MyView.as_view(turbo_stream_target="my-form")(req, pk=todo.pk)
-        assert resp.status_code == 200
-        assert resp["Content-Type"] == "text/html; turbo-stream; charset=utf-8"
-        assert resp.context_data["is_turbo_stream"]
-        assert resp.context_data["turbo_stream_action"] == "replace"
-        assert resp.context_data["turbo_stream_target"] == "my-form"
-        assert resp.template_name == ["testapp/_todoitem_form.html"]
-        assert resp.render().content.startswith(b"<turbo-stream")
+        assert resp.status_code == http.HTTPStatus.UNPROCESSABLE_ENTITY
+        assert resp.template_name == ["testapp/todoitem_form.html"]
 
     def test_post_success(self, rf, todo):
         req = rf.post("/", {"description": "updated!"})
@@ -188,28 +138,21 @@ class TestTurboStreamFormView:
     class MyView(TurboStreamFormView):
         form_class = MyForm
         template_name = "my_form.html"
-        turbo_stream_target = "my-form"
         success_url = "/done/"
 
     def test_get(self, rf):
         req = rf.get("/")
         resp = self.MyView.as_view()(req)
-        assert resp.status_code == 200
+        assert resp.status_code == http.HTTPStatus.OK
         assert resp["Content-Type"] == "text/html; charset=utf-8"
-        assert "is_turbo_stream" not in resp.context_data
         assert "form" in resp.context_data
         assert resp.template_name == ["my_form.html"]
 
     def test_post_with_validation_errors(self, rf):
         req = rf.post("/", {})
         resp = self.MyView.as_view()(req)
-        assert resp.status_code == 200
-        assert resp["Content-Type"] == "text/html; turbo-stream; charset=utf-8"
-        assert resp.context_data["is_turbo_stream"]
-        assert resp.context_data["turbo_stream_action"] == "replace"
-        assert resp.context_data["turbo_stream_target"] == "my-form"
-        assert resp.template_name == ["_my_form.html"]
-        assert resp.render().content.startswith(b"<turbo-stream")
+        assert resp.status_code == http.HTTPStatus.UNPROCESSABLE_ENTITY
+        assert resp.template_name == ["my_form.html"]
 
     def test_post_success(self, rf):
         req = rf.post("/", {"description": "ok"})
@@ -226,7 +169,7 @@ class TestTurboStreamDeleteView:
     def test_post(self, rf, todo):
         req = rf.post("/")
         resp = self.MyView.as_view()(req, pk=todo.pk)
-        assert resp.status_code == 200
+        assert resp.status_code == http.HTTPStatus.OK
         assert resp["Content-Type"] == "text/html; turbo-stream; charset=utf-8"
         assert TodoItem.objects.count() == 0
 
@@ -241,7 +184,7 @@ class TestTurboFrameView:
     def test_get(self, rf):
         req = rf.get("/")
         resp = self.MyView.as_view()(req)
-        assert resp.status_code == 200
+        assert resp.status_code == http.HTTPStatus.OK
         assert resp["Content-Type"] == "text/html; charset=utf-8"
         assert resp.content == b'<turbo-frame id="test">done</turbo-frame>'
 
@@ -257,7 +200,7 @@ class TestTurboFrameTemplateView:
     def test_get(self, rf):
         req = rf.get("/")
         resp = self.MyView.as_view()(req)
-        assert resp.status_code == 200
+        assert resp.status_code == http.HTTPStatus.OK
         assert resp["Content-Type"] == "text/html; charset=utf-8"
         assert (
             resp.render().content
