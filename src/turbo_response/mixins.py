@@ -1,6 +1,6 @@
 # Standard Library
 import http
-from typing import Any, Dict, Iterable, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, Iterable, Optional
 
 # Django
 from django import forms
@@ -21,22 +21,26 @@ from .response import (
 )
 
 
-class SupportsRequest(Protocol):
+class SupportsTemplateMixin(Protocol):
     request: HttpRequest
-
-
-class SupportsTemplateEngine(Protocol):
     template_engine: Engine
 
-
-class SupportsTemplateNames(Protocol):
     def get_template_names(self) -> Iterable[str]:
         ...
 
 
-class SupportsFormInvalid(Protocol):
+class SupportsFormMixin(Protocol):
     def form_invalid(self, form: forms.Form) -> HttpResponse:
         ...
+
+
+if TYPE_CHECKING:
+    TemplateMixinBase = SupportsTemplateMixin
+    FormMixinBase = SupportsFormMixin
+
+else:
+    TemplateResponseBase = object
+    FormMixinBase = object
 
 
 class TurboStreamResponseMixin:
@@ -61,7 +65,7 @@ class TurboStreamResponseMixin:
         """
         return self.turbo_stream_target
 
-    def get_response_content(self) -> Union[bytes, str]:
+    def get_response_content(self) -> str:
         """Returns turbo-stream content.
 
         :rtype: str
@@ -93,10 +97,7 @@ class TurboStreamResponseMixin:
 
 
 class TurboStreamTemplateResponseMixin(
-    SupportsRequest,
-    SupportsTemplateEngine,
-    SupportsTemplateNames,
-    TurboStreamResponseMixin,
+    TemplateMixinBase, TurboStreamResponseMixin,
 ):
     """Handles turbo-stream template responses."""
 
@@ -134,7 +135,7 @@ class TurboStreamTemplateResponseMixin(
         )
 
 
-class TurboFormMixin(SupportsFormInvalid):
+class TurboFormMixin(FormMixinBase):
     """Mixin for handling form validation. Ensures response
     has 422 status on invalid"""
 
@@ -150,7 +151,7 @@ class TurboFrameResponseMixin:
     def get_turbo_frame_dom_id(self) -> Optional[str]:
         return self.turbo_frame_dom_id
 
-    def get_response_content(self) -> Union[bytes, str]:
+    def get_response_content(self) -> str:
         return ""
 
     def render_turbo_frame_response(self, **response_kwargs) -> TurboFrameResponse:
@@ -164,10 +165,7 @@ class TurboFrameResponseMixin:
 
 
 class TurboFrameTemplateResponseMixin(
-    SupportsRequest,
-    SupportsTemplateNames,
-    SupportsTemplateEngine,
-    TurboFrameResponseMixin,
+    TemplateMixinBase, TurboFrameResponseMixin,
 ):
     """Handles turbo-frame template responses."""
 
