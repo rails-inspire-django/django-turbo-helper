@@ -1,3 +1,9 @@
+# Standard Library
+from typing import Any, Dict, Optional, Union
+
+# Django
+from django.http import HttpRequest
+
 # Local
 from .renderers import Action, render_turbo_frame, render_turbo_stream
 from .response import (
@@ -9,56 +15,10 @@ from .response import (
 from .template import render_turbo_frame_template, render_turbo_stream_template
 
 
-class TurboStream:
-    """Class for creating Turbo Stream strings and responses."""
-
-    def __init__(self, target):
-        """
-        :param target: stream target
-        :type target: str
-        """
-        self.target = target
-
-    @property
-    def append(self):
-        """
-        :rtype: TurboStreamAction
-        """
-        return TurboStreamAction(self.target, Action.APPEND)
-
-    @property
-    def prepend(self):
-        """
-        :rtype: TurboStreamAction
-        """
-        return TurboStreamAction(self.target, Action.PREPEND)
-
-    @property
-    def remove(self):
-        """
-        :rtype: TurboStreamAction
-        """
-        return TurboStreamAction(self.target, Action.REMOVE)
-
-    @property
-    def replace(self):
-        """
-        :rtype: TurboStreamAction
-        """
-        return TurboStreamAction(self.target, Action.REPLACE)
-
-    @property
-    def update(self):
-        """
-        :rtype: TurboStreamAction
-        """
-        return TurboStreamAction(self.target, Action.UPDATE)
-
-
 class TurboStreamAction:
     """Returns strings and responses for a specific Turbo Stream action type."""
 
-    def __init__(self, target, action):
+    def __init__(self, target: str, action: Action):
         """
         :param target: Turbo Stream target
         :param action: Turbo Stream action
@@ -68,7 +28,7 @@ class TurboStreamAction:
         self.action = action
         self.target = target
 
-    def render(self, content=""):
+    def render(self, content: str = "") -> str:
         """
         :param content: enclosed content
         :type content: str
@@ -80,7 +40,9 @@ class TurboStreamAction:
             action=self.action, target=self.target, content=content
         )
 
-    def response(self, content="", **response_kwargs):
+    def response(
+        self, content: Union[bytes, str] = b"", **response_kwargs
+    ) -> TurboStreamResponse:
         """
         :param content: enclosed content
         :type content: str
@@ -92,7 +54,9 @@ class TurboStreamAction:
             action=self.action, target=self.target, content=content, **response_kwargs
         )
 
-    def template(self, template_name, context=None, **template_kwargs):
+    def template(
+        self, template_name: str, context=Optional[Dict[str, Any]], **template_kwargs
+    ):
         """
         :param template_name: Django template name
         :param context: template context
@@ -112,6 +76,52 @@ class TurboStreamAction:
         )
 
 
+class TurboStream:
+    """Class for creating Turbo Stream strings and responses."""
+
+    def __init__(self, target: str):
+        """
+        :param target: stream target
+        :type target: str
+        """
+        self.target = target
+
+    @property
+    def append(self) -> TurboStreamAction:
+        """
+        :rtype: TurboStreamAction
+        """
+        return TurboStreamAction(self.target, Action.APPEND)
+
+    @property
+    def prepend(self) -> TurboStreamAction:
+        """
+        :rtype: TurboStreamAction
+        """
+        return TurboStreamAction(self.target, Action.PREPEND)
+
+    @property
+    def remove(self) -> TurboStreamAction:
+        """
+        :rtype: TurboStreamAction
+        """
+        return TurboStreamAction(self.target, Action.REMOVE)
+
+    @property
+    def replace(self) -> TurboStreamAction:
+        """
+        :rtype: TurboStreamAction
+        """
+        return TurboStreamAction(self.target, Action.REPLACE)
+
+    @property
+    def update(self) -> TurboStreamAction:
+        """
+        :rtype: TurboStreamAction
+        """
+        return TurboStreamAction(self.target, Action.UPDATE)
+
+
 class TurboStreamTemplateProxy:
     """Wraps template functionality."""
 
@@ -122,7 +132,7 @@ class TurboStreamTemplateProxy:
         self.context = context
         self.template_kwargs = template_kwargs
 
-    def render(self):
+    def render(self) -> str:
         """
         :return: rendered template string
         :rtype: str
@@ -135,8 +145,9 @@ class TurboStreamTemplateProxy:
             **self.template_kwargs
         )
 
-    def response(self, request, **kwargs):
+    def response(self, request: HttpRequest, **kwargs) -> TurboStreamTemplateResponse:
         """
+        :param request: Django HttpRequest
         :return: HTTP response
         :rtype: turbo_response.TurboStreamTemplateResponse
         """
@@ -150,17 +161,59 @@ class TurboStreamTemplateProxy:
         )
 
 
+class TurboFrameTemplateProxy:
+    """Wraps template functionality."""
+
+    def __init__(
+        self,
+        template_name: str,
+        context: Dict[str, Any],
+        *,
+        dom_id: str,
+        **template_kwargs
+    ):
+        self.template_name = template_name
+        self.context = context
+        self.template_kwargs = template_kwargs
+        self.dom_id = dom_id
+
+    def render(self) -> str:
+        """
+        :param content: enclosed content
+        :type content: str
+
+        :return: a *<turbo-frame>* string
+        :rtype: str
+        """
+        return render_turbo_frame_template(
+            self.template_name, self.context, dom_id=self.dom_id, **self.template_kwargs
+        )
+
+    def response(self, request: HttpRequest, **kwargs) -> TurboFrameTemplateResponse:
+        """
+        :return: HTTP response
+        :rtype: turbo_response.TurboFrameTemplateResponse
+        """
+        return TurboFrameTemplateResponse(
+            request,
+            self.template_name,
+            self.context,
+            dom_id=self.dom_id,
+            **{**self.template_kwargs, **kwargs}
+        )
+
+
 class TurboFrame:
     """Class for creating Turbo Frame strings and responses."""
 
-    def __init__(self, dom_id):
+    def __init__(self, dom_id: str):
         """
         :param dom_id: DOM ID of turbo frame
         :type dom_id: str
         """
         self.dom_id = dom_id
 
-    def render(self, content=""):
+    def render(self, content: str = "") -> str:
         """
         :param content: enclosed content
         :type content: str
@@ -170,10 +223,12 @@ class TurboFrame:
         """
         return render_turbo_frame(dom_id=self.dom_id, content=content)
 
-    def response(self, content="", **response_kwargs):
+    def response(
+        self, content: Union[bytes, str] = b"", **response_kwargs
+    ) -> TurboFrameResponse:
         """
         :param content: enclosed content
-        :type content: str
+        :type content: bytes or str
 
         :return: a *<turbo-frame>* HTTP response
         :rtype: turbo_response.TurboFrameResponse
@@ -182,7 +237,9 @@ class TurboFrame:
             dom_id=self.dom_id, content=content, **response_kwargs
         )
 
-    def template(self, template_name, context=None, **template_kwargs):
+    def template(
+        self, template_name: str, context=Optional[Dict[str, Any]], **template_kwargs
+    ) -> TurboFrameTemplateProxy:
         """
         :param template_name: Django template name
         :param context: template context
@@ -195,39 +252,4 @@ class TurboFrame:
         """
         return TurboFrameTemplateProxy(
             template_name, context, dom_id=self.dom_id, **template_kwargs
-        )
-
-
-class TurboFrameTemplateProxy:
-    """Wraps template functionality."""
-
-    def __init__(self, template_name, context, *, dom_id, **template_kwargs):
-        self.template_name = template_name
-        self.context = context
-        self.template_kwargs = template_kwargs
-        self.dom_id = dom_id
-
-    def render(self):
-        """
-        :param content: enclosed content
-        :type content: str
-
-        :return: a *<turbo-frame>* string
-        :rtype: str
-        """
-        return render_turbo_frame_template(
-            self.template_name, self.context, dom_id=self.dom_id, **self.template_kwargs
-        )
-
-    def response(self, request, **kwargs):
-        """
-        :return: HTTP response
-        :rtype: turbo_response.TurboFrameTemplateResponse
-        """
-        return TurboFrameTemplateResponse(
-            request,
-            self.template_name,
-            self.context,
-            dom_id=self.dom_id,
-            **{**self.template_kwargs, **kwargs}
         )

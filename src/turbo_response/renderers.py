@@ -30,7 +30,7 @@ def render_turbo_stream(action: Action, target: str, content: str = "") -> str:
     return f'<turbo-stream action="{action.value}" target="{target}"><template>{content.strip()}</template></turbo-stream>'
 
 
-def render_turbo_frame(dom_id, content=""):
+def render_turbo_frame(dom_id: str, content: str = "") -> str:
     """
 
     Wraps a response in correct *<turbo-frame>* tags.
