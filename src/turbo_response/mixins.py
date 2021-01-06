@@ -171,7 +171,9 @@ class TurboFrameTemplateResponseMixin(
 ):
     """Handles turbo-frame template responses."""
 
-    def render_turbo_frame_response(self, context, **response_kwargs):
+    def render_turbo_frame_template_response(
+        self, context: Dict[str, Any], **response_kwargs
+    ) -> TurboFrameTemplateResponse:
         """Returns a turbo-frame response.
 
         :param context: template context
@@ -179,10 +181,13 @@ class TurboFrameTemplateResponseMixin(
 
         :rtype: turbo_response.TurboFrameTemplateResponse
         """
+        if (dom_id := self.get_turbo_frame_dom_id()) is None:
+            raise ValueError("dom_id must be specified")
+
         return TurboFrameTemplateResponse(
             request=self.request,
             template=self.get_template_names(),
-            dom_id=self.get_turbo_frame_dom_id(),
+            dom_id=dom_id,
             context=context,
             using=self.template_engine,
             **response_kwargs,

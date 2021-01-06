@@ -104,7 +104,7 @@ class TurboFrameTemplateResponse(TemplateResponse):
     def __init__(
         self,
         request: HttpRequest,
-        template: str,
+        template: Union[str, Iterable[str]],
         context: Dict[str, Any],
         *,
         dom_id,
