@@ -1,6 +1,12 @@
 # Standard Library
 import http
-from typing import Iterable, Optional, Union
+from typing import Any, Dict, Iterable, Optional, Union
+
+# Django
+from django import forms
+from django.core.exceptions import ImproperlyConfigured
+from django.http import HttpRequest, HttpResponse
+from django.template.engine import Engine
 
 # Third Party Libraries
 from typing_extensions import Protocol
@@ -15,8 +21,21 @@ from .response import (
 )
 
 
+class SupportsRequest(Protocol):
+    request: HttpRequest
+
+
+class SupportsTemplateEngine(Protocol):
+    template_engine: Engine
+
+
 class SupportsTemplateNames(Protocol):
     def get_template_names(self) -> Iterable[str]:
+        ...
+
+
+class SupportsFormInvalid(Protocol):
+    def form_invalid(self, form: forms.Form) -> HttpResponse:
         ...
 
 
@@ -73,7 +92,12 @@ class TurboStreamResponseMixin:
         )
 
 
-class TurboStreamTemplateResponseMixin(SupportsTemplateNames, TurboStreamResponseMixin):
+class TurboStreamTemplateResponseMixin(
+    SupportsRequest,
+    SupportsTemplateEngine,
+    SupportsTemplateNames,
+    TurboStreamResponseMixin,
+):
     """Handles turbo-stream template responses."""
 
     def get_turbo_stream_template_names(self) -> Iterable[str]:
@@ -83,7 +107,9 @@ class TurboStreamTemplateResponseMixin(SupportsTemplateNames, TurboStreamRespons
         """
         return self.get_template_names()
 
-    def render_turbo_stream_response(self, context, **response_kwargs):
+    def render_turbo_stream_template_response(
+        self, context: Dict[str, Any], **response_kwargs
+    ) -> TurboStreamTemplateResponse:
         """Renders a turbo-stream template response.
 
         :param context: template context
@@ -91,21 +117,28 @@ class TurboStreamTemplateResponseMixin(SupportsTemplateNames, TurboStreamRespons
 
         :rtype: turbo_response.TurboStreamTemplateResponse
         """
+
+        if (target := self.get_turbo_stream_target()) is None:
+            raise ImproperlyConfigured("target is None")
+
+        if (action := self.get_turbo_stream_action()) is None:
+            raise ImproperlyConfigured("action is None")
+
         return TurboStreamTemplateResponse(
             request=self.request,
             template=self.get_turbo_stream_template_names(),
-            target=self.get_turbo_stream_target(),
-            action=self.get_turbo_stream_action(),
+            target=target,
+            action=action,
             context=context,
             using=self.template_engine,
         )
 
 
-class TurboFormMixin:
+class TurboFormMixin(SupportsFormInvalid):
     """Mixin for handling form validation. Ensures response
     has 422 status on invalid"""
 
-    def form_invalid(self, form):
+    def form_invalid(self, form: forms.Form) -> HttpResponse:
         response = super().form_invalid(form)
         response.status_code = http.HTTPStatus.UNPROCESSABLE_ENTITY
         return response
@@ -133,7 +166,12 @@ class TurboFrameResponseMixin:
         )
 
 
-class TurboFrameTemplateResponseMixin(TurboFrameResponseMixin):
+class TurboFrameTemplateResponseMixin(
+    SupportsRequest,
+    SupportsTemplateNames,
+    SupportsTemplateEngine,
+    TurboFrameResponseMixin,
+):
     """Handles turbo-frame template responses."""
 
     def render_turbo_frame_response(self, context, **response_kwargs):

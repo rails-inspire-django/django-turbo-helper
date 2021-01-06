@@ -3,7 +3,7 @@ from django.http import HttpRequest, HttpResponse, StreamingHttpResponse
 from django.template.response import TemplateResponse
 
 # Third Party Libraries
-from typed import Any, Dict, Union
+from typed import Any, Dict, Iterable, Union
 
 # Local
 from .renderers import Action, render_turbo_frame, render_turbo_stream
@@ -50,7 +50,7 @@ class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
     def __init__(
         self,
         request: HttpRequest,
-        template: str,
+        template: Union[str, Iterable[str]],
         context: Dict[str, Any],
         *,
         action: Action,
