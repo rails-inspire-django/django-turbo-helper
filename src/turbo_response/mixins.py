@@ -147,22 +147,19 @@ class TurboFormMixin(SupportsFormInvalid):
 class TurboFrameResponseMixin:
     turbo_frame_dom_id = None
 
-    def get_turbo_frame_dom_id(self):
+    def get_turbo_frame_dom_id(self) -> Optional[str]:
         return self.turbo_frame_dom_id
 
-    def get_response_content(self):
+    def get_response_content(self) -> Union[bytes, str]:
         return ""
 
-    def render_turbo_frame_response(self, **response_kwargs):
+    def render_turbo_frame_response(self, **response_kwargs) -> TurboFrameResponse:
 
-        dom_id = self.get_turbo_frame_dom_id()
-        if dom_id is None:
+        if (dom_id := self.get_turbo_frame_dom_id()) is None:
             raise ValueError("dom_id must be specified")
 
         return TurboFrameResponse(
-            content=self.get_response_content(),
-            dom_id=self.get_turbo_frame_dom_id(),
-            **response_kwargs,
+            content=self.get_response_content(), dom_id=dom_id, **response_kwargs,
         )
 
 
