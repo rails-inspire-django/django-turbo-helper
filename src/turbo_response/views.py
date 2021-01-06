@@ -67,12 +67,14 @@ class TurboStreamDeleteView(TurboStreamResponseMixin, DeleteView):
 class TurboFrameView(TurboFrameResponseMixin, View):
     """Retuns a simple turbo-frame response."""
 
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, *args, **kwargs) -> HttpResponse:
         return self.render_turbo_frame_response()
 
 
 class TurboFrameTemplateView(TurboFrameTemplateResponseMixin, TemplateView):
     """Renders response template inside <turbo-frame> tags. """
 
-    def render_to_response(self, context, **response_kwargs):
-        return self.render_turbo_frame_response(context, **response_kwargs)
+    def render_to_response(
+        self, context: Dict[str, Any], **response_kwargs
+    ) -> HttpResponse:
+        return self.render_turbo_frame_template_response(context, **response_kwargs)
