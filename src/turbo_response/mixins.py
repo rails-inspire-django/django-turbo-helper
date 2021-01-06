@@ -78,15 +78,11 @@ class TurboStreamResponseMixin:
 
         :rtype: turbo_response.TurboStreamResponse
         """
+        if (target := self.get_turbo_stream_target()) is None:
+            raise ImproperlyConfigured("target is None")
 
-        action = self.get_turbo_stream_action()
-        target = self.get_turbo_stream_target()
-
-        if action is None:
-            raise ValueError("action must be specified")
-
-        if target is None:
-            raise ValueError("target must be specified")
+        if (action := self.get_turbo_stream_action()) is None:
+            raise ImproperlyConfigured("action is None")
 
         return TurboStreamResponse(
             action=action,
