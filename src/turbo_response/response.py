@@ -1,9 +1,9 @@
 # Django
+# Standard Library
+from typing import Any, Dict, Iterable, Union
+
 from django.http import HttpRequest, HttpResponse, StreamingHttpResponse
 from django.template.response import TemplateResponse
-
-# Third Party Libraries
-from typed import Any, Dict, Iterable, Union
 
 # Local
 from .renderers import Action, render_turbo_frame, render_turbo_stream
@@ -26,9 +26,7 @@ class TurboStreamStreamingResponse(TurboStreamResponseMixin, StreamingHttpRespon
 class TurboStreamResponse(TurboStreamResponseMixin, HttpResponse):
     """Basic turbo-stream response."""
 
-    def __init__(
-        self, content: Union[bytes, str] = b"", *, action: Action, target: str, **kwargs
-    ):
+    def __init__(self, content: str = "", *, action: Action, target: str, **kwargs):
         super().__init__(
             render_turbo_stream(action, target, content), **kwargs,
         )
@@ -83,7 +81,7 @@ class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
 class TurboFrameResponse(HttpResponse):
     """Handles turbo-frame template response."""
 
-    def __init__(self, content: Union[bytes, str] = b"", *, dom_id: str, **kwargs):
+    def __init__(self, content: str = "", *, dom_id: str, **kwargs):
         super().__init__(
             render_turbo_frame(dom_id, content), **kwargs,
         )

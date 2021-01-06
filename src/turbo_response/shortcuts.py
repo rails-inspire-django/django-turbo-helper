@@ -1,5 +1,5 @@
 # Standard Library
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 # Django
 from django.http import HttpRequest
@@ -40,9 +40,7 @@ class TurboStreamAction:
             action=self.action, target=self.target, content=content
         )
 
-    def response(
-        self, content: Union[bytes, str] = b"", **response_kwargs
-    ) -> TurboStreamResponse:
+    def response(self, content: str = "", **response_kwargs) -> TurboStreamResponse:
         """
         :param content: enclosed content
         :type content: str
@@ -223,9 +221,7 @@ class TurboFrame:
         """
         return render_turbo_frame(dom_id=self.dom_id, content=content)
 
-    def response(
-        self, content: Union[bytes, str] = b"", **response_kwargs
-    ) -> TurboFrameResponse:
+    def response(self, content: str = "", **response_kwargs) -> TurboFrameResponse:
         """
         :param content: enclosed content
         :type content: bytes or str
