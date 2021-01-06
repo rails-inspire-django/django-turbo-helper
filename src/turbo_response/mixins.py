@@ -39,7 +39,7 @@ if TYPE_CHECKING:
     FormMixinBase = SupportsFormMixin
 
 else:
-    TemplateResponseBase = object
+    TemplateMixinBase = object
     FormMixinBase = object
 
 
@@ -97,7 +97,7 @@ class TurboStreamResponseMixin:
 
 
 class TurboStreamTemplateResponseMixin(
-    TemplateMixinBase, TurboStreamResponseMixin,
+    TurboStreamResponseMixin, TemplateMixinBase,
 ):
     """Handles turbo-stream template responses."""
 
@@ -165,7 +165,7 @@ class TurboFrameResponseMixin:
 
 
 class TurboFrameTemplateResponseMixin(
-    TemplateMixinBase, TurboFrameResponseMixin,
+    TurboFrameResponseMixin, TemplateMixinBase,
 ):
     """Handles turbo-frame template responses."""
 
