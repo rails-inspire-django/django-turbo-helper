@@ -1,6 +1,9 @@
 # Standard Library
 import http
-from typing import Optional, Union
+from typing import Iterable, Optional, Union
+
+# Third Party Libraries
+from typing_extensions import Protocol
 
 # Local
 from .renderers import Action
@@ -10,6 +13,11 @@ from .response import (
     TurboStreamResponse,
     TurboStreamTemplateResponse,
 )
+
+
+class SupportsTemplateNames(Protocol):
+    def get_template_names(self) -> Iterable[str]:
+        ...
 
 
 class TurboStreamResponseMixin:
@@ -65,10 +73,10 @@ class TurboStreamResponseMixin:
         )
 
 
-class TurboStreamTemplateResponseMixin(TurboStreamResponseMixin):
+class TurboStreamTemplateResponseMixin(SupportsTemplateNames, TurboStreamResponseMixin):
     """Handles turbo-stream template responses."""
 
-    def get_turbo_stream_template_names(self):
+    def get_turbo_stream_template_names(self) -> Iterable[str]:
         """Returns list of template names.
 
         :rtype: list
