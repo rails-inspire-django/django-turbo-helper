@@ -53,7 +53,6 @@ class TurboStreamResponseMixin:
         """Returns the turbo-stream action parameter
 
         :return: turbo-stream action
-        :rtype: turbo_response.Action
         """
         return self.turbo_stream_action
 
@@ -61,14 +60,12 @@ class TurboStreamResponseMixin:
         """Returns the turbo-stream target parameter
 
         :return: turbo-stream target
-        :rtype: str
         """
         return self.turbo_stream_target
 
     def get_response_content(self) -> str:
         """Returns turbo-stream content.
 
-        :rtype: str
         """
 
         return ""
@@ -76,7 +73,6 @@ class TurboStreamResponseMixin:
     def render_turbo_stream_response(self, **response_kwargs) -> TurboStreamResponse:
         """Returns a turbo-stream response.
 
-        :rtype: turbo_response.TurboStreamResponse
         """
         if (target := self.get_turbo_stream_target()) is None:
             raise ImproperlyConfigured("target is None")
@@ -100,7 +96,6 @@ class TurboStreamTemplateResponseMixin(
     def get_turbo_stream_template_names(self) -> Iterable[str]:
         """Returns list of template names.
 
-        :rtype: list
         """
         return self.get_template_names()
 
@@ -112,7 +107,6 @@ class TurboStreamTemplateResponseMixin(
         :param context: template context
         :type context: dict
 
-        :rtype: turbo_response.TurboStreamTemplateResponse
         """
 
         if (target := self.get_turbo_stream_target()) is None:
@@ -171,9 +165,7 @@ class TurboFrameTemplateResponseMixin(
         """Returns a turbo-frame response.
 
         :param context: template context
-        :type context: dict
 
-        :rtype: turbo_response.TurboFrameTemplateResponse
         """
         if (dom_id := self.get_turbo_frame_dom_id()) is None:
             raise ValueError("dom_id must be specified")
