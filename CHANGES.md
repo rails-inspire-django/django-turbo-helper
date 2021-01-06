@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.14] - 2021-1-6
+
+Dependency bugfix
+
 ## [0.0.13] - 2021-1-6
 
 Added type hinting, tidy up of mixin class inheritance.

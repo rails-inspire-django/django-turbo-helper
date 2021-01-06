@@ -2,7 +2,7 @@
 # Third Party Libraries
 from setuptools import setup
 
-version = "0.0.13"
+version = "0.0.14"
 
 setup(
     name="django-turbo-response",
@@ -15,7 +15,8 @@ setup(
     long_description_content_type="text/markdown",
     license="MIT",
     python_requires=">=3.8",
-    requires=["django (>=3.1)", "typing_extensions"],
+    requires=["django (>=3.1)"],
+    install_requires=["typing_extensions"],
     packages=["turbo_response"],
     package_dir={"": "src"},
     classifiers=[
