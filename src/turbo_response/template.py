@@ -22,12 +22,6 @@ def render_turbo_stream_template(
     :param context: template context
     :param action: turbo-stream action
     :param target: turbo-stream target
-    :type template: list or str
-    :type context: dict
-    :type action: turbo_response.Action
-    :type target: str
-
-    :rtype: str
     """
     return render_turbo_stream(
         action,
@@ -53,11 +47,6 @@ def render_turbo_frame_template(
     :param template: template name or names
     :param context: template context
     :param dom_id: turbo-frame DOM ID
-    :type template: list or str
-    :type context: dict
-    :type dom_id: str
-
-    :rtype: str
     """
 
     return render_turbo_frame(
