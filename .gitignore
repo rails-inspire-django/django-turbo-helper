@@ -47,3 +47,4 @@ celerybeat-schedule
 # Common typos
 :w
 '
+.tox
