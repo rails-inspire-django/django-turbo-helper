@@ -1,13 +1,21 @@
+# Standard Library
+from typing import Any, Dict
+
 # Django
 from django.template.loader import render_to_string
 
 # Local
-from .renderers import render_turbo_frame, render_turbo_stream
+from .renderers import Action, render_turbo_frame, render_turbo_stream
 
 
 def render_turbo_stream_template(
-    template, context, *, action, target, **template_kwargs
-):
+    template: str,
+    context: Dict[str, Any],
+    *,
+    action: Action,
+    target: str,
+    **template_kwargs
+) -> str:
     """Renders a *<turbo-stream>* template.
 
     :param template: template name or names
@@ -37,7 +45,9 @@ def render_turbo_stream_template(
     )
 
 
-def render_turbo_frame_template(template, context, *, dom_id, **kwargs):
+def render_turbo_frame_template(
+    template: str, context: Dict[str, Any], *, dom_id: str, **kwargs
+) -> str:
     """Renders a *<turbo-frame>* template.
 
     :param template: template name or names
