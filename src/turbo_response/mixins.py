@@ -42,7 +42,7 @@ class TurboStreamResponseMixin:
 
         return ""
 
-    def render_turbo_stream_response(self, **response_kwargs):
+    def render_turbo_stream_response(self, **response_kwargs) -> TurboStreamResponse:
         """Returns a turbo-stream response.
 
         :rtype: turbo_response.TurboStreamResponse
