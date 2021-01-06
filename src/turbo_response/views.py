@@ -1,4 +1,8 @@
+# Standard Library
+from typing import Any, Dict
+
 # Django
+from django.http import HttpRequest, HttpResponse
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -22,15 +26,17 @@ from .mixins import (
 class TurboStreamView(TurboStreamResponseMixin, View):
     """Renders a simple turbo-stream view"""
 
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, *args, **kwargs) -> HttpResponse:
         return self.render_turbo_stream_response()
 
 
 class TurboStreamTemplateView(TurboStreamTemplateResponseMixin, TemplateView):
     """Renders response template inside <turbo-stream> tags. """
 
-    def render_to_response(self, context, **response_kwargs):
-        return self.render_turbo_stream_response(context, **response_kwargs)
+    def render_to_response(
+        self, context: Dict[str, Any], **response_kwargs
+    ) -> HttpResponse:
+        return self.render_turbo_stream_template_response(context, **response_kwargs)
 
 
 class TurboFormView(TurboFormMixin, FormView):
@@ -52,7 +58,7 @@ class TurboStreamDeleteView(TurboStreamResponseMixin, DeleteView):
 
     turbo_stream_action = Action.REMOVE
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         self.object = self.get_object()
         self.object.delete()
         return self.render_turbo_stream_response()
