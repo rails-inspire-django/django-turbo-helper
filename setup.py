@@ -15,7 +15,7 @@ setup(
     long_description_content_type="text/markdown",
     license="MIT",
     python_requires=">=3.8",
-    requires=["django (>=3.1)"],
+    requires=["django (>=3.1)", "django_stubs_ext"],
     packages=["turbo_response"],
     package_dir={"": "src"},
     classifiers=[

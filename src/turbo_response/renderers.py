@@ -12,7 +12,7 @@ class Action(enum.Enum):
     UPDATE = "update"
 
 
-def render_turbo_stream(action, target, content=""):
+def render_turbo_stream(action: Action, target: str, content: str = "") -> str:
     """Wraps content in correct <turbo-stream> tags.
 
     :param action: action type
