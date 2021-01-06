@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.13] - 2021-1-6
+
+Added type hinting, tidy up of mixin class inheritance.
+
 ## [0.0.12] - 2021-1-5
 
 Update form handling for changes in @hotwired/turbo 7.0.0-beta.2:
