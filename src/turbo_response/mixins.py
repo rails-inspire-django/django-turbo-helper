@@ -1,7 +1,9 @@
 # Standard Library
 import http
+from typing import Optional, Union
 
 # Local
+from .renderers import Action
 from .response import (
     TurboFrameResponse,
     TurboFrameTemplateResponse,
@@ -13,10 +15,10 @@ from .response import (
 class TurboStreamResponseMixin:
     """Mixin to handle turbo-stream responses"""
 
-    turbo_stream_action = None
-    turbo_stream_target = None
+    turbo_stream_action: Optional[Action] = None
+    turbo_stream_target: Optional[str] = None
 
-    def get_turbo_stream_action(self):
+    def get_turbo_stream_action(self) -> Optional[Action]:
         """Returns the turbo-stream action parameter
 
         :return: turbo-stream action
@@ -24,7 +26,7 @@ class TurboStreamResponseMixin:
         """
         return self.turbo_stream_action
 
-    def get_turbo_stream_target(self):
+    def get_turbo_stream_target(self) -> Optional[str]:
         """Returns the turbo-stream target parameter
 
         :return: turbo-stream target
@@ -32,7 +34,7 @@ class TurboStreamResponseMixin:
         """
         return self.turbo_stream_target
 
-    def get_response_content(self):
+    def get_response_content(self) -> Union[bytes, str]:
         """Returns turbo-stream content.
 
         :rtype: str
