@@ -555,8 +555,11 @@ See the django-channels documentation for more details on setting up ASGI and ch
     }
 
     disconnect() {
-      disconnectStreamSource(this.source);
-      this.source = null;
+      if (this.source) {
+        disconnectStreamSource(this.source);
+        this.source.close();
+        this.source = null;
+      }
     }
   }
 
