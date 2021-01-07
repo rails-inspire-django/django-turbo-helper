@@ -38,7 +38,6 @@ autoapi_type = "python"
 autoapi_dirs = ["../../src"]
 autoapi_ignore = ["*/tests/*.py"]
 autodoc_typehints = "description"
-autoapi_generate_api_docs = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
