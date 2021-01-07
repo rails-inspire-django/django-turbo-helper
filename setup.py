@@ -16,7 +16,6 @@ setup(
     license="MIT",
     python_requires=">=3.8",
     requires=["django (>=3.1)"],
-    install_requires=["typing_extensions"],
     packages=["turbo_response"],
     package_dir={"": "src"},
     classifiers=[
