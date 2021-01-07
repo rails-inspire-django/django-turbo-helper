@@ -5,9 +5,10 @@ from typing import Any, Dict, Iterable, Optional
 # Django
 from django import forms
 from django.core.exceptions import ImproperlyConfigured
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 
 # Local
+from .redirects import HttpResponseSeeOther
 from .renderers import Action
 from .response import (
     TurboFrameResponse,
@@ -102,9 +103,7 @@ class TurboFormMixin:
         )
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
-        return HttpResponseRedirect(
-            self.get_success_url(), status=http.HTTPStatus.SEE_OTHER
-        )
+        return HttpResponseSeeOther(self.get_success_url())
 
 
 class TurboFormModelMixin(TurboFormMixin):
