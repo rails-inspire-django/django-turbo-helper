@@ -16,6 +16,7 @@ from django.views.generic import (
 from . import Action
 from .mixins import (
     TurboFormMixin,
+    TurboFormModelMixin,
     TurboFrameResponseMixin,
     TurboFrameTemplateResponseMixin,
     TurboStreamResponseMixin,
@@ -43,11 +44,11 @@ class TurboFormView(TurboFormMixin, FormView):
     ...
 
 
-class TurboCreateView(TurboFormMixin, CreateView):
+class TurboCreateView(TurboFormModelMixin, CreateView):
     ...
 
 
-class TurboUpdateView(TurboFormMixin, UpdateView):
+class TurboUpdateView(TurboFormModelMixin, UpdateView):
     ...
 
 

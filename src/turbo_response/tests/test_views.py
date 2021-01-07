@@ -104,6 +104,7 @@ class TestTurboCreateView:
         req = rf.post("/", {"description": "ok"})
         resp = self.MyView.as_view()(req)
         assert resp.url == "/done/"
+        assert resp.status_code == http.HTTPStatus.SEE_OTHER
         assert TodoItem.objects.count() == 1
 
 
@@ -130,6 +131,7 @@ class TestTurboUpdateView:
         req = rf.post("/", {"description": "updated!"})
         resp = self.MyView.as_view()(req, pk=todo.pk)
         assert resp.url == "/done/"
+        assert resp.status_code == http.HTTPStatus.SEE_OTHER
         todo.refresh_from_db()
         assert todo.description == "updated!"
 
@@ -157,6 +159,7 @@ class TestTurboFormView:
     def test_post_success(self, rf):
         req = rf.post("/", {"description": "ok"})
         resp = self.MyView.as_view()(req)
+        assert resp.status_code == http.HTTPStatus.SEE_OTHER
         assert resp.url == "/done/"
 
 

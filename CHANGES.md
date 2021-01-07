@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.16] - 2021-1-7
+
+Ensure all form mixins/views return a 303 on redirect as per Turbo docs.
+
 ## [0.0.15] - 2021-1-7
 
 Removed protocol classes and mypy pre-commit requirement

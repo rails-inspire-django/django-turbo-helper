@@ -5,7 +5,7 @@ from typing import Any, Dict, Iterable, Optional
 # Django
 from django import forms
 from django.core.exceptions import ImproperlyConfigured
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 # Local
 from .renderers import Action
@@ -93,13 +93,25 @@ class TurboStreamTemplateResponseMixin(TurboStreamResponseMixin,):
 
 class TurboFormMixin:
     """Mixin for handling form validation. Ensures response
-    has 422 status on invalid"""
+    has 422 status on invalid and 303 on success"""
 
     def form_invalid(self, form: forms.Form) -> HttpResponse:
         return self.render_to_response(
             self.get_context_data(form=form),
             status=http.HTTPStatus.UNPROCESSABLE_ENTITY,
         )
+
+    def form_valid(self, form: forms.Form) -> HttpResponse:
+        return HttpResponseRedirect(
+            self.get_success_url(), status=http.HTTPStatus.SEE_OTHER
+        )
+
+
+class TurboFormModelMixin(TurboFormMixin):
+    def form_valid(self, form):
+        """If the form is valid, save the associated model."""
+        self.object = form.save()
+        return super().form_valid(form)
 
 
 class TurboFrameResponseMixin:
