@@ -1,15 +1,11 @@
 # Standard Library
 import http
-from typing import TYPE_CHECKING, Any, Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, Optional
 
 # Django
 from django import forms
 from django.core.exceptions import ImproperlyConfigured
-from django.http import HttpRequest, HttpResponse
-from django.template.engine import Engine
-
-# Third Party Libraries
-from typing_extensions import Protocol
+from django.http import HttpResponse
 
 # Local
 from .renderers import Action
@@ -19,28 +15,6 @@ from .response import (
     TurboStreamResponse,
     TurboStreamTemplateResponse,
 )
-
-
-class SupportsTemplateMixin(Protocol):
-    request: HttpRequest
-    template_engine: Engine
-
-    def get_template_names(self) -> Iterable[str]:
-        ...
-
-
-class SupportsFormMixin(Protocol):
-    def form_invalid(self, form: forms.Form) -> HttpResponse:
-        ...
-
-
-if TYPE_CHECKING:
-    TemplateMixinBase = SupportsTemplateMixin
-    FormMixinBase = SupportsFormMixin
-
-else:
-    TemplateMixinBase = object
-    FormMixinBase = object
 
 
 class TurboStreamResponseMixin:
@@ -64,16 +38,12 @@ class TurboStreamResponseMixin:
         return self.turbo_stream_target
 
     def get_response_content(self) -> str:
-        """Returns turbo-stream content.
-
-        """
+        """Returns turbo-stream content."""
 
         return ""
 
     def render_turbo_stream_response(self, **response_kwargs) -> TurboStreamResponse:
-        """Returns a turbo-stream response.
-
-        """
+        """Returns a turbo-stream response."""
         if (target := self.get_turbo_stream_target()) is None:
             raise ImproperlyConfigured("target is None")
 
@@ -88,15 +58,11 @@ class TurboStreamResponseMixin:
         )
 
 
-class TurboStreamTemplateResponseMixin(
-    TurboStreamResponseMixin, TemplateMixinBase,
-):
+class TurboStreamTemplateResponseMixin(TurboStreamResponseMixin,):
     """Handles turbo-stream template responses."""
 
     def get_turbo_stream_template_names(self) -> Iterable[str]:
-        """Returns list of template names.
-
-        """
+        """Returns list of template names."""
         return self.get_template_names()
 
     def render_turbo_stream_template_response(
@@ -125,7 +91,7 @@ class TurboStreamTemplateResponseMixin(
         )
 
 
-class TurboFormMixin(FormMixinBase):
+class TurboFormMixin:
     """Mixin for handling form validation. Ensures response
     has 422 status on invalid"""
 
@@ -154,9 +120,7 @@ class TurboFrameResponseMixin:
         )
 
 
-class TurboFrameTemplateResponseMixin(
-    TurboFrameResponseMixin, TemplateMixinBase,
-):
+class TurboFrameTemplateResponseMixin(TurboFrameResponseMixin,):
     """Handles turbo-frame template responses."""
 
     def render_turbo_frame_template_response(
