@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.17] - 2021-1-7
+
+Added **HttpResponseSeeOther** class and **redirect_303** shortcut function.
+
 ## [0.0.16] - 2021-1-7
 
 Ensure all form mixins/views return a 303 on redirect as per Turbo docs.
