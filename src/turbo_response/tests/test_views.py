@@ -25,11 +25,6 @@ from turbo_response.views import (
 pytestmark = pytest.mark.django_db
 
 
-@pytest.fixture
-def todo():
-    return TodoItem.objects.create(description="test")
-
-
 class MyForm(forms.Form):
     description = forms.CharField()
 

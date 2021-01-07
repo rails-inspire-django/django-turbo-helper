@@ -26,3 +26,5 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "turbo_response.tests.testapp.apps.TestAppConfig",
 ]
+
+ROOT_URLCONF = "turbo_response.tests.testapp.urls"
