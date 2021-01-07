@@ -96,9 +96,10 @@ class TurboFormMixin:
     has 422 status on invalid"""
 
     def form_invalid(self, form: forms.Form) -> HttpResponse:
-        response = super().form_invalid(form)
-        response.status_code = http.HTTPStatus.UNPROCESSABLE_ENTITY
-        return response
+        return self.render_to_response(
+            self.get_context_data(form=form),
+            status=http.HTTPStatus.UNPROCESSABLE_ENTITY,
+        )
 
 
 class TurboFrameResponseMixin:
