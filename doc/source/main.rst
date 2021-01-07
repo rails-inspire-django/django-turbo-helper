@@ -45,10 +45,12 @@ This is useful if you want to check if a stream is requested, so you can optiona
 
 .. code-block:: python
 
+  from turbo_response import redirect_303
+
   if request.accept_turbo_stream:
       return TurboStreamResponse(action=Action.REPLACE, target="item")
   else:
-      return redirect("index")
+      return redirect_303("index")
 
 
 ============================
@@ -211,6 +213,7 @@ If you are using CBVs, this package has a mixin class, **turbo_response.mixins.T
 
   from django.views.generic import FormView
 
+  from turbo_response import redirect_303
   from turbo_response.mixins import TurboFormMixin
 
   from myapp import MyForm
@@ -219,7 +222,7 @@ If you are using CBVs, this package has a mixin class, **turbo_response.mixins.T
       template_name = "my_form.html"
 
       def form_valid(self, form):
-          return redirect("/")
+          return redirect_303("/")
 
 In addition you can just subclass these views for common cases:
 
@@ -231,7 +234,7 @@ In some cases you may wish to return a turbo-stream response containing just the
 
 .. code-block:: python
 
-  from django.shortcuts import redirect
+  from django.shortcuts import redirect_303
   from django.template.response import TemplateResponse
   from django.views.generic import FormView
 
@@ -244,7 +247,7 @@ In some cases you may wish to return a turbo-stream response containing just the
           form = MyForm(request.POST)
           if form.is_valid():
               # save data etc...
-              return redirect("/")
+              return redirect_303("/")
           return TurboStream("form-target").replace.template("_my_form.html").render(request)
       else:
           form = MyForm()
@@ -256,7 +259,7 @@ In some cases you may wish to return a turbo-stream response containing just the
       template_name = "my_form.html"
 
       def form_valid(self, form):
-          return redirect("/")
+          return redirect_303("/")
 
       def form_invalid(self, form):
           return TurboStream("form-target").replace.template("_my_form.html").render(request)
@@ -303,6 +306,33 @@ it will consistently fail. You should have something like:
   <button name="send_action" value="true">Do this</button>
 
 to ensure the FormData object includes the button value.
+
+=========
+Redirects
+=========
+
+As per the `documentation <https://turbo.hotwire.dev/handbook/drive#redirecting-after-a-form-submission>`_ Turbo expects a 303 redirect after a form submission. While this does not appear to be a hard-and-fast rule, you should probably have your view return a 303 instead of a 301 or 302 after a form submission. This package includes a class **turbo_response.HttpResponseSeeOther** and a shortcut **redirect_303** for returning the correct status with a redirect. The form mixin and view classes will return a 303 redirect by default.
+
+.. code-block:: python
+
+  from turbo_response import HttpResponseSeeOther
+
+  def my_view(request):
+      form = MyForm(request.POST)
+      if form.is_valid():
+          form.save()
+          return HttpResponseSeeOther("/")
+
+Note that the **redirect_303** shortcut works the same way as **django.shortcuts.redirect**: you can use a view name with arguments, a URL string, or a model which has a `get_absolute_url()` method:
+
+.. code-block:: python
+
+  from turbo_response import redirect_303
+
+  redirect_303("/")
+  redirect_303("blog_detail", id=1, slug=blog.title)
+  redirect_303(blog)
+
 
 ================================
 Responding with Multiple Streams
