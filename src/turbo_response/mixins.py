@@ -59,7 +59,7 @@ class TurboStreamResponseMixin:
         )
 
 
-class TurboStreamTemplateResponseMixin(TurboStreamResponseMixin,):
+class TurboStreamTemplateResponseMixin(TurboStreamResponseMixin):
     """Handles turbo-stream template responses."""
 
     def get_turbo_stream_template_names(self) -> Iterable[str]:
@@ -132,7 +132,7 @@ class TurboFrameResponseMixin:
         )
 
 
-class TurboFrameTemplateResponseMixin(TurboFrameResponseMixin,):
+class TurboFrameTemplateResponseMixin(TurboFrameResponseMixin):
     """Handles turbo-frame template responses."""
 
     def render_turbo_frame_template_response(
