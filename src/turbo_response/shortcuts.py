@@ -63,7 +63,9 @@ class TurboStreamAction:
 
 
 class TurboStream:
-    """Class for creating Turbo Stream strings and responses."""
+    """
+    Class for creating Turbo Stream strings and responses.
+    """
 
     def __init__(self, target: str):
         """
