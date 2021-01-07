@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.15] - 2021-1-7
+
+Removed protocol classes and mypy pre-commit requirement
+
 ## [0.0.14] - 2021-1-6
 
 Dependency bugfix
