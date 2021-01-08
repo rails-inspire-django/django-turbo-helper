@@ -59,10 +59,17 @@ class TurboStreamDeleteView(TurboStreamResponseMixin, DeleteView):
 
     turbo_stream_action = Action.REMOVE
 
+    def get_turbo_stream_target(self) -> str:
+        return f"{self.object._meta.model_name}-{self.object.pk}"
+
     def delete(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        # problem: object target needs to be defined *before* object is
+        # deleted as ID will be None. So we need to get the response first
+        # in order to resolve the target ID.
         self.object = self.get_object()
+        response = self.render_turbo_stream_response()
         self.object.delete()
-        return self.render_turbo_stream_response()
+        return response
 
 
 class TurboFrameView(TurboFrameResponseMixin, View):

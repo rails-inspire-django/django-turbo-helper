@@ -161,7 +161,6 @@ class TestTurboFormView:
 class TestTurboStreamDeleteView:
     class MyView(TurboStreamDeleteView):
         template_name = "simple.html"
-        turbo_stream_target = "item"
         model = TodoItem
 
     def test_post(self, rf, todo):
@@ -169,6 +168,7 @@ class TestTurboStreamDeleteView:
         resp = self.MyView.as_view()(req, pk=todo.pk)
         assert resp.status_code == http.HTTPStatus.OK
         assert resp["Content-Type"] == "text/html; turbo-stream; charset=utf-8"
+        assert f'target="todoitem-{todo.pk}"' in str(resp.content)
         assert TodoItem.objects.count() == 0
 
 
