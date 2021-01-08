@@ -54,7 +54,7 @@ class TurboUpdateView(TurboFormModelMixin, UpdateView):
 
 class TurboStreamDeleteView(TurboStreamResponseMixin, DeleteView):
     """Handles a delete action, returning an empty turbo-stream "remove"
-    response.
+    response. The target will be automatically resolved as {model_name}-{PK}.
     """
 
     turbo_stream_action = Action.REMOVE
