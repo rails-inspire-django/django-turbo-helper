@@ -1,5 +1,9 @@
 # Changelog
 
+## Latest
+
+**TurboStreamDeleteView** automatically resolves target based on model name+PK.
+
 ## [0.0.17] - 2021-1-7
 
 Added **HttpResponseSeeOther** class and **redirect_303** shortcut function.
