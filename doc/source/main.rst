@@ -531,6 +531,8 @@ The template returned is just a plain Django template. The response class automa
       {% endfor %}
   </div>
 
+When the user visits this page, they will see the loading gif at the bottom of the page, replaced by the list of recommended products when that view is ready.
+
 ========
 Channels
 ========
