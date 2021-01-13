@@ -1,6 +1,6 @@
 This package provides helpers for server-side rendering of `Hotwired/Turbo <https://turbo.hotwire.dev/>`_ streams and frames.
 
-**Disclaimer**: the Hotwired/Turbo client libraries are, at time of writing, still in Beta. We expect there will be breaking changes until the first stable release. This package, and the Turbo client, should therefore be used with caution in a production environment. The version used in testing is *@hotwired/turbo==7.0.0-beta.2*.
+**Disclaimer**: the Hotwired/Turbo client libraries are, at time of writing, still in Beta. We expect there will be breaking changes until the first stable release. This package, and the Turbo client, should therefore be used with caution in a production environment. The version used in testing is *@hotwired/turbo==7.0.0-beta.3*.
 
 ============
 Requirements
@@ -165,7 +165,7 @@ The most common pattern for server-side validation in a Django view consists of:
 3. If any validation errors, re-render the form with errors and user input
 4. If no validation errors, save to the database (and/or any other actions) and redirect
 
-In order to make this work with Turbo you can do one of two things (**Note**: requires **@hotwired/turbo 7.0.0-beta.2**):
+In order to make this work with Turbo you can do one of two things (**Note**: requires **@hotwired/turbo 7.0.0-beta.3**):
 
 1. When the form is invalid, return with a 4** status response.
 2. Add *data-turbo="false"* to your `<form>` tag.
@@ -504,7 +504,7 @@ This is a good use case for a lazy turbo frame. Our template looks like this, wi
 
 .. code-block:: html
 
-  <turbo-frame id="recommendations" src="{% url 'recommendations' %}">
+  <turbo-frame id="recommendations" src="{% url 'recommendations' %}" loading="lazy">
       <img src="{% static 'fancy-loader.gif' %}">
   </turbo-frame>
 
@@ -522,6 +522,7 @@ And our corresponding view:
 
 The template returned is just a plain Django template. The response class automatically wraps the correct tags, so we don't need to include `<turbo-frame>`.
 
+Note that adding *loading="lazy"* will defer loading until the frame appears in the viewport.
 
 .. code-block:: html
 
