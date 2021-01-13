@@ -1,10 +1,12 @@
 # Changelog
 
-## Latest
+## [0.0.20] - 2021-1-13
 
 Deprecated mixin methods removed.
 
-Update response content type from *text/html; turbo-stream* to *text/vnd.turbo-stream.html*
+Update response content type from *text/html; turbo-stream* to *text/vnd.turbo-stream.html*:
+
+https://github.com/hotwired/turbo/releases/tag/v7.0.0-beta.3
 
 ## [0.0.19] - 2021-1-13
 
