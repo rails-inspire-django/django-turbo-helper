@@ -4,6 +4,8 @@
 
 Deprecated mixin methods removed.
 
+Update response content type from *text/html; turbo-stream* to *text/vnd.turbo-stream.html*
+
 ## [0.0.19] - 2021-1-13
 
 Changes to mixin APIs.

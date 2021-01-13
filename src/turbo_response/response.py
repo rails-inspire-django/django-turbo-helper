@@ -14,7 +14,7 @@ class TurboStreamResponseMixin:
 
     def __init__(self, *args, **kwargs):
         super().__init__(
-            content_type="text/html; turbo-stream; charset=utf-8", *args, **kwargs
+            content_type="text/vnd.turbo-stream.html; charset=utf-8", *args, **kwargs
         )
 
 

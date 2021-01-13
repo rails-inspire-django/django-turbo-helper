@@ -40,7 +40,7 @@ class TestTurboStreamView:
             turbo_stream_target="test", turbo_stream_action=Action.REPLACE
         )(req)
         assert resp.status_code == http.HTTPStatus.OK
-        assert "text/html; turbo-stream;" in resp["Content-Type"]
+        assert "text/vnd.turbo-stream.html;" in resp["Content-Type"]
         assert resp.content.startswith(
             b'<turbo-stream action="replace" target="test"><template>hello'
         )
@@ -57,7 +57,7 @@ class TestTurboStreamTemplateView:
         )(req)
 
         assert resp.status_code == http.HTTPStatus.OK
-        assert "text/html; turbo-stream;" in resp["Content-Type"]
+        assert "text/vnd.turbo-stream.html;" in resp["Content-Type"]
         assert "is_turbo_stream" in resp.context_data
         assert resp.template_name == ["simple.html"]
         assert resp.render().content.startswith(
@@ -167,7 +167,7 @@ class TestTurboStreamDeleteView:
         req = rf.post("/")
         resp = self.MyView.as_view()(req, pk=todo.pk)
         assert resp.status_code == http.HTTPStatus.OK
-        assert resp["Content-Type"] == "text/html; turbo-stream; charset=utf-8"
+        assert resp["Content-Type"] == "text/vnd.turbo-stream.html; charset=utf-8"
         assert f'target="todoitem-{todo.pk}"' in str(resp.content)
         assert TodoItem.objects.count() == 0
 

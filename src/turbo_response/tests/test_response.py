@@ -14,7 +14,7 @@ class TestTurboStreamResponse:
     def test_render(self):
         resp = TurboStreamResponse("OK", action=Action.REMOVE, target="test")
         assert resp.status_code == 200
-        assert resp["Content-Type"] == "text/html; turbo-stream; charset=utf-8"
+        assert resp["Content-Type"] == "text/vnd.turbo-stream.html; charset=utf-8"
         assert resp.content.startswith(
             b'<turbo-stream action="remove" target="test"><template>OK'
         )
@@ -35,7 +35,7 @@ class TestTurboStreamTemplateResponse:
             req, "simple.html", {"testvar": 1}, action=Action.UPDATE, target="test"
         )
         assert resp.status_code == 200
-        assert resp["Content-Type"] == "text/html; turbo-stream; charset=utf-8"
+        assert resp["Content-Type"] == "text/vnd.turbo-stream.html; charset=utf-8"
         assert resp.context_data["is_turbo_stream"]
         assert resp.context_data["turbo_stream_action"] == "update"
         assert resp.context_data["turbo_stream_target"] == "test"
@@ -75,7 +75,7 @@ class TestTurboStreamStreamingResponse:
             )
 
         resp = TurboStreamStreamingResponse(render())
-        assert resp["Content-Type"] == "text/html; turbo-stream; charset=utf-8"
+        assert resp["Content-Type"] == "text/vnd.turbo-stream.html; charset=utf-8"
         stream = b"".join(resp.streaming_content)
         assert (
             b'<turbo-stream action="replace" target="test_1"><template>test 1' in stream
