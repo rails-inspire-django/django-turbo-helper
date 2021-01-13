@@ -56,9 +56,6 @@ class TurboStreamResponseMixin(TurboStreamArgsMixin):
 
     def render_turbo_stream(self, **response_kwargs) -> TurboStreamResponse:
         """Returns a turbo-stream response.
-
-        .. deprecated:: 0.0.19
-           Use :func:`render_turbo_stream` instead.
         """
         if (target := self.get_turbo_stream_target()) is None:
             raise ImproperlyConfigured("target is None")
@@ -109,10 +106,6 @@ class TurboStreamTemplateResponseMixin(TurboStreamArgsMixin):
         """Renders a turbo-stream template response.
 
         :param context: template context
-        :type context: dict
-
-        .. deprecated:: 0.0.19
-           Use :func:`render_turbo_stream` instead.
         """
 
         if (target := self.get_turbo_stream_target()) is None:
@@ -136,7 +129,6 @@ class TurboStreamTemplateResponseMixin(TurboStreamArgsMixin):
         """Renders a turbo-stream template response.
 
         :param context: template context
-        :type context: dict
 
         .. deprecated:: 0.0.19
            Use :func:`render_turbo_stream` instead.
