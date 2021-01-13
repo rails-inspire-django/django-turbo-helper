@@ -1,5 +1,9 @@
 # Changelog
 
+## Latest
+
+Deprecated mixin methods removed.
+
 ## [0.0.19] - 2021-1-13
 
 Changes to mixin APIs.
