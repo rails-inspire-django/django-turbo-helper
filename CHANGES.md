@@ -1,5 +1,9 @@
 # Changelog
 
+## Latest
+
+Changes to mixin APIs.
+
 ## [0.0.18] - 2021-1-12
 
 **TurboStreamDeleteView** automatically resolves target based on model name+PK.

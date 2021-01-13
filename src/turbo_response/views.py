@@ -28,7 +28,7 @@ class TurboStreamView(TurboStreamResponseMixin, View):
     """Renders a simple turbo-stream view"""
 
     def dispatch(self, *args, **kwargs) -> HttpResponse:
-        return self.render_turbo_stream_response()
+        return self.render_turbo_stream()
 
 
 class TurboStreamTemplateView(TurboStreamTemplateResponseMixin, TemplateView):
@@ -37,7 +37,7 @@ class TurboStreamTemplateView(TurboStreamTemplateResponseMixin, TemplateView):
     def render_to_response(
         self, context: Dict[str, Any], **response_kwargs
     ) -> HttpResponse:
-        return self.render_turbo_stream_template_response(context, **response_kwargs)
+        return self.render_turbo_stream(context, **response_kwargs)
 
 
 class TurboFormView(TurboFormMixin, FormView):
@@ -67,7 +67,7 @@ class TurboStreamDeleteView(TurboStreamResponseMixin, DeleteView):
         # deleted as ID will be None. So we need to get the response first
         # in order to resolve the target ID.
         self.object = self.get_object()
-        response = self.render_turbo_stream_response()
+        response = self.render_turbo_stream()
         self.object.delete()
         return response
 
@@ -76,7 +76,7 @@ class TurboFrameView(TurboFrameResponseMixin, View):
     """Retuns a simple turbo-frame response."""
 
     def dispatch(self, *args, **kwargs) -> HttpResponse:
-        return self.render_turbo_frame_response()
+        return self.render_turbo_frame()
 
 
 class TurboFrameTemplateView(TurboFrameTemplateResponseMixin, TemplateView):
@@ -85,4 +85,4 @@ class TurboFrameTemplateView(TurboFrameTemplateResponseMixin, TemplateView):
     def render_to_response(
         self, context: Dict[str, Any], **response_kwargs
     ) -> HttpResponse:
-        return self.render_turbo_frame_template_response(context, **response_kwargs)
+        return self.render_turbo_frame(context, **response_kwargs)

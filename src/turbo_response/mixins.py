@@ -1,5 +1,6 @@
 # Standard Library
 import http
+import warnings
 from typing import Any, Dict, Iterable, Optional
 
 # Django
@@ -18,9 +19,7 @@ from .response import (
 )
 
 
-class TurboStreamResponseMixin:
-    """Mixin to handle turbo-stream responses"""
-
+class TurboStreamArgsMixin:
     turbo_stream_action: Optional[Action] = None
     turbo_stream_target: Optional[str] = None
 
@@ -38,13 +37,29 @@ class TurboStreamResponseMixin:
         """
         return self.turbo_stream_target
 
+
+class TurboFrameArgsMixin:
+    turbo_frame_dom_id = None
+
+    def get_turbo_frame_dom_id(self) -> Optional[str]:
+        """Should return a valid DOM ID target for the turbo frame."""
+        return self.turbo_frame_dom_id
+
+
+class TurboStreamResponseMixin(TurboStreamArgsMixin):
+    """Handles turbo-stream responses"""
+
     def get_response_content(self) -> str:
         """Returns turbo-stream content."""
 
         return ""
 
-    def render_turbo_stream_response(self, **response_kwargs) -> TurboStreamResponse:
-        """Returns a turbo-stream response."""
+    def render_turbo_stream(self, **response_kwargs) -> TurboStreamResponse:
+        """Returns a turbo-stream response.
+
+        .. deprecated:: 0.0.19
+           Use :func:`render_turbo_stream` instead.
+        """
         if (target := self.get_turbo_stream_target()) is None:
             raise ImproperlyConfigured("target is None")
 
@@ -58,15 +73,37 @@ class TurboStreamResponseMixin:
             **response_kwargs,
         )
 
+    def render_turbo_stream_response(self, **response_kwargs) -> TurboStreamResponse:
+        """Returns a turbo-stream response.
 
-class TurboStreamTemplateResponseMixin(TurboStreamResponseMixin):
+        .. deprecated:: 0.0.19
+           Use :func:`render_turbo_stream` instead.
+        """
+        warnings.warn(
+            f"use {self.__class__.__name__}.render_turbo_stream() instead",
+            DeprecationWarning,
+        )
+
+        return self.render_turbo_stream(**response_kwargs)
+
+
+class TurboStreamTemplateResponseMixin(TurboStreamArgsMixin):
     """Handles turbo-stream template responses."""
 
     def get_turbo_stream_template_names(self) -> Iterable[str]:
-        """Returns list of template names."""
+        """Returns list of template names.
+
+        .. deprecated:: 0.0.19
+            Will use :func:`get_template_names()`
+        """
+        warnings.warn(
+            f"use {self.__class__.__name__}.get_template_names() instead",
+            PendingDeprecationWarning,
+        )
+
         return self.get_template_names()
 
-    def render_turbo_stream_template_response(
+    def render_turbo_stream(
         self, context: Dict[str, Any], **response_kwargs
     ) -> TurboStreamTemplateResponse:
         """Renders a turbo-stream template response.
@@ -74,6 +111,8 @@ class TurboStreamTemplateResponseMixin(TurboStreamResponseMixin):
         :param context: template context
         :type context: dict
 
+        .. deprecated:: 0.0.19
+           Use :func:`render_turbo_stream` instead.
         """
 
         if (target := self.get_turbo_stream_target()) is None:
@@ -90,6 +129,23 @@ class TurboStreamTemplateResponseMixin(TurboStreamResponseMixin):
             context=context,
             using=self.template_engine,
         )
+
+    def render_turbo_stream_template_response(
+        self, context: Dict[str, Any], **response_kwargs
+    ) -> TurboStreamTemplateResponse:
+        """Renders a turbo-stream template response.
+
+        :param context: template context
+        :type context: dict
+
+        .. deprecated:: 0.0.19
+           Use :func:`render_turbo_stream` instead.
+        """
+        warnings.warn(
+            f"use {self.__class__.__name__}.render_turbo_stream instead",
+            DeprecationWarning,
+        )
+        return self.render_turbo_stream(context, **response_kwargs)
 
 
 class TurboFormMixin:
@@ -113,16 +169,14 @@ class TurboFormModelMixin(TurboFormMixin):
         return super().form_valid(form)
 
 
-class TurboFrameResponseMixin:
-    turbo_frame_dom_id = None
-
-    def get_turbo_frame_dom_id(self) -> Optional[str]:
-        return self.turbo_frame_dom_id
+class TurboFrameResponseMixin(TurboFrameArgsMixin):
+    """Renders turbo-frame responses"""
 
     def get_response_content(self) -> str:
         return ""
 
-    def render_turbo_frame_response(self, **response_kwargs) -> TurboFrameResponse:
+    def render_turbo_frame(self, **response_kwargs) -> TurboFrameResponse:
+        """Renders a turbo frame to response."""
 
         if (dom_id := self.get_turbo_frame_dom_id()) is None:
             raise ValueError("dom_id must be specified")
@@ -131,17 +185,28 @@ class TurboFrameResponseMixin:
             content=self.get_response_content(), dom_id=dom_id, **response_kwargs,
         )
 
+    def render_turbo_frame_response(self, **response_kwargs) -> TurboFrameResponse:
+        """Renders a turbo frame to response.
 
-class TurboFrameTemplateResponseMixin(TurboFrameResponseMixin):
+        .. deprecated:: 0.0.19
+           Use :func:`render_turbo_frame` instead.
+        """
+        warnings.warn(
+            f"use {self.__class__.__name__}.render_turbo_frame instead",
+            DeprecationWarning,
+        )
+        return self.render_turbo_frame(**response_kwargs)
+
+
+class TurboFrameTemplateResponseMixin(TurboFrameArgsMixin):
     """Handles turbo-frame template responses."""
 
-    def render_turbo_frame_template_response(
+    def render_turbo_frame(
         self, context: Dict[str, Any], **response_kwargs
     ) -> TurboFrameTemplateResponse:
         """Returns a turbo-frame response.
 
         :param context: template context
-
         """
         if (dom_id := self.get_turbo_frame_dom_id()) is None:
             raise ValueError("dom_id must be specified")
@@ -154,3 +219,19 @@ class TurboFrameTemplateResponseMixin(TurboFrameResponseMixin):
             using=self.template_engine,
             **response_kwargs,
         )
+
+    def render_turbo_frame_template_response(
+        self, context: Dict[str, Any], **response_kwargs
+    ) -> TurboFrameTemplateResponse:
+        """Returns a turbo-frame response.
+
+        :param context: template context
+
+        .. deprecated:: 0.0.19
+           Use :func:`render_turbo_frame` instead.
+        """
+        warnings.warn(
+            f"use {self.__class__.__name__}.render_turbo_frame instead",
+            DeprecationWarning,
+        )
+        return self.render_turbo_frame(context, **response_kwargs)
