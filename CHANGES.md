@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.21] - 2021-1-13
+
+Middleware now accepts content type **text/vnd.turbo-stream.html*.
+
 ## [0.0.20] - 2021-1-13
 
 Deprecated mixin methods removed.
