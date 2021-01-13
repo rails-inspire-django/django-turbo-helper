@@ -5,7 +5,8 @@ from typing import Any, Dict, Optional
 from django.http import HttpRequest
 
 # Local
-from .renderers import Action, render_turbo_frame, render_turbo_stream
+from .constants import Action
+from .renderers import render_turbo_frame, render_turbo_stream
 from .response import (
     TurboFrameResponse,
     TurboFrameTemplateResponse,

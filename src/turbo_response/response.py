@@ -6,7 +6,8 @@ from django.http import HttpRequest, HttpResponse, StreamingHttpResponse
 from django.template.response import TemplateResponse
 
 # Local
-from .renderers import Action, render_turbo_frame, render_turbo_stream
+from .constants import TURBO_STREAM_MIME_TYPE, Action
+from .renderers import render_turbo_frame, render_turbo_stream
 
 
 class TurboStreamResponseMixin:
@@ -14,7 +15,7 @@ class TurboStreamResponseMixin:
 
     def __init__(self, *args, **kwargs):
         super().__init__(
-            content_type="text/vnd.turbo-stream.html; charset=utf-8", *args, **kwargs
+            content_type=f"{TURBO_STREAM_MIME_TYPE}; charset=utf-8", *args, **kwargs
         )
 
 
@@ -53,7 +54,7 @@ class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
         *,
         action: Action,
         target: str,
-        **kwargs
+        **kwargs,
     ):
 
         super().__init__(
@@ -106,7 +107,7 @@ class TurboFrameTemplateResponse(TemplateResponse):
         context: Dict[str, Any],
         *,
         dom_id,
-        **kwargs
+        **kwargs,
     ):
 
         super().__init__(

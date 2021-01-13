@@ -5,7 +5,8 @@ from typing import Any, Dict
 from django.template.loader import render_to_string
 
 # Local
-from .renderers import Action, render_turbo_frame, render_turbo_stream
+from .constants import Action
+from .renderers import render_turbo_frame, render_turbo_stream
 
 
 def render_turbo_stream_template(

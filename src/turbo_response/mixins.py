@@ -8,8 +8,8 @@ from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponse
 
 # Local
+from .constants import Action
 from .redirects import HttpResponseSeeOther
-from .renderers import Action
 from .response import (
     TurboFrameResponse,
     TurboFrameTemplateResponse,
