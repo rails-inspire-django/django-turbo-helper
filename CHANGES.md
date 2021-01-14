@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.22] - 2021-1-14
+
+Added **TemplateFormResponse** class which automatically sets correct status based on form error state.
+
 ## [0.0.21] - 2021-1-13
 
 Middleware now accepts content type **text/vnd.turbo-stream.html*.
