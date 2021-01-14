@@ -1,6 +1,6 @@
 # Changelog
 
-## Latest
+## [0.0.23] - 2021-1-14
 
 Added **TurboStreamIterableResponse** class.
 
