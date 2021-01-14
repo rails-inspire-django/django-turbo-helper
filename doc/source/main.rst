@@ -361,7 +361,7 @@ Responding with Multiple Streams
 
 Suppose you want to return **multiple** Turbo Streams in a single view. For example, let's say you are building a shopping cart for an e-commerce site.  The shopping cart is presented as a list of items, and you can edit the amount in each and click a "Save" icon next to that amount. When the amount is changed, you want to recalculate the total cost of all the items, and show this total at the bottom of the cart. In addition, there is a little counter on the top navbar which shows the same total across the whole site.
 
-To do this you can use *django.http.StreamingHttpResponse* with a generator. The generator should yield each individual turbo-stream string. To ensure the correct content type is used, this package provides a subclass, **turbo_response.TurboStreamStreamingResponse**.
+You can return multiple streams either in a generator with **TurboStreamStreamingResponse** or pass an iterable to **TurboStreamResponse**. In either case, you must manually wrap each item in a *<turbo-stream>* tag.
 
 Taking the example above, we have a page with the shopping cart, that has this snippet:
 
@@ -389,6 +389,26 @@ Each item in the cart has an inline edit form that might look like this:
           <button type="submit">Save</button>
       </form>
   </td>
+
+.. code-block:: python
+
+  from turbo_response import TurboStreamIterableResponse, TurboStream
+
+  def update_cart_item(request, item_id):
+      # item saved to e.g. session or db
+      save_cart_item(request, item_id)
+
+      # for brevity, assume "total amount" is returned here as a
+      # correctly formatted string in the correct local currency
+      total_amount = calc_total_cart_amount(request)
+
+      return TurboStreamIterableResponse([
+          TurboStream("nav-cart-total").replace.render(total_amount),
+          TurboStream("cart-summary-total").replace.render(total_amount),
+      ])
+
+
+Or using a generator:
 
 .. code-block:: python
 

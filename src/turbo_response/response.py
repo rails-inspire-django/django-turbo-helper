@@ -44,12 +44,52 @@ class TurboStreamResponseMixin:
 
 
 class TurboStreamStreamingResponse(TurboStreamResponseMixin, StreamingHttpResponse):
-    """Handles turbo-stream responses. Generator should yield individual
-    turbo-stream strings."""
+    """Handles turbo-stream streaming responses. Generator should yield individual
+    turbo-stream tags.
+
+    For example:
+
+    .. code-block:: python
+
+        def render():
+
+            for i in range(3):
+
+                yield render_turbo_stream(
+                    "OK",
+                    Action.REPLACE,
+                    target=f"item-{i}"
+                )
+
+        return TurboStreamStreamingResponse(render())
+    """
+
+
+class TurboStreamIterableResponse(TurboStreamResponseMixin, HttpResponse):
+    """Handles turbo-stream iterator responses. Each item should be wrapped in
+    turbo-stream tags.
+
+    For example:
+
+    .. code-block:: python
+
+        return TurboStreamIterableResponse(
+            [
+                render_turbo_stream(
+                    "OK",
+                    Action.REPLACE,
+                    target=f"item-{i}"
+                ) for i in range(3)
+            ]
+        )
+    """
 
 
 class TurboStreamResponse(TurboStreamResponseMixin, HttpResponse):
-    """Basic turbo-stream response."""
+    """Basic turbo-stream response.
+    You can pass in a single text value which will be wrapped in a turbo-stream tag.
+
+    """
 
     def __init__(self, content: str = "", *, action: Action, target: str, **kwargs):
         super().__init__(
