@@ -1,5 +1,9 @@
 # Changelog
 
+## Latest
+
+Added **TurboStreamIterableResponse** class.
+
 ## [0.0.22] - 2021-1-14
 
 Added **TemplateFormResponse** class which automatically sets correct status based on form error state.
