@@ -109,10 +109,10 @@ Finally if you wish to render Django templates in the response, use **TurboStrea
   from turbo_response import Action, TurboStreamTemplateResponse, TurboFrameTemplateResponse
 
   def my_tmpl_stream(request):
-      return TurboStreamTemplateResponse("msg.html", {"msg": "OK"}, action=Action.REPLACE, target="msg")
+      return TurboStreamTemplateResponse(request, "msg.html", {"msg": "OK"}, action=Action.REPLACE, target="msg")
 
   def my_tmpl_frame(request):
-      return TurboFrameTemplateResponse("msg.html", {"msg": "OK"}, dom_id="msg")
+      return TurboFrameTemplateResponse(request, "msg.html", {"msg": "OK"}, dom_id="msg")
 
 Note that these two classes subclass **django.template.response.TemplateResponse**.
 
@@ -203,7 +203,28 @@ If you want to continue using forms with Turbo just change the response status t
       else:
           form = MyForm()
           status = http.HTTPStatus.OK
-      return TemplateResponse("my_form.html", {"form": my_form}, status=status)
+      return TemplateResponse(request, "my_form.html", {"form": my_form}, status=status)
+
+As this is such a common pattern, we provide for convenience the **turbo_response.TemplateFormResponse** class which automatically sets the correct status depending on the form state (and adds "form" to the template context):
+
+.. code-block:: python
+
+  from django.shortcuts import redirect
+
+  from turbo_response import TemplateFormResponse
+
+  from myapp import MyForm
+
+  def my_view(request):
+      if request.method == "POST":
+          form = MyForm(request.POST)
+          if form.is_valid():
+              # save data etc...
+              return redirect("/")
+      else:
+          form = MyForm()
+      return TemplateFormResponse(request, form, "my_form.html")
+
 
 
 If you are using CBVs, this package has a mixin class, **turbo_response.mixins.TurboFormMixin** that sets the correct status automatically to 422 for an invalid form:
@@ -251,7 +272,7 @@ In some cases you may wish to return a turbo-stream response containing just the
           return TurboStream("form-target").replace.template("_my_form.html").render(request)
       else:
           form = MyForm()
-      return TemplateResponse("my_form.html", {"form": my_form})
+      return TemplateResponse(request, "my_form.html", {"form": my_form})
 
   # or CBV...
 

@@ -1,13 +1,37 @@
-# Django
 # Standard Library
-from typing import Any, Dict, Iterable, Union
+import http
+from typing import Any, Dict, Iterable, Optional, Union
 
+# Django
+from django.forms import Form
 from django.http import HttpRequest, HttpResponse, StreamingHttpResponse
 from django.template.response import TemplateResponse
 
 # Local
 from .constants import TURBO_STREAM_MIME_TYPE, Action
 from .renderers import render_turbo_frame, render_turbo_stream
+
+
+class TemplateFormResponse(TemplateResponse):
+    """Automatically sets the correct response type to 422 if form contains errors."""
+
+    def __init__(
+        self,
+        request: HttpRequest,
+        form: Form,
+        template: Union[str, Iterable[str]],
+        context: Optional[Dict[str, Any]] = None,
+        **kwargs,
+    ):
+        super().__init__(
+            request,
+            template,
+            context={"form": form, **(context or {})},
+            status=http.HTTPStatus.UNPROCESSABLE_ENTITY
+            if form.errors
+            else http.HTTPStatus.OK,
+            **kwargs,
+        )
 
 
 class TurboStreamResponseMixin:
@@ -104,7 +128,7 @@ class TurboFrameTemplateResponse(TemplateResponse):
         self,
         request: HttpRequest,
         template: Union[str, Iterable[str]],
-        context: Dict[str, Any],
+        context: Optional[Dict[str, Any]] = None,
         *,
         dom_id,
         **kwargs,

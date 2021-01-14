@@ -1,6 +1,13 @@
+# Standard Library
+import http
+
+# Django
+from django import forms
+
 # Django Turbo Response
 from turbo_response import (
     Action,
+    TemplateFormResponse,
     TurboFrameResponse,
     TurboFrameTemplateResponse,
     TurboStreamResponse,
@@ -8,6 +15,28 @@ from turbo_response import (
     TurboStreamTemplateResponse,
 )
 from turbo_response.renderers import render_turbo_stream
+
+
+class TestTemplateFormResponse:
+    class MyForm(forms.Form):
+        comment = forms.CharField()
+
+    def test_render_no_errors(self, rf):
+        req = rf.get("/")
+        form = self.MyForm()
+        resp = TemplateFormResponse(req, form, "my_form.html")
+        assert resp.status_code == http.HTTPStatus.OK
+        assert resp.context_data["form"] == form
+
+    def test_render_errors(self, rf):
+        req = rf.get("/")
+        form = self.MyForm({})
+        # missing comment, should be error
+        assert not form.is_valid()
+        assert form.errors
+        resp = TemplateFormResponse(req, form, "my_form.html")
+        assert resp.status_code == http.HTTPStatus.UNPROCESSABLE_ENTITY
+        assert resp.context_data["form"] == form
 
 
 class TestTurboStreamResponse:
