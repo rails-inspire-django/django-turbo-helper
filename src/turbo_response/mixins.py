@@ -1,6 +1,6 @@
 # Standard Library
 import http
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Dict, Optional
 
 # Django
 from django import forms
@@ -8,8 +8,8 @@ from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponse
 
 # Local
+from .constants import Action
 from .redirects import HttpResponseSeeOther
-from .renderers import Action
 from .response import (
     TurboFrameResponse,
     TurboFrameTemplateResponse,
@@ -18,9 +18,7 @@ from .response import (
 )
 
 
-class TurboStreamResponseMixin:
-    """Mixin to handle turbo-stream responses"""
-
+class TurboStreamArgsMixin:
     turbo_stream_action: Optional[Action] = None
     turbo_stream_target: Optional[str] = None
 
@@ -38,12 +36,24 @@ class TurboStreamResponseMixin:
         """
         return self.turbo_stream_target
 
+
+class TurboFrameArgsMixin:
+    turbo_frame_dom_id = None
+
+    def get_turbo_frame_dom_id(self) -> Optional[str]:
+        """Should return a valid DOM ID target for the turbo frame."""
+        return self.turbo_frame_dom_id
+
+
+class TurboStreamResponseMixin(TurboStreamArgsMixin):
+    """Handles turbo-stream responses"""
+
     def get_response_content(self) -> str:
         """Returns turbo-stream content."""
 
         return ""
 
-    def render_turbo_stream_response(self, **response_kwargs) -> TurboStreamResponse:
+    def render_turbo_stream(self, **response_kwargs) -> TurboStreamResponse:
         """Returns a turbo-stream response."""
         if (target := self.get_turbo_stream_target()) is None:
             raise ImproperlyConfigured("target is None")
@@ -59,21 +69,15 @@ class TurboStreamResponseMixin:
         )
 
 
-class TurboStreamTemplateResponseMixin(TurboStreamResponseMixin):
+class TurboStreamTemplateResponseMixin(TurboStreamArgsMixin):
     """Handles turbo-stream template responses."""
 
-    def get_turbo_stream_template_names(self) -> Iterable[str]:
-        """Returns list of template names."""
-        return self.get_template_names()
-
-    def render_turbo_stream_template_response(
+    def render_turbo_stream(
         self, context: Dict[str, Any], **response_kwargs
     ) -> TurboStreamTemplateResponse:
         """Renders a turbo-stream template response.
 
         :param context: template context
-        :type context: dict
-
         """
 
         if (target := self.get_turbo_stream_target()) is None:
@@ -84,7 +88,7 @@ class TurboStreamTemplateResponseMixin(TurboStreamResponseMixin):
 
         return TurboStreamTemplateResponse(
             request=self.request,
-            template=self.get_turbo_stream_template_names(),
+            template=self.get_template_names(),
             target=target,
             action=action,
             context=context,
@@ -113,16 +117,14 @@ class TurboFormModelMixin(TurboFormMixin):
         return super().form_valid(form)
 
 
-class TurboFrameResponseMixin:
-    turbo_frame_dom_id = None
-
-    def get_turbo_frame_dom_id(self) -> Optional[str]:
-        return self.turbo_frame_dom_id
+class TurboFrameResponseMixin(TurboFrameArgsMixin):
+    """Renders turbo-frame responses"""
 
     def get_response_content(self) -> str:
         return ""
 
-    def render_turbo_frame_response(self, **response_kwargs) -> TurboFrameResponse:
+    def render_turbo_frame(self, **response_kwargs) -> TurboFrameResponse:
+        """Renders a turbo frame to response."""
 
         if (dom_id := self.get_turbo_frame_dom_id()) is None:
             raise ValueError("dom_id must be specified")
@@ -132,16 +134,15 @@ class TurboFrameResponseMixin:
         )
 
 
-class TurboFrameTemplateResponseMixin(TurboFrameResponseMixin):
+class TurboFrameTemplateResponseMixin(TurboFrameArgsMixin):
     """Handles turbo-frame template responses."""
 
-    def render_turbo_frame_template_response(
+    def render_turbo_frame(
         self, context: Dict[str, Any], **response_kwargs
     ) -> TurboFrameTemplateResponse:
         """Returns a turbo-frame response.
 
         :param context: template context
-
         """
         if (dom_id := self.get_turbo_frame_dom_id()) is None:
             raise ValueError("dom_id must be specified")

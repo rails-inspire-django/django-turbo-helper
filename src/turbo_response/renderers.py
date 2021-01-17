@@ -1,15 +1,5 @@
-# Standard Library
-import enum
-
-
-class Action(enum.Enum):
-    """Turbo-Stream action parameter"""
-
-    APPEND = "append"
-    PREPEND = "prepend"
-    REMOVE = "remove"
-    REPLACE = "replace"
-    UPDATE = "update"
+# Local
+from .constants import Action
 
 
 def render_turbo_stream(action: Action, target: str, content: str = "") -> str:

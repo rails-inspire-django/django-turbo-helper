@@ -1,12 +1,37 @@
-# Django
 # Standard Library
-from typing import Any, Dict, Iterable, Union
+import http
+from typing import Any, Dict, Iterable, Optional, Union
 
+# Django
+from django.forms import Form
 from django.http import HttpRequest, HttpResponse, StreamingHttpResponse
 from django.template.response import TemplateResponse
 
 # Local
-from .renderers import Action, render_turbo_frame, render_turbo_stream
+from .constants import TURBO_STREAM_MIME_TYPE, Action
+from .renderers import render_turbo_frame, render_turbo_stream
+
+
+class TemplateFormResponse(TemplateResponse):
+    """Automatically sets the correct response type to 422 if form contains errors."""
+
+    def __init__(
+        self,
+        request: HttpRequest,
+        form: Form,
+        template: Union[str, Iterable[str]],
+        context: Optional[Dict[str, Any]] = None,
+        **kwargs,
+    ):
+        super().__init__(
+            request,
+            template,
+            context={"form": form, **(context or {})},
+            status=http.HTTPStatus.UNPROCESSABLE_ENTITY
+            if form.errors
+            else http.HTTPStatus.OK,
+            **kwargs,
+        )
 
 
 class TurboStreamResponseMixin:
@@ -14,17 +39,57 @@ class TurboStreamResponseMixin:
 
     def __init__(self, *args, **kwargs):
         super().__init__(
-            content_type="text/html; turbo-stream; charset=utf-8", *args, **kwargs
+            content_type=f"{TURBO_STREAM_MIME_TYPE}; charset=utf-8", *args, **kwargs
         )
 
 
 class TurboStreamStreamingResponse(TurboStreamResponseMixin, StreamingHttpResponse):
-    """Handles turbo-stream responses. Generator should yield individual
-    turbo-stream strings."""
+    """Handles turbo-stream streaming responses. Generator should yield individual
+    turbo-stream tags.
+
+    For example:
+
+    .. code-block:: python
+
+        def render():
+
+            for i in range(3):
+
+                yield render_turbo_stream(
+                    "OK",
+                    Action.REPLACE,
+                    target=f"item-{i}"
+                )
+
+        return TurboStreamStreamingResponse(render())
+    """
+
+
+class TurboStreamIterableResponse(TurboStreamResponseMixin, HttpResponse):
+    """Handles turbo-stream iterator responses. Each item should be wrapped in
+    turbo-stream tags.
+
+    For example:
+
+    .. code-block:: python
+
+        return TurboStreamIterableResponse(
+            [
+                render_turbo_stream(
+                    "OK",
+                    Action.REPLACE,
+                    target=f"item-{i}"
+                ) for i in range(3)
+            ]
+        )
+    """
 
 
 class TurboStreamResponse(TurboStreamResponseMixin, HttpResponse):
-    """Basic turbo-stream response."""
+    """Basic turbo-stream response.
+    You can pass in a single text value which will be wrapped in a turbo-stream tag.
+
+    """
 
     def __init__(self, content: str = "", *, action: Action, target: str, **kwargs):
         super().__init__(
@@ -53,7 +118,7 @@ class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
         *,
         action: Action,
         target: str,
-        **kwargs
+        **kwargs,
     ):
 
         super().__init__(
@@ -103,10 +168,10 @@ class TurboFrameTemplateResponse(TemplateResponse):
         self,
         request: HttpRequest,
         template: Union[str, Iterable[str]],
-        context: Dict[str, Any],
+        context: Optional[Dict[str, Any]] = None,
         *,
         dom_id,
-        **kwargs
+        **kwargs,
     ):
 
         super().__init__(

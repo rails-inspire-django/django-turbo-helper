@@ -1,6 +1,6 @@
 This package provides helpers for server-side rendering of `Hotwired/Turbo <https://turbo.hotwire.dev/>`_ streams and frames.
 
-**Disclaimer**: the Hotwired/Turbo client libraries are, at time of writing, still in Beta. We expect there will be breaking changes until the first stable release. This package, and the Turbo client, should therefore be used with caution in a production environment. The version used in testing is *@hotwired/turbo==7.0.0-beta.2*.
+**Disclaimer**: the Hotwired/Turbo client libraries are, at time of writing, still in Beta. We expect there will be breaking changes until the first stable release. This package, and the Turbo client, should therefore be used with caution in a production environment. The version used in testing is *@hotwired/turbo==7.0.0-beta.3*.
 
 ============
 Requirements
@@ -28,7 +28,7 @@ To install from Git:
 Middleware
 ==========
 
-You can optionally install **turbo_response.middleware.TurboStreamMiddleware**. This adds the attribute *accept_turbo_stream* to your request if the Turbo client adds *Accept: text/html; turbo-stream;* to the header:
+You can optionally install **turbo_response.middleware.TurboStreamMiddleware**. This adds the attribute *accept_turbo_stream* to your request if the Turbo client adds *Accept: text/vnd.turbo-stream.html;* to the header:
 
 
 .. code-block:: python
@@ -109,10 +109,10 @@ Finally if you wish to render Django templates in the response, use **TurboStrea
   from turbo_response import Action, TurboStreamTemplateResponse, TurboFrameTemplateResponse
 
   def my_tmpl_stream(request):
-      return TurboStreamTemplateResponse("msg.html", {"msg": "OK"}, action=Action.REPLACE, target="msg")
+      return TurboStreamTemplateResponse(request, "msg.html", {"msg": "OK"}, action=Action.REPLACE, target="msg")
 
   def my_tmpl_frame(request):
-      return TurboFrameTemplateResponse("msg.html", {"msg": "OK"}, dom_id="msg")
+      return TurboFrameTemplateResponse(request, "msg.html", {"msg": "OK"}, dom_id="msg")
 
 Note that these two classes subclass **django.template.response.TemplateResponse**.
 
@@ -165,7 +165,7 @@ The most common pattern for server-side validation in a Django view consists of:
 3. If any validation errors, re-render the form with errors and user input
 4. If no validation errors, save to the database (and/or any other actions) and redirect
 
-In order to make this work with Turbo you can do one of two things (**Note**: requires **@hotwired/turbo 7.0.0-beta.2**):
+In order to make this work with Turbo you can do one of two things (**Note**: requires **@hotwired/turbo 7.0.0-beta.3**):
 
 1. When the form is invalid, return with a 4** status response.
 2. Add *data-turbo="false"* to your `<form>` tag.
@@ -203,7 +203,28 @@ If you want to continue using forms with Turbo just change the response status t
       else:
           form = MyForm()
           status = http.HTTPStatus.OK
-      return TemplateResponse("my_form.html", {"form": my_form}, status=status)
+      return TemplateResponse(request, "my_form.html", {"form": my_form}, status=status)
+
+As this is such a common pattern, we provide for convenience the **turbo_response.TemplateFormResponse** class which automatically sets the correct status depending on the form state (and adds "form" to the template context):
+
+.. code-block:: python
+
+  from django.shortcuts import redirect
+
+  from turbo_response import TemplateFormResponse
+
+  from myapp import MyForm
+
+  def my_view(request):
+      if request.method == "POST":
+          form = MyForm(request.POST)
+          if form.is_valid():
+              # save data etc...
+              return redirect("/")
+      else:
+          form = MyForm()
+      return TemplateFormResponse(request, form, "my_form.html")
+
 
 
 If you are using CBVs, this package has a mixin class, **turbo_response.mixins.TurboFormMixin** that sets the correct status automatically to 422 for an invalid form:
@@ -251,7 +272,7 @@ In some cases you may wish to return a turbo-stream response containing just the
           return TurboStream("form-target").replace.template("_my_form.html").render(request)
       else:
           form = MyForm()
-      return TemplateResponse("my_form.html", {"form": my_form})
+      return TemplateResponse(request, "my_form.html", {"form": my_form})
 
   # or CBV...
 
@@ -340,7 +361,7 @@ Responding with Multiple Streams
 
 Suppose you want to return **multiple** Turbo Streams in a single view. For example, let's say you are building a shopping cart for an e-commerce site.  The shopping cart is presented as a list of items, and you can edit the amount in each and click a "Save" icon next to that amount. When the amount is changed, you want to recalculate the total cost of all the items, and show this total at the bottom of the cart. In addition, there is a little counter on the top navbar which shows the same total across the whole site.
 
-To do this you can use *django.http.StreamingHttpResponse* with a generator. The generator should yield each individual turbo-stream string. To ensure the correct content type is used, this package provides a subclass, **turbo_response.TurboStreamStreamingResponse**.
+You can return multiple streams either in a generator with **TurboStreamStreamingResponse** or pass an iterable to **TurboStreamResponse**. In either case, you must manually wrap each item in a *<turbo-stream>* tag.
 
 Taking the example above, we have a page with the shopping cart, that has this snippet:
 
@@ -368,6 +389,26 @@ Each item in the cart has an inline edit form that might look like this:
           <button type="submit">Save</button>
       </form>
   </td>
+
+.. code-block:: python
+
+  from turbo_response import TurboStreamIterableResponse, TurboStream
+
+  def update_cart_item(request, item_id):
+      # item saved to e.g. session or db
+      save_cart_item(request, item_id)
+
+      # for brevity, assume "total amount" is returned here as a
+      # correctly formatted string in the correct local currency
+      total_amount = calc_total_cart_amount(request)
+
+      return TurboStreamIterableResponse([
+          TurboStream("nav-cart-total").replace.render(total_amount),
+          TurboStream("cart-summary-total").replace.render(total_amount),
+      ])
+
+
+Or using a generator:
 
 .. code-block:: python
 
@@ -504,7 +545,7 @@ This is a good use case for a lazy turbo frame. Our template looks like this, wi
 
 .. code-block:: html
 
-  <turbo-frame id="recommendations" src="{% url 'recommendations' %}">
+  <turbo-frame id="recommendations" src="{% url 'recommendations' %}" loading="lazy">
       <img src="{% static 'fancy-loader.gif' %}">
   </turbo-frame>
 
@@ -522,6 +563,7 @@ And our corresponding view:
 
 The template returned is just a plain Django template. The response class automatically wraps the correct tags, so we don't need to include `<turbo-frame>`.
 
+Note that adding *loading="lazy"* will defer loading until the frame appears in the viewport.
 
 .. code-block:: html
 
@@ -530,6 +572,8 @@ The template returned is just a plain Django template. The response class automa
       <h3><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></h3>
       {% endfor %}
   </div>
+
+When the user visits this page, they will see the loading gif at the bottom of the page, replaced by the list of recommended products when that view is ready.
 
 ========
 Channels

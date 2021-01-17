@@ -1,6 +1,30 @@
 # Changelog
 
-## Latest
+## [0.0.23] - 2021-1-14
+
+Added **TurboStreamIterableResponse** class.
+
+## [0.0.22] - 2021-1-14
+
+Added **TemplateFormResponse** class which automatically sets correct status based on form error state.
+
+## [0.0.21] - 2021-1-13
+
+Middleware now accepts content type **text/vnd.turbo-stream.html*.
+
+## [0.0.20] - 2021-1-13
+
+Deprecated mixin methods removed.
+
+Update response content type from *text/html; turbo-stream* to *text/vnd.turbo-stream.html*:
+
+https://github.com/hotwired/turbo/releases/tag/v7.0.0-beta.3
+
+## [0.0.19] - 2021-1-13
+
+Changes to mixin APIs.
+
+## [0.0.18] - 2021-1-12
 
 **TurboStreamDeleteView** automatically resolves target based on model name+PK.
 

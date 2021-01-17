@@ -20,6 +20,6 @@ class TestTurboStreamMiddeware:
         assert not req.accept_turbo_stream
 
     def test_accept_header_found(self, rf, get_response):
-        req = rf.get("/", HTTP_ACCEPT="text/html; turbo-stream")
+        req = rf.get("/", HTTP_ACCEPT="text/vnd.turbo-stream.html")
         TurboStreamMiddleware(get_response)(req)
         assert req.accept_turbo_stream
