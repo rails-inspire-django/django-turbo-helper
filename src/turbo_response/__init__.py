@@ -11,7 +11,7 @@ from .response import (
     TurboStreamStreamingResponse,
     TurboStreamTemplateResponse,
 )
-from .shortcuts import TurboFrame, TurboStream
+from .shortcuts import TurboFrame, TurboStream, render_form_response
 from .template import render_turbo_frame_template, render_turbo_stream_template
 
 __all__ = [
@@ -27,6 +27,7 @@ __all__ = [
     "TurboStreamStreamingResponse",
     "TurboStreamTemplateResponse",
     "redirect_303",
+    "render_form_response",
     "render_turbo_frame",
     "render_turbo_frame_template",
     "render_turbo_stream",

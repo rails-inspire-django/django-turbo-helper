@@ -13,7 +13,13 @@ from .renderers import render_turbo_frame, render_turbo_stream
 
 
 class TemplateFormResponse(TemplateResponse):
-    """Automatically sets the correct response type to 422 if form contains errors."""
+    """Automatically sets the correct response type to 422 if form contains errors.
+
+
+    .. deprecated :: 0.0.24
+        use :func:`turbo_response.shortcuts.render_form_response` instead.
+
+    """
 
     def __init__(
         self,

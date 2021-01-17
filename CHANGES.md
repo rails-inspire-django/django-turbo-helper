@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.24] - 2021-1-17
+
+Added **render_form_response** shortcut.
+
 ## [0.0.23] - 2021-1-14
 
 Added **TurboStreamIterableResponse** class.

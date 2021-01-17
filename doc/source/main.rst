@@ -205,13 +205,13 @@ If you want to continue using forms with Turbo just change the response status t
           status = http.HTTPStatus.OK
       return TemplateResponse(request, "my_form.html", {"form": my_form}, status=status)
 
-As this is such a common pattern, we provide for convenience the **turbo_response.TemplateFormResponse** class which automatically sets the correct status depending on the form state (and adds "form" to the template context):
+As this is such a common pattern, we provide for convenience the **turbo_response.render_form_response** shortcut function which automatically sets the correct status depending on the form state (and adds "form" to the template context):
 
 .. code-block:: python
 
   from django.shortcuts import redirect
 
-  from turbo_response import TemplateFormResponse
+  from turbo_response import render_form_response
 
   from myapp import MyForm
 
@@ -223,7 +223,7 @@ As this is such a common pattern, we provide for convenience the **turbo_respons
               return redirect("/")
       else:
           form = MyForm()
-      return TemplateFormResponse(request, form, "my_form.html")
+      return render_form_response(request, form, "my_form.html")
 
 
 
