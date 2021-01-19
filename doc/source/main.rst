@@ -361,7 +361,7 @@ Responding with Multiple Streams
 
 Suppose you want to return **multiple** Turbo Streams in a single view. For example, let's say you are building a shopping cart for an e-commerce site.  The shopping cart is presented as a list of items, and you can edit the amount in each and click a "Save" icon next to that amount. When the amount is changed, you want to recalculate the total cost of all the items, and show this total at the bottom of the cart. In addition, there is a little counter on the top navbar which shows the same total across the whole site.
 
-You can return multiple streams either in a generator with **TurboStreamStreamingResponse** or pass an iterable to **TurboStreamResponse**. In either case, you must manually wrap each item in a *<turbo-stream>* tag.
+You can return multiple streams either in a generator with **TurboStreamStreamingResponse** or pass an iterable to **TurboStreamIterableResponse**. In either case, you must manually wrap each item in a *<turbo-stream>* tag.
 
 Taking the example above, we have a page with the shopping cart, that has this snippet:
 
