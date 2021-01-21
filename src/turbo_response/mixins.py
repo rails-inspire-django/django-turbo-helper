@@ -130,7 +130,9 @@ class TurboFrameResponseMixin(TurboFrameArgsMixin):
             raise ValueError("dom_id must be specified")
 
         return TurboFrameResponse(
-            content=self.get_response_content(), dom_id=dom_id, **response_kwargs,
+            content=self.get_response_content(),
+            dom_id=dom_id,
+            **response_kwargs,
         )
 
 

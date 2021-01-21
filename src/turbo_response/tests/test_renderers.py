@@ -12,7 +12,9 @@ class TestRenderTurboStream:
 
     def test_render_content(self):
         s = render_turbo_stream(
-            action=Action.REPLACE, target="test", content="<div>my content</div>",
+            action=Action.REPLACE,
+            target="test",
+            content="<div>my content</div>",
         )
         assert (
             s
@@ -26,5 +28,8 @@ class TestRenderTurboFrame:
         assert s == '<turbo-frame id="test"></turbo-frame>'
 
     def test_render_content(self):
-        s = render_turbo_frame(dom_id="test", content="<div>my content</div>",)
+        s = render_turbo_frame(
+            dom_id="test",
+            content="<div>my content</div>",
+        )
         assert s == '<turbo-frame id="test"><div>my content</div></turbo-frame>'

@@ -69,7 +69,8 @@ class TurboStreamResponse(TurboStreamResponseMixin, HttpResponse):
 
     def __init__(self, content: str = "", *, action: Action, target: str, **kwargs):
         super().__init__(
-            render_turbo_stream(action, target, content), **kwargs,
+            render_turbo_stream(action, target, content),
+            **kwargs,
         )
 
 
@@ -124,7 +125,8 @@ class TurboFrameResponse(HttpResponse):
 
     def __init__(self, content: str = "", *, dom_id: str, **kwargs):
         super().__init__(
-            render_turbo_frame(dom_id, content), **kwargs,
+            render_turbo_frame(dom_id, content),
+            **kwargs,
         )
 
 
