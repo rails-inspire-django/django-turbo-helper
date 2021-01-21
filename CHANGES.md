@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.26] - 2021-1-17
+
+Added **TurboMiddleware** (replacing **TurboStreamMiddleware**).
+
+Removed **TemplateFormResponse**.
+
 ## [0.0.24] - 2021-1-17
 
 Added **render_form_response** shortcut.

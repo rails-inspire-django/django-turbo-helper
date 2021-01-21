@@ -28,14 +28,14 @@ To install from Git:
 Middleware
 ==========
 
-You can optionally install **turbo_response.middleware.TurboStreamMiddleware**. This adds the attribute *accept_turbo_stream* to your request if the Turbo client adds *Accept: text/vnd.turbo-stream.html;* to the header:
+You can optionally install **turbo_response.middleware.TurboMiddleware**. This adds the attribute *turbo* to your request if the Turbo client adds *Accept: text/vnd.turbo-stream.html;* to the header:
 
 
 .. code-block:: python
 
   MIDDLEWARE = [
       ...
-      "turbo_response.middleware.TurboStreamMiddleware",
+      "turbo_response.middleware.TurboMiddleware",
       "django.middleware.common.CommonMiddleware",
       ...
   ]
@@ -47,10 +47,18 @@ This is useful if you want to check if a stream is requested, so you can optiona
 
   from turbo_response import redirect_303
 
-  if request.accept_turbo_stream:
+  if request.turbo:
       return TurboStreamResponse(action=Action.REPLACE, target="item")
   else:
       return redirect_303("index")
+
+If the request originates from a turbo-frame it will also set the *frame* property:
+
+
+.. code-block:: python
+
+  if request.turbo.frame == "my-playlist":
+      return TurboFrame(request.turbo.frame).response("OK")
 
 
 ============================
