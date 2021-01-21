@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.27] - 2021-1-17
+
+Bugfix for Turbo-Frame header in middleware
+
 ## [0.0.26] - 2021-1-17
 
 Added **TurboMiddleware** (replacing **TurboStreamMiddleware**).

@@ -14,7 +14,7 @@ class TurboData:
         self.has_turbo_header = TURBO_STREAM_MIME_TYPE in request.headers.get(
             "Accept", ""
         )
-        self.frame = request.headers.get("TurboFrame", None)
+        self.frame = request.headers.get("Turbo-Frame", None)
 
     def __bool__(self):
         return self.has_turbo_header

@@ -30,7 +30,7 @@ class TestTurboMiddeware:
         req = rf.get(
             "/",
             HTTP_ACCEPT="text/vnd.turbo-stream.html",
-            HTTP_TURBOFRAME="my-playlist",
+            HTTP_TURBO_FRAME="my-playlist",
         )
         TurboMiddleware(get_response)(req)
         assert req.turbo
