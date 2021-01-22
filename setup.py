@@ -2,7 +2,7 @@
 # Third Party Libraries
 from setuptools import setup
 
-version = "0.0.27"
+version = "0.0.28"
 
 setup(
     name="django-turbo-response",
@@ -14,8 +14,8 @@ setup(
     long_description=open("README.md").read() + "\n\n" + open("CHANGES.md").read(),
     long_description_content_type="text/markdown",
     license="MIT",
-    python_requires=">=3.8",
-    requires=["django (>=3.1)"],
+    python_requires=">=3.7",
+    requires=["django (>=3.0)"],
     packages=["turbo_response"],
     package_dir={"": "src"},
     classifiers=[
