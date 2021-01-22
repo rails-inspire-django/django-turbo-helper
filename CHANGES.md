@@ -1,10 +1,10 @@
 # Changelog
 
-## Latest
+## [0.0.28] - 2021-1-22
 
 Support for Python 3.7
 
-## [0.0.27] - 2021-1-17
+## [0.0.27] - 2021-1-21
 
 Bugfix for Turbo-Frame header in middleware
 
