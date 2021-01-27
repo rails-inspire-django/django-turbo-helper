@@ -58,20 +58,31 @@ class TurboStreamIterableResponse(TurboStreamResponseMixin, HttpResponse):
                 ) for i in range(3)
             ]
         )
+    .. deprecated :: 0.0.29
+        use TurboStreamResponse
     """
 
 
 class TurboStreamResponse(TurboStreamResponseMixin, HttpResponse):
     """Basic turbo-stream response.
-    You can pass in a single text value which will be wrapped in a turbo-stream tag.
 
+    If action and target are provided, will automatically wrap the
+    response in <turbo-stream> tags. Otherwise you should provide the
+    turbo-stream content string yourself (using e.g. *render_turbo_stream*)
+    or an iterable of turbo-streams.
     """
 
-    def __init__(self, content: str = "", *, action: Action, target: str, **kwargs):
-        super().__init__(
-            render_turbo_stream(action, target, content),
-            **kwargs,
-        )
+    def __init__(
+        self,
+        content: Union[str, Iterable] = "",
+        *,
+        action: Optional[Action] = None,
+        target: Optional[str] = None,
+        **kwargs,
+    ):
+        if action and target:
+            content = render_turbo_stream(action, target, content)
+        super().__init__(content, **kwargs)
 
 
 class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):

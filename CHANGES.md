@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.29] - 2021-1-27
+
+**TurboStreamIterableResponse** deprecated
+
+**TurboMiddleware** removed
+
 ## [0.0.28] - 2021-1-22
 
 Support for Python 3.7

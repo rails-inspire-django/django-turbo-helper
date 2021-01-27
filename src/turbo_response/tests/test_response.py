@@ -12,12 +12,48 @@ from turbo_response.renderers import render_turbo_stream
 
 
 class TestTurboStreamResponse:
-    def test_render(self):
+    def test_render_with_action_and_target(self):
         resp = TurboStreamResponse("OK", action=Action.REMOVE, target="test")
         assert resp.status_code == 200
         assert resp["Content-Type"] == "text/vnd.turbo-stream.html; charset=utf-8"
         assert resp.content.startswith(
             b'<turbo-stream action="remove" target="test"><template>OK'
+        )
+
+    def test_render_string(self):
+        resp = TurboStreamResponse(
+            render_turbo_stream(content="OK", action=Action.REMOVE, target="test")
+        )
+        assert resp.status_code == 200
+        assert resp["Content-Type"] == "text/vnd.turbo-stream.html; charset=utf-8"
+        assert resp.content.startswith(
+            b'<turbo-stream action="remove" target="test"><template>OK'
+        )
+
+    def test_render_iterable(self):
+
+        resp = TurboStreamResponse(
+            [
+                render_turbo_stream(
+                    content=f"test {i}", action=Action.REPLACE, target=f"test_{i}"
+                )
+                for i in range(1, 4)
+            ]
+        )
+
+        assert resp["Content-Type"] == "text/vnd.turbo-stream.html; charset=utf-8"
+
+        assert (
+            b'<turbo-stream action="replace" target="test_1"><template>test 1'
+            in resp.content
+        )
+        assert (
+            b'<turbo-stream action="replace" target="test_2"><template>test 2'
+            in resp.content
+        )
+        assert (
+            b'<turbo-stream action="replace" target="test_3"><template>test 3'
+            in resp.content
         )
 
 
