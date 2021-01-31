@@ -18,6 +18,7 @@ from turbo_response.views import (
     TurboFrameView,
     TurboStreamCreateView,
     TurboStreamDeleteView,
+    TurboStreamFormView,
     TurboStreamTemplateView,
     TurboStreamUpdateView,
     TurboStreamView,
@@ -213,6 +214,37 @@ class TestTurboFormView:
         resp = self.MyView.as_view()(req)
         assert resp.status_code == http.HTTPStatus.UNPROCESSABLE_ENTITY
         assert resp.template_name == ["my_form.html"]
+
+    def test_post_success(self, rf):
+        req = rf.post("/", {"description": "ok"})
+        resp = self.MyView.as_view()(req)
+        assert resp.status_code == http.HTTPStatus.SEE_OTHER
+        assert resp.url == "/done/"
+
+
+class TestTurboStreamFormView:
+    class MyView(TurboStreamFormView):
+        form_class = MyForm
+        template_name = "my_form.html"
+        success_url = "/done/"
+        target = "my-form"
+
+    def test_get(self, rf):
+        req = rf.get("/")
+        resp = self.MyView.as_view()(req)
+        assert resp.status_code == http.HTTPStatus.OK
+        assert resp["Content-Type"] == "text/html; charset=utf-8"
+        assert "form" in resp.context_data
+        assert "is_turbo_stream" not in resp.context_data
+        assert resp.context_data["turbo_stream_target"] == "my-form"
+        assert resp.template_name == ["my_form.html"]
+
+    def test_post_with_validation_errors(self, rf):
+        req = rf.post("/", {})
+        resp = self.MyView.as_view()(req)
+        assert "is_turbo_stream" in resp.context_data
+        assert resp.context_data["turbo_stream_target"] == "my-form"
+        assert resp.template_name == ["_my_form.html"]
 
     def test_post_success(self, rf):
         req = rf.post("/", {"description": "ok"})

@@ -124,7 +124,7 @@ class TurboFormModelMixin(TurboFormMixin):
         return super().form_valid(form)
 
 
-class TurboStreamFormModelMixin(TurboFormMixin):
+class TurboStreamFormMixin(TurboFormMixin):
     """Returns a turbo stream when form is invalid.
 
     You should define a partial template corresponding to the template
@@ -133,14 +133,15 @@ class TurboStreamFormModelMixin(TurboFormMixin):
 
     The template should then be included in the form:
 
-    :.. code-block:: html
+    .. code-block:: html
 
         {% include "_post_form.html" %}
 
     The form or container element should have an ID: this is provided as `turbo_stream_target` in
     the template context:
 
-    :.. code-block:: html
+
+    .. code-block:: html
 
         <form method="POST" action=".." id="{{ turbo_stream_target }}">
 
@@ -154,12 +155,6 @@ class TurboStreamFormModelMixin(TurboFormMixin):
     def get_turbo_stream_target(self) -> str:
         if self.target:
             return self.target
-
-        if isinstance(self.object, Model):
-            return f"form-{self.object._meta.model_name}-{self.object.pk}"
-
-        elif self.model:
-            return f"form-{self.model._meta.model_name}"
 
         raise ImproperlyConfigured("target is not provided")
 
@@ -178,10 +173,6 @@ class TurboStreamFormModelMixin(TurboFormMixin):
 
         return super().get_context_data(**kwargs)
 
-    def form_valid(self, form: forms.Form) -> HttpResponse:
-        self.object = form.save()
-        return super().form_valid(form)
-
     def form_invalid(self, form: forms.Form) -> HttpResponse:
         target = self.get_turbo_stream_target()
         action = self.get_turbo_stream_action()
@@ -196,6 +187,25 @@ class TurboStreamFormModelMixin(TurboFormMixin):
             ),
             using=self.template_engine,
         )
+
+
+class TurboStreamFormModelMixin(TurboStreamFormMixin):
+    def get_turbo_stream_target(self) -> str:
+        try:
+            return super().get_turbo_stream_target()
+
+        except ImproperlyConfigured:
+            if isinstance(self.object, Model):
+                return f"form-{self.object._meta.model_name}-{self.object.pk}"
+
+            elif self.model:
+                return f"form-{self.model._meta.model_name}"
+
+            raise
+
+    def form_valid(self, form: forms.Form) -> HttpResponse:
+        self.object = form.save()
+        return super().form_valid(form)
 
 
 class TurboFrameResponseMixin(TurboFrameArgsMixin):
@@ -244,5 +254,5 @@ class TurboFrameTemplateResponseMixin(TurboFrameArgsMixin):
 
 
 def _resolve_partial_name(template, prefix="_"):
-    start, _, name = template.rpartition("/")
-    return start + "/" + prefix + name
+    start, join, name = template.rpartition("/")
+    return start + join + prefix + name
