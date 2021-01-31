@@ -125,7 +125,28 @@ class TurboFormModelMixin(TurboFormMixin):
 
 
 class TurboStreamFormModelMixin(TurboFormMixin):
-    """Returns a turbo stream when form is invalid."""
+    """Returns a turbo stream when form is invalid.
+
+    You should define a partial template corresponding to the template
+    used to render the initial form, for example if your template
+    is `posts/post_form.html` your partial template is `posts/_post_form.html`.
+
+    The template should then be included in the form:
+
+    :.. code-block:: html
+
+        {% include "_post_form.html" %}
+
+    The form or container element should have an ID: this is provided as `turbo_stream_target` in
+    the template context:
+
+    :.. code-block:: html
+
+        <form method="POST" action=".." id="{{ turbo_stream_target }}">
+
+    When the form is posted, if the form is invalid a turbo-stream element wrapping the
+    partial content will be returned, including any validation errors.
+    """
 
     action: Action = Action.REPLACE
     target: Optional[str] = None
@@ -152,11 +173,8 @@ class TurboStreamFormModelMixin(TurboFormMixin):
         ]
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        if "target" not in kwargs:
-            kwargs["target"] = self.get_turbo_stream_target()
-
-        if "action" not in kwargs:
-            kwargs["action"] = self.get_turbo_stream_action()
+        if "turbo_stream_target" not in kwargs:
+            kwargs["turbo_stream_target"] = self.get_turbo_stream_target()
 
         return super().get_context_data(**kwargs)
 
