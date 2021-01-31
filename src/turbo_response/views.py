@@ -19,6 +19,7 @@ from .mixins import (
     TurboFormModelMixin,
     TurboFrameResponseMixin,
     TurboFrameTemplateResponseMixin,
+    TurboStreamFormModelMixin,
     TurboStreamResponseMixin,
     TurboStreamTemplateResponseMixin,
 )
@@ -49,6 +50,14 @@ class TurboCreateView(TurboFormModelMixin, CreateView):
 
 
 class TurboUpdateView(TurboFormModelMixin, UpdateView):
+    ...
+
+
+class TurboStreamCreateView(TurboStreamFormModelMixin, CreateView):
+    ...
+
+
+class TurboStreamUpdateView(TurboStreamFormModelMixin, UpdateView):
     ...
 
 
