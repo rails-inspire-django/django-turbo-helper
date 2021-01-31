@@ -11,7 +11,7 @@ import pytest
 from turbo_response import Action
 from turbo_response.tests.testapp.forms import TodoForm
 from turbo_response.tests.testapp.models import TodoItem
-from turbo_response.views import (  # TurboStreamUpdateView,
+from turbo_response.views import (
     TurboCreateView,
     TurboFormView,
     TurboFrameTemplateView,
@@ -19,6 +19,7 @@ from turbo_response.views import (  # TurboStreamUpdateView,
     TurboStreamCreateView,
     TurboStreamDeleteView,
     TurboStreamTemplateView,
+    TurboStreamUpdateView,
     TurboStreamView,
     TurboUpdateView,
 )
@@ -152,6 +153,37 @@ class TestTurboUpdateView:
         resp = self.MyView.as_view()(req, pk=todo.pk)
         assert resp.status_code == http.HTTPStatus.UNPROCESSABLE_ENTITY
         assert resp.template_name == ["testapp/todoitem_form.html"]
+
+    def test_post_success(self, rf, todo):
+        req = rf.post("/", {"description": "updated!"})
+        resp = self.MyView.as_view()(req, pk=todo.pk)
+        assert resp.url == "/done/"
+        assert resp.status_code == http.HTTPStatus.SEE_OTHER
+        todo.refresh_from_db()
+        assert todo.description == "updated!"
+
+
+class TestTurboStreamUpdateView:
+    class MyView(TurboStreamUpdateView):
+        form_class = TodoForm
+        model = TodoItem
+        success_url = "/done/"
+
+    def test_get(self, rf, todo):
+        req = rf.get("/")
+        resp = self.MyView.as_view()(req, pk=todo.pk)
+        assert resp.status_code == http.HTTPStatus.OK
+        assert "is_turbo_stream" not in resp.context_data
+        assert "form" in resp.context_data
+        assert resp.context_data["target"] == f"form-todoitem-{todo.pk}"
+        assert resp.template_name == ["testapp/todoitem_form.html"]
+
+    def test_post_with_validation_errors(self, rf, todo):
+        req = rf.post("/", {})
+        resp = self.MyView.as_view()(req, pk=todo.pk)
+        assert "is_turbo_stream" in resp.context_data
+        assert resp.context_data["target"] == f"form-todoitem-{todo.pk}"
+        assert resp.template_name == ["testapp/_todoitem_form.html"]
 
     def test_post_success(self, rf, todo):
         req = rf.post("/", {"description": "updated!"})
