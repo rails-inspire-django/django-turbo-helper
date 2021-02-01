@@ -1,5 +1,5 @@
 # Standard Library
-from typing import Any, Dict, Iterable, Optional, Union
+from typing import Any, Dict, Iterable, Mapping, Optional, Union
 
 # Django
 from django.http import HttpRequest, HttpResponse, StreamingHttpResponse
@@ -74,13 +74,13 @@ class TurboStreamResponse(TurboStreamResponseMixin, HttpResponse):
 
     def __init__(
         self,
-        content: Union[str, Iterable] = "",
+        content: Union[Iterable[str], str] = "",
         *,
         action: Optional[Action] = None,
         target: Optional[str] = None,
         **kwargs,
     ):
-        if action and target:
+        if action and target and isinstance(content, str):
             content = render_turbo_stream(action, target, content)
         super().__init__(content, **kwargs)
 
@@ -157,7 +157,7 @@ class TurboFrameTemplateResponse(TemplateResponse):
         self,
         request: HttpRequest,
         template: Union[str, Iterable[str]],
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[Mapping[str, Any]] = None,
         *,
         dom_id,
         **kwargs,
@@ -166,7 +166,7 @@ class TurboFrameTemplateResponse(TemplateResponse):
         super().__init__(
             request,
             template,
-            {**context, "turbo_frame_dom_id": dom_id, "is_turbo_frame": True},
+            {**(context or {}), "turbo_frame_dom_id": dom_id, "is_turbo_frame": True},
             **kwargs,
         )
 

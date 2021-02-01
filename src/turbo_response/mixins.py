@@ -1,12 +1,13 @@
 # Standard Library
 import http
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Type
 
 # Django
 from django import forms
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Model
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
+from django.template.loader import Engine
 
 # Local
 from .constants import Action
@@ -76,6 +77,10 @@ class TurboStreamResponseMixin(TurboStreamArgsMixin):
 class TurboStreamTemplateResponseMixin(TurboStreamArgsMixin):
     """Handles turbo-stream template responses."""
 
+    request: HttpRequest
+    template_engine: Engine
+    get_template_names: Callable
+
     def render_turbo_stream(
         self, context: Dict[str, Any], **response_kwargs
     ) -> TurboStreamTemplateResponse:
@@ -107,6 +112,11 @@ class TurboFormMixin:
     """Mixin for handling form validation. Ensures response
     has 422 status on invalid and 303 on success"""
 
+    request: HttpRequest
+    render_to_response: Callable
+    get_success_url: Callable
+    get_context_data: Callable
+
     def form_invalid(self, form: forms.Form) -> HttpResponse:
         return self.render_to_response(
             self.get_context_data(form=form),
@@ -118,6 +128,9 @@ class TurboFormMixin:
 
 
 class TurboFormModelMixin(TurboFormMixin):
+
+    object: Optional[Model]
+
     def form_valid(self, form: forms.Form) -> HttpResponse:
         """If the form is valid, save the associated model."""
         self.object = form.save()
@@ -151,6 +164,11 @@ class TurboStreamFormMixin(TurboFormMixin):
 
     action: Action = Action.REPLACE
     target: Optional[str] = None
+
+    object: Optional[Model]
+    model: Type[Model]
+    template_engine: Engine
+    get_template_names: Callable
 
     def get_turbo_stream_target(self) -> str:
         if self.target:
@@ -231,6 +249,10 @@ class TurboFrameResponseMixin(TurboFrameArgsMixin):
 
 class TurboFrameTemplateResponseMixin(TurboFrameArgsMixin):
     """Handles turbo-frame template responses."""
+
+    request: HttpRequest
+    template_engine: Engine
+    get_template_names: Callable
 
     def render_turbo_frame(
         self, context: Dict[str, Any], **response_kwargs
