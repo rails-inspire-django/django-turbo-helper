@@ -10,7 +10,7 @@
 
 **TurboStreamIterableResponse** deprecated
 
-**TurboMiddleware** removed
+**TurboStreamMiddleware** removed
 
 ## [0.0.28] - 2021-1-22
 
