@@ -124,6 +124,7 @@ class TurboFormMixin:
         )
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
+        super().form_valid(form)
         return HttpResponseSeeOther(self.get_success_url())
 
 
