@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.30] - 2021-2-1
+
+**TurboStreamIterableResponse** removed
+
+**TurboStreamFormMixin** and turbo-stream form views added
+
 ## [0.0.29] - 2021-1-27
 
 **TurboStreamIterableResponse** deprecated
