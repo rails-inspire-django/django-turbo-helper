@@ -7,7 +7,7 @@ from django import forms
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Model
 from django.http import HttpRequest, HttpResponse
-from django.template.loader import Engine
+from django.template.engine import Engine
 
 # Local
 from .constants import Action
