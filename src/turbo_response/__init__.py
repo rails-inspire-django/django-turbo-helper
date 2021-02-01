@@ -5,7 +5,6 @@ from .renderers import render_turbo_frame, render_turbo_stream
 from .response import (
     TurboFrameResponse,
     TurboFrameTemplateResponse,
-    TurboStreamIterableResponse,
     TurboStreamResponse,
     TurboStreamStreamingResponse,
     TurboStreamTemplateResponse,
@@ -20,7 +19,6 @@ __all__ = [
     "TurboFrameResponse",
     "TurboFrameTemplateResponse",
     "TurboStream",
-    "TurboStreamIterableResponse",
     "TurboStreamResponse",
     "TurboStreamStreamingResponse",
     "TurboStreamTemplateResponse",

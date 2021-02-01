@@ -41,28 +41,6 @@ class TurboStreamStreamingResponse(TurboStreamResponseMixin, StreamingHttpRespon
     """
 
 
-class TurboStreamIterableResponse(TurboStreamResponseMixin, HttpResponse):
-    """Handles turbo-stream iterator responses. Each item should be wrapped in
-    turbo-stream tags.
-
-    For example:
-
-    .. code-block:: python
-
-        return TurboStreamIterableResponse(
-            [
-                render_turbo_stream(
-                    "OK",
-                    Action.REPLACE,
-                    target=f"item-{i}"
-                ) for i in range(3)
-            ]
-        )
-    .. deprecated :: 0.0.29
-        use TurboStreamResponse
-    """
-
-
 class TurboStreamResponse(TurboStreamResponseMixin, HttpResponse):
     """Basic turbo-stream response.
 

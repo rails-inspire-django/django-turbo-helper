@@ -3,7 +3,6 @@ from turbo_response import (
     Action,
     TurboFrameResponse,
     TurboFrameTemplateResponse,
-    TurboStreamIterableResponse,
     TurboStreamResponse,
     TurboStreamStreamingResponse,
     TurboStreamTemplateResponse,
@@ -33,34 +32,6 @@ class TestTurboStreamResponse:
     def test_render_iterable(self):
 
         resp = TurboStreamResponse(
-            [
-                render_turbo_stream(
-                    content=f"test {i}", action=Action.REPLACE, target=f"test_{i}"
-                )
-                for i in range(1, 4)
-            ]
-        )
-
-        assert resp["Content-Type"] == "text/vnd.turbo-stream.html; charset=utf-8"
-
-        assert (
-            b'<turbo-stream action="replace" target="test_1"><template>test 1'
-            in resp.content
-        )
-        assert (
-            b'<turbo-stream action="replace" target="test_2"><template>test 2'
-            in resp.content
-        )
-        assert (
-            b'<turbo-stream action="replace" target="test_3"><template>test 3'
-            in resp.content
-        )
-
-
-class TestTurboStreamIterableResponse:
-    def test_render(self):
-
-        resp = TurboStreamIterableResponse(
             [
                 render_turbo_stream(
                     content=f"test {i}", action=Action.REPLACE, target=f"test_{i}"
