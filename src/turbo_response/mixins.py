@@ -165,17 +165,18 @@ class TurboStreamFormMixin(TurboFormMixin):
     action: Action = Action.REPLACE
     target: Optional[str] = None
 
-    partial_template_prefix: str = "_"
+    turbo_stream_template_prefix: str = "_"
+    turbo_stream_template_name: Optional[str] = None
 
     object: Optional[Model]
     model: Type[Model]
     template_engine: Engine
     get_template_names: Callable
 
-    def resolve_partial_template_name(self, template_name):
+    def resolve_turbo_stream_template_name(self, template_name):
         """By default template name will have underscore prefix"""
         start, join, name = template_name.rpartition("/")
-        return start + join + self.partial_template_prefix + name
+        return start + join + self.turbo_stream_template_prefix + name
 
     def get_turbo_stream_target(self) -> str:
         if self.target:
@@ -187,8 +188,10 @@ class TurboStreamFormMixin(TurboFormMixin):
         return self.action
 
     def get_turbo_stream_template_names(self) -> List[str]:
+        if self.turbo_stream_template_name:
+            return [self.turbo_stream_template_name]
         return [
-            self.resolve_partial_template_name(template)
+            self.resolve_turbo_stream_template_name(template)
             for template in self.get_template_names()
         ]
 

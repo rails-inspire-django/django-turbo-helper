@@ -315,6 +315,23 @@ And your templates would look like this:
     {{ form.as_p }}
   </form>
 
+
+As this is a useful pattern in many situations, for example when handling forms inside modals, this package provides a mixin class **turbo_response.mixins.TurboStreamFormMixin**:
+
+.. code-block:: python
+
+
+  from django.views.generic import FormView
+  from turbo_response.mixins import TurboStreamFormMixin
+
+  class MyView(TurboStreamFormMixin, FormView):
+      target = "form-target"
+      template_name = "my_form.html"
+
+
+This mixin will automatically add the target name to the template context as *turbo_stream_target*. The partial template will be automatically resolved as the template name prefixed with an underscore: in this example, *_my_form.html*.
+
+
 A further point re: forms: Turbo processes forms using the FormData API and only includes inputs with a value. This means all buttons, inputs etc. must have a value. For example suppose you have a button like this:
 
 .. code-block:: html
