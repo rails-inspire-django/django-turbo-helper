@@ -173,7 +173,7 @@ The most common pattern for server-side validation in a Django view consists of:
 3. If any validation errors, re-render the form with errors and user input
 4. If no validation errors, save to the database (and/or any other actions) and redirect
 
-In order to make this work with Turbo you can do one of two things (**Note**: requires **@hotwired/turbo 7.0.0-beta.3**):
+In order to make this work with Turbo you can do one of two things (**Note**: requires minimum **@hotwired/turbo 7.0.0-beta.3**):
 
 1. When the form is invalid, return with a 4** status response.
 2. Add *data-turbo="false"* to your `<form>` tag.
@@ -327,9 +327,10 @@ As this is a useful pattern in many situations, for example when handling forms 
   class MyView(TurboStreamFormMixin, FormView):
       target = "form-target"
       template_name = "my_form.html"
+      # action = Action.REPLACE
 
 
-This mixin will automatically add the target name to the template context as *turbo_stream_target*. The partial template will be automatically resolved as the template name prefixed with an underscore: in this example, *_my_form.html*. You can also set it explicitly with the *turbo_stream_template_name* class attribute.
+This mixin will automatically add the target name to the template context as *turbo_stream_target*. The partial template will be automatically resolved as the template name prefixed with an underscore: in this example, *_my_form.html*. You can also set it explicitly with the *turbo_stream_template_name* class attribute.  The default action is "replace".
 
 As with the form mixin above, the package includes a number of view classes using this mixin:
 
@@ -351,7 +352,7 @@ So the above example could be rewritten as:
 
 The model-based classes automatically set the target DOM ID based on the model. The pattern for **TurboStreamCreateView** is *form-<model_name>* and for **TurboStreamUpdateView** *form-<model-name>-<pk>*. You can override this by setting the *target* attribute explicitly or overriding the *get_turbo_stream_target* method.
 
-A further point re: forms: Turbo processes forms using the FormData API and only includes inputs with a value. This means all buttons, inputs etc. must have a value. For example suppose you have a button like this:
+A final point re: forms: Turbo processes forms using the FormData API and only includes inputs with a value. This means all buttons, inputs etc. must have a value. For example suppose you have a button like this:
 
 .. code-block:: html
 
