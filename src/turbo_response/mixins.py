@@ -168,8 +168,6 @@ class TurboStreamFormMixin(TurboFormMixin):
     turbo_stream_template_prefix: str = "_"
     turbo_stream_template_name: Optional[str] = None
 
-    object: Optional[Model]
-    model: Type[Model]
     template_engine: Engine
     get_template_names: Callable
 
@@ -218,6 +216,9 @@ class TurboStreamFormMixin(TurboFormMixin):
 
 
 class TurboStreamFormModelMixin(TurboStreamFormMixin):
+    object: Optional[Model]
+    model: Type[Model]
+
     def get_turbo_stream_target(self) -> str:
         try:
             return super().get_turbo_stream_target()
