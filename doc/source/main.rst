@@ -329,8 +329,27 @@ As this is a useful pattern in many situations, for example when handling forms 
       template_name = "my_form.html"
 
 
-This mixin will automatically add the target name to the template context as *turbo_stream_target*. The partial template will be automatically resolved as the template name prefixed with an underscore: in this example, *_my_form.html*.
+This mixin will automatically add the target name to the template context as *turbo_stream_target*. The partial template will be automatically resolved as the template name prefixed with an underscore: in this example, *_my_form.html*. You can also set it explicitly with the *turbo_stream_template_name* class attribute.
 
+As with the form mixin above, the package includes a number of view classes using this mixin:
+
+- **turbo_response.views.TurboStreamFormView**
+- **turbo_response.views.TurboStreamCreateView**
+- **turbo_response.views.TurboStreamUpdateView**
+
+
+So the above example could be rewritten as:
+
+.. code-block:: python
+
+
+  from turbo_response.views import TurboStreamFormView
+
+  class MyView(TurboStreamFormView):
+      target = "form-target"
+      template_name = "my_form.html"
+
+The model-based classes automatically set the target DOM ID based on the model. The pattern for **TurboStreamCreateView** is *form-<model_name>* and for **TurboStreamUpdateView** *form-<model-name>-<pk>*. You can override this by setting the *target* attribute explicitly or overriding the *get_turbo_stream_target* method.
 
 A further point re: forms: Turbo processes forms using the FormData API and only includes inputs with a value. This means all buttons, inputs etc. must have a value. For example suppose you have a button like this:
 
