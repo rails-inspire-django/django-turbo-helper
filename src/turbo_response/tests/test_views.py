@@ -287,9 +287,6 @@ class TestTurboFrameTemplateView:
         turbo_frame_dom_id = "test"
         template_name = "simple.html"
 
-        def get_response_content(self):
-            return "done"
-
     def test_get(self, rf):
         req = rf.get("/")
         resp = self.MyView.as_view()(req)
