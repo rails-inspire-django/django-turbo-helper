@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.32] - 2021-2-2
+
+Refactoring modules
+
 ## [0.0.31] - 2021-2-2
 
 Refactoring mixin classes
