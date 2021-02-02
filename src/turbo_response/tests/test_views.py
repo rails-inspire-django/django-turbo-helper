@@ -227,7 +227,7 @@ class TestTurboStreamFormView:
         form_class = MyForm
         template_name = "my_form.html"
         success_url = "/done/"
-        target = "my-form"
+        turbo_stream_target = "my-form"
 
     def test_get(self, rf):
         req = rf.get("/")

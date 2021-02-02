@@ -325,7 +325,7 @@ As this is a useful pattern in many situations, for example when handling forms 
   from turbo_response.mixins import TurboStreamFormMixin
 
   class MyView(TurboStreamFormMixin, FormView):
-      target = "form-target"
+      turbo_stream_target = "form-target"
       template_name = "my_form.html"
       # action = Action.REPLACE
 
@@ -347,7 +347,7 @@ So the above example could be rewritten as:
   from turbo_response.views import TurboStreamFormView
 
   class MyView(TurboStreamFormView):
-      target = "form-target"
+      turbo_stream_target = "form-target"
       template_name = "my_form.html"
 
 The model-based classes automatically set the target DOM ID based on the model. The pattern for **TurboStreamCreateView** is *form-<model_name>* and for **TurboStreamUpdateView** *form-<model-name>-<pk>*. You can override this by setting the *target* attribute explicitly or overriding the *get_turbo_stream_target* method.

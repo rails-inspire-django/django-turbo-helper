@@ -1,5 +1,6 @@
 # Standard Library
 import http
+import warnings
 from typing import Any, Callable, Dict, List, Optional, Type
 
 # Django
@@ -134,7 +135,7 @@ class TurboFormModelMixin(TurboFormMixin):
         return super().form_valid(form)
 
 
-class TurboStreamFormMixin(TurboFormMixin):
+class TurboStreamFormMixin(TurboStreamArgsMixin, TurboFormMixin):
     """Returns a turbo stream when form is invalid.
 
     You should define a partial template corresponding to the template
@@ -159,8 +160,13 @@ class TurboStreamFormMixin(TurboFormMixin):
     partial content will be returned, including any validation errors.
     """
 
-    action: Action = Action.REPLACE
+    # deprecated
     target: Optional[str] = None
+
+    # deprecated
+    action: Action = Action.REPLACE
+
+    turbo_stream_action: Action = Action.REPLACE
 
     turbo_stream_template_prefix: str = "_"
     turbo_stream_template_name: Optional[str] = None
@@ -174,13 +180,25 @@ class TurboStreamFormMixin(TurboFormMixin):
         return start + join + self.turbo_stream_template_prefix + name
 
     def get_turbo_stream_target(self) -> str:
-        if self.target:
-            return self.target
+        # "target" is deprecated: should be turbo_stream_target
+        target = getattr(self, "target", None)
+        if target:
+            warnings.warn("'target' is deprecated: use turbo_stream_target instead")
+            return target
 
-        raise ImproperlyConfigured("target is not provided")
+        target = super().get_turbo_stream_target()
+        if not target:
+            raise ImproperlyConfigured("turbo_stream_target not set")
+        return target
 
     def get_turbo_stream_action(self) -> Action:
-        return self.action
+        if hasattr(self, "action") and self.action != Action.REPLACE:
+            warnings.warn("'action' is deprecated: use turbo_stream_action instead")
+            return self.action
+        action = super().get_turbo_stream_action()
+        if not action:
+            raise ImproperlyConfigured("turbo_stream_action not set")
+        return action
 
     def get_turbo_stream_template_names(self) -> List[str]:
         if self.turbo_stream_template_name:
