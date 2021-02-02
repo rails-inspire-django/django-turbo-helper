@@ -61,93 +61,39 @@ If the request originates from a turbo-frame it will also set the *frame* proper
       return TurboFrame(request.turbo.frame).response("OK")
 
 
-============================
-Rendering streams and frames
-============================
-
-
-To render a *<turbo-stream>* or *<turbo-frame>* tag, you can use two functions, **render_turbo_stream()** and **render_turbo_frame()** respectively:
-
-
-.. code-block:: python
-
-   from turbo_response import Action, render_turbo_stream, render_turbo_frame
-
-   # returns <turbo-stream action="replace" target="msg><template>OK</template></turbo-stream>
-   render_turbo_stream(action=Action.REPLACE, target="msg", content="OK")
-
-   # returns <turbo-frame id="msg>OK</turbo-frame>
-   render_turbo_frame(dom_id="msg", content="OK")
-
-Note that "content" can be empty, for example:
-
-.. code-block:: python
-
-   render_turbo_stream(action=Action.REMOVE, target="msg")
-
-
-If you want to render a Django template, use **render_turbo_stream_template()** and **render_turbo_frame_template()** instead:
-
-.. code-block:: python
-
-   from turbo_response import Action, render_turbo_stream_template, render_turbo_frame_template
-
-   render_turbo_stream_template("msg.html", {"msg": "hello"}, action=Action.REPLACE, target="msg")
-
-   render_turbo_frame_template("msg.html", {"msg": "hello"}, dom_id="msg")
-
-If you want to render a stream or target to an HTTP response, use the classes **TurboStreamResponse** and **TurboFrameResponse**:
-
-
-.. code-block:: python
-
-  from turbo_response import Action, TurboStreamResponse, TurboFrameResponse
-
-  def my_stream(request):
-      return TurboStreamResponse(action=Action.REPLACE, target="msg", content="OK")
-
-  def my_frame(request):
-      return TurboFrameResponse(dom_id="msg", content="OK")
-
-
-Finally if you wish to render Django templates in the response, use **TurboStreamTemplateResponse** and **TurboFrameTemplateResponse**:
-
-.. code-block:: python
-
-  from turbo_response import Action, TurboStreamTemplateResponse, TurboFrameTemplateResponse
-
-  def my_tmpl_stream(request):
-      return TurboStreamTemplateResponse(request, "msg.html", {"msg": "OK"}, action=Action.REPLACE, target="msg")
-
-  def my_tmpl_frame(request):
-      return TurboFrameTemplateResponse(request, "msg.html", {"msg": "OK"}, dom_id="msg")
-
-Note that these two classes subclass **django.template.response.TemplateResponse**.
-
-The response classes will ensure the correct content type header *text/html; turbo-stream;* is added to the response, so the Turbo client library knows how to handle these responses correctly.
-
 ===========================
 TurboFrame and TurboStream
 ===========================
 
-The classes and functions above are a bit verbose for common operations. A couple of helper classes, **TurboFrame** and **TurboStream**, provide a more ergonomic API. Let's rewrite the above examples using these helpers:
+A couple of classes, **TurboFrame** and **TurboStream**, provide the basic API for rendering streams and frames.
+
+To render plain strings:
 
 .. code-block:: python
 
   from turbo_response import TurboFrame, TurboStream
 
-  # first argument is the target
+  # returns <turbo-stream action="replace" target="msg><template>OK</template></turbo-stream>
   TurboStream("msg").replace.render("OK")
 
-  # be resolved as string
+  # returns <turbo-stream action="remove" target="msg><template></template></turbo-stream>
   TurboStream("msg").remove.render()
 
-  # first argument is the DOM ID
+  # returns <turbo-frame id="msg>OK</turbo-frame>
   TurboFrame("msg").render("OK")
+
+You can also render templates:
+
+.. code-block:: python
 
   TurboStream("msg").replace.template("msg.html", {"msg": "hello"}).render()
 
   TurboFrame("msg").template("msg.html", {"msg": "hello"}).render()
+
+You can also return an *HTTPResponse* subclass. The content type *text/html; turbo-stream;* will be added to the response:
+
+
+.. code-block:: python
 
   def my_stream(request):
       return TurboStream("msg").replace.response("OK")
@@ -160,6 +106,10 @@ The classes and functions above are a bit verbose for common operations. A coupl
 
   def my_tmpl_frame(request):
       return TurboFrame("msg").template("msg.html", {"msg": "OK"}).response(request)
+
+
+
+See the API docs for more details.
 
 
 ===============
