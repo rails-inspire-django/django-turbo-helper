@@ -4,8 +4,30 @@ import http
 # Django
 from django import forms
 
+# Third Party Libraries
+import pytest
+
 # Django Turbo Response
-from turbo_response.shortcuts import TurboFrame, TurboStream, render_form_response
+from turbo_response.shortcuts import redirect_303, render_form_response
+
+pytestmark = pytest.mark.django_db
+
+
+class TestRedirect303:
+    def test_plain_url(self):
+        resp = redirect_303("/")
+        assert resp.status_code == http.HTTPStatus.SEE_OTHER
+        assert resp.url == "/"
+
+    def test_view_name(self):
+        resp = redirect_303("index")
+        assert resp.status_code == http.HTTPStatus.SEE_OTHER
+        assert resp.url == "/"
+
+    def test_model(self, todo):
+        resp = redirect_303(todo)
+        assert resp.status_code == http.HTTPStatus.SEE_OTHER
+        assert resp.url == f"/todos/{todo.id}/"
 
 
 class TestRenderFormResponse:
@@ -28,58 +50,3 @@ class TestRenderFormResponse:
         resp = render_form_response(req, form, "my_form.html")
         assert resp.status_code == http.HTTPStatus.UNPROCESSABLE_ENTITY
         assert resp.context_data["form"] == form
-
-
-class TestTurboFrame:
-    def test_render(self):
-        s = TurboFrame("my-form").render("OK")
-        assert s == '<turbo-frame id="my-form">OK</turbo-frame>'
-
-    def test_template(self):
-        s = TurboFrame("my-form").template("simple.html", {}).render()
-        assert "my content" in s
-        assert '<turbo-frame id="my-form">' in s
-
-    def test_response(self):
-        resp = TurboFrame("my-form").response("OK")
-        assert resp.status_code == 200
-        assert b"OK" in resp.content
-        assert b'<turbo-frame id="my-form"' in resp.content
-
-    def test_template_response(self, rf):
-        req = rf.get("/")
-        resp = TurboFrame("my-form").template("simple.html", {}).response(req)
-        assert resp.status_code == 200
-        assert "is_turbo_frame" in resp.context_data
-        content = resp.render().content
-        assert b"my content" in content
-        assert b'<turbo-frame id="my-form"' in content
-
-
-class TestTurboStream:
-    def test_render(self):
-        s = TurboStream("my-form").append.render("OK")
-        assert (
-            s
-            == '<turbo-stream action="append" target="my-form"><template>OK</template></turbo-stream>'
-        )
-
-    def test_template(self):
-        s = TurboStream("my-form").append.template("simple.html", {}).render()
-        assert "my content" in s
-        assert '<turbo-stream action="append" target="my-form">' in s
-
-    def test_response(self):
-        resp = TurboStream("my-form").append.response("OK")
-        assert resp.status_code == 200
-        assert b"OK" in resp.content
-        assert b'<turbo-stream action="append" target="my-form"' in resp.content
-
-    def test_template_response(self, rf):
-        req = rf.get("/")
-        resp = TurboStream("my-form").append.template("simple.html", {}).response(req)
-        assert resp.status_code == 200
-        assert "is_turbo_stream" in resp.context_data
-        content = resp.render().content
-        assert b"my content" in content
-        assert b'<turbo-stream action="append" target="my-form"' in content

@@ -1,13 +1,25 @@
 # Standard Library
+import http
 from typing import Any, Dict, Iterable, Mapping, Optional, Union
 
 # Django
-from django.http import HttpRequest, HttpResponse, StreamingHttpResponse
+from django.http import (
+    HttpRequest,
+    HttpResponse,
+    HttpResponseRedirect,
+    StreamingHttpResponse,
+)
 from django.template.response import TemplateResponse
 
 # Local
 from .constants import TURBO_STREAM_MIME_TYPE, Action
 from .renderers import render_turbo_frame, render_turbo_stream
+
+
+class HttpResponseSeeOther(HttpResponseRedirect):
+    """Redirect with 303 status"""
+
+    status_code = http.HTTPStatus.SEE_OTHER
 
 
 class TurboStreamResponseMixin:

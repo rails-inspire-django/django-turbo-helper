@@ -1,0 +1,134 @@
+# Standard Library
+from typing import Any, Dict, List, Optional, Union
+
+# Django
+from django.http import HttpRequest
+
+# Local
+from .constants import Action
+from .renderers import render_turbo_stream
+from .response import TurboStreamResponse, TurboStreamTemplateResponse
+from .template import render_turbo_stream_template
+
+
+class TurboStreamAction:
+    """Returns strings and responses for a specific Turbo Stream action type."""
+
+    def __init__(self, target: str, action: Action):
+        """
+        :param target: Turbo Stream target
+        :param action: Turbo Stream action
+        """
+        self.action = action
+        self.target = target
+
+    def render(self, content: str = "") -> str:
+        """
+        :param content: enclosed content
+        :return: a *<turbo-stream>* string
+        """
+        return render_turbo_stream(
+            action=self.action, target=self.target, content=content
+        )
+
+    def response(self, content: str = "", **response_kwargs) -> TurboStreamResponse:
+        """
+        :param content: enclosed content
+        :return: a *<turbo-stream>* HTTP response wrapper
+        """
+        return TurboStreamResponse(
+            action=self.action, target=self.target, content=content, **response_kwargs
+        )
+
+    def template(
+        self,
+        template_name: Union[str, List[str]],
+        context=Optional[Dict[str, Any]],
+        **template_kwargs,
+    ):
+        """
+        :param template_name: Django template name
+        :param context: template context
+
+        :return: a *<turbo-stream>* template wrapper
+        """
+        return TurboStreamTemplateProxy(
+            template_name,
+            context,
+            action=self.action,
+            target=self.target,
+            **template_kwargs,
+        )
+
+
+class TurboStream:
+    """
+    Class for creating Turbo Stream strings and responses.
+    """
+
+    def __init__(self, target: str):
+        """
+        :param target: stream target
+        """
+        self.target = target
+
+    def action(self, action: Action) -> TurboStreamAction:
+        return TurboStreamAction(self.target, action)
+
+    @property
+    def append(self) -> TurboStreamAction:
+        return self.action(Action.APPEND)
+
+    @property
+    def prepend(self) -> TurboStreamAction:
+        return self.action(Action.PREPEND)
+
+    @property
+    def remove(self) -> TurboStreamAction:
+        return self.action(Action.REMOVE)
+
+    @property
+    def replace(self) -> TurboStreamAction:
+        return self.action(Action.REPLACE)
+
+    @property
+    def update(self) -> TurboStreamAction:
+        return self.action(Action.UPDATE)
+
+
+class TurboStreamTemplateProxy:
+    """Wraps template functionality."""
+
+    def __init__(
+        self,
+        template_name: Union[str, List[str]],
+        context: Dict[str, Any],
+        *,
+        action: Action,
+        target: str,
+        **template_kwargs,
+    ):
+        self.action = action
+        self.target = target
+        self.template_name = template_name
+        self.context = context
+        self.template_kwargs = template_kwargs
+
+    def render(self) -> str:
+        return render_turbo_stream_template(
+            self.template_name,
+            self.context,
+            action=self.action,
+            target=self.target,
+            **self.template_kwargs,
+        )
+
+    def response(self, request: HttpRequest, **kwargs) -> TurboStreamTemplateResponse:
+        return TurboStreamTemplateResponse(
+            request,
+            self.template_name,
+            self.context,
+            action=self.action,
+            target=self.target,
+            **{**self.template_kwargs, **kwargs},
+        )
