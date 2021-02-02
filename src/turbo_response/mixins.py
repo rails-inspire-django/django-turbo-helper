@@ -34,7 +34,9 @@ class TurboStreamArgsMixin:
         """
         action = self.get_turbo_stream_action()
         if not action:
-            raise ImproperlyConfigured("turbo stream action not defined")
+            raise ImproperlyConfigured(
+                f"turbo stream action not defined in {self.__class__}.get_turbo_stream_action"
+            )
         return action
 
     def get_turbo_stream_action(self) -> Optional[Action]:
@@ -52,7 +54,9 @@ class TurboStreamArgsMixin:
         """
         target = self.get_turbo_stream_target()
         if not target:
-            raise ImproperlyConfigured("turbo stream target not defined")
+            raise ImproperlyConfigured(
+                f"turbo stream target not defined in {self.__class__}.get_turbo_stream_target"
+            )
         return target
 
     def get_turbo_stream_target(self) -> Optional[str]:
@@ -65,6 +69,15 @@ class TurboStreamArgsMixin:
 
 class TurboFrameArgsMixin:
     turbo_frame_dom_id = None
+
+    def get_turbo_frame_dom_id_or_raise(self) -> str:
+
+        dom_id = self.get_turbo_frame_dom_id()
+        if not dom_id:
+            raise ImproperlyConfigured(
+                "turbo frame dom ID not defined in {self.__class__}.get_turbo_frame_dom_id"
+            )
+        return dom_id
 
     def get_turbo_frame_dom_id(self) -> Optional[str]:
         """Should return a valid DOM ID target for the turbo frame."""
@@ -268,10 +281,7 @@ class TurboFrameResponseMixin(TurboFrameArgsMixin):
     def render_turbo_frame(self, **response_kwargs) -> TurboFrameResponse:
         """Renders a turbo frame to response."""
 
-        dom_id = self.get_turbo_frame_dom_id()
-
-        if dom_id is None:
-            raise ValueError("dom_id must be specified")
+        dom_id = self.get_turbo_frame_dom_id_or_raise()
 
         return TurboFrameResponse(
             content=self.get_response_content(),
@@ -294,9 +304,7 @@ class TurboFrameTemplateResponseMixin(TurboFrameArgsMixin):
 
         :param context: template context
         """
-        dom_id = self.get_turbo_frame_dom_id()
-        if dom_id is None:
-            raise ValueError("dom_id must be specified")
+        dom_id = self.get_turbo_frame_dom_id_or_raise()
 
         return TurboFrameTemplateResponse(
             request=self.request,
