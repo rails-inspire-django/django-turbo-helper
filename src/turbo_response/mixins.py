@@ -1,6 +1,5 @@
 # Standard Library
 import http
-import warnings
 from typing import Any, Callable, Dict, List, Optional, Type
 
 # Django
@@ -23,22 +22,22 @@ class TurboStreamMixin:
     turbo_stream_target: Optional[str] = None
 
     def get_turbo_stream(self) -> TurboStreamAction:
-        return TurboStream(self.get_turbo_stream_target_or_raise()).action(
-            self.get_turbo_stream_action_or_raise()
-        )
 
-    def get_turbo_stream_action_or_raise(self) -> Action:
-        """Returns the turbo-stream action parameter
+        target = self.get_turbo_stream_target()
 
-        :return: turbo-stream action
-        :raise: ImproperlyConfigured
-        """
+        if not target:
+            raise ImproperlyConfigured(
+                f"turbo stream target not defined in {self.__class__}.get_turbo_stream_target"
+            )
+
         action = self.get_turbo_stream_action()
+
         if not action:
             raise ImproperlyConfigured(
                 f"turbo stream action not defined in {self.__class__}.get_turbo_stream_action"
             )
-        return action
+
+        return TurboStream(target).action(action)
 
     def get_turbo_stream_action(self) -> Optional[Action]:
         """Returns the turbo-stream action parameter
@@ -46,19 +45,6 @@ class TurboStreamMixin:
         :return: turbo-stream action
         """
         return self.turbo_stream_action
-
-    def get_turbo_stream_target_or_raise(self) -> str:
-        """Returns the turbo-stream action parameter
-
-        :return: turbo-stream target
-        :raise: ImproperlyConfigured
-        """
-        target = self.get_turbo_stream_target()
-        if not target:
-            raise ImproperlyConfigured(
-                f"turbo stream target not defined in {self.__class__}.get_turbo_stream_target"
-            )
-        return target
 
     def get_turbo_stream_target(self) -> Optional[str]:
         """Returns the turbo-stream target parameter
@@ -72,16 +58,13 @@ class TurboFrameMixin:
     turbo_frame_dom_id: Optional[str] = None
 
     def get_turbo_frame(self) -> TurboFrame:
-        return TurboFrame(self.get_turbo_frame_dom_id_or_raise())
-
-    def get_turbo_frame_dom_id_or_raise(self) -> str:
-
         dom_id = self.get_turbo_frame_dom_id()
         if not dom_id:
             raise ImproperlyConfigured(
                 "turbo frame dom ID not defined in {self.__class__}.get_turbo_frame_dom_id"
             )
-        return dom_id
+
+        return TurboFrame(dom_id)
 
     def get_turbo_frame_dom_id(self) -> Optional[str]:
         """Should return a valid DOM ID target for the turbo frame."""
@@ -175,14 +158,7 @@ class TurboStreamFormMixin(TurboStreamMixin, TurboFormMixin):
     partial content will be returned, including any validation errors.
     """
 
-    # deprecated
-    target: Optional[str] = None
-
-    # deprecated
-    action: Action = Action.REPLACE
-
     turbo_stream_action: Action = Action.REPLACE
-
     turbo_stream_template_prefix: str = "_"
     turbo_stream_template_name: Optional[str] = None
 
@@ -194,21 +170,6 @@ class TurboStreamFormMixin(TurboStreamMixin, TurboFormMixin):
         start, join, name = template_name.rpartition("/")
         return start + join + self.turbo_stream_template_prefix + name
 
-    def get_turbo_stream_target(self) -> Optional[str]:
-        # "target" is deprecated: should be turbo_stream_target
-        target = getattr(self, "target", None)
-        if target:
-            warnings.warn("'target' is deprecated: use turbo_stream_target instead")
-            return target
-
-        return super().get_turbo_stream_target()
-
-    def get_turbo_stream_action(self) -> Optional[Action]:
-        if hasattr(self, "action") and self.action != Action.REPLACE:
-            warnings.warn("'action' is deprecated: use turbo_stream_action instead")
-            return self.action
-        return super().get_turbo_stream_action()
-
     def get_turbo_stream_template_names(self) -> List[str]:
         if self.turbo_stream_template_name:
             return [self.turbo_stream_template_name]
@@ -218,8 +179,17 @@ class TurboStreamFormMixin(TurboStreamMixin, TurboFormMixin):
         ]
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        # TurboStream response will automatically add this,
+        # but we also want to access it in the initial render
         if "turbo_stream_target" not in kwargs:
-            kwargs["turbo_stream_target"] = self.get_turbo_stream_target_or_raise()
+            target = self.get_turbo_stream_target()
+
+            if not target:
+                raise ImproperlyConfigured(
+                    f"turbo stream target not defined in {self.__class__}.get_turbo_stream_target"
+                )
+
+            kwargs["turbo_stream_target"] = target
 
         return super().get_context_data(**kwargs)
 
@@ -229,9 +199,7 @@ class TurboStreamFormMixin(TurboStreamMixin, TurboFormMixin):
 
         return stream.template(
             self.get_turbo_stream_template_names(),
-            context=self.get_context_data(
-                is_turbo_stream=True, turbo_stream_target=stream.target, **context
-            ),
+            context=self.get_context_data(**context),
             using=self.template_engine,
         ).response(self.request)
 
