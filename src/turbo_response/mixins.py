@@ -224,7 +224,7 @@ class TurboStreamFormMixin(TurboStreamArgsMixin, TurboFormMixin):
             target=target,
             action=action,
             context=self.get_context_data(
-                is_turbo_stream=True, target=target, **context
+                is_turbo_stream=True, turbo_stream_target=target, **context
             ),
             using=self.template_engine,
         )
