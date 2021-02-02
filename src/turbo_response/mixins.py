@@ -195,13 +195,15 @@ class TurboStreamFormMixin(TurboStreamMixin, TurboFormMixin):
 
     def render_turbo_stream_response(self, **context) -> HttpResponse:
 
-        stream = self.get_turbo_stream()
-
-        return stream.template(
-            self.get_turbo_stream_template_names(),
-            context=self.get_context_data(**context),
-            using=self.template_engine,
-        ).response(self.request)
+        return (
+            self.get_turbo_stream()
+            .template(
+                self.get_turbo_stream_template_names(),
+                context=self.get_context_data(**context),
+                using=self.template_engine,
+            )
+            .response(self.request)
+        )
 
     def form_invalid(self, form: forms.Form) -> HttpResponse:
         return self.render_turbo_stream_response(form=form)
