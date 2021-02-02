@@ -77,25 +77,28 @@ class TurboStream:
         """
         self.target = target
 
+    def action(self, action: Action) -> TurboStreamAction:
+        return TurboStreamAction(self.target, action)
+
     @property
     def append(self) -> TurboStreamAction:
-        return TurboStreamAction(self.target, Action.APPEND)
+        return self.action(Action.APPEND)
 
     @property
     def prepend(self) -> TurboStreamAction:
-        return TurboStreamAction(self.target, Action.PREPEND)
+        return self.action(Action.PREPEND)
 
     @property
     def remove(self) -> TurboStreamAction:
-        return TurboStreamAction(self.target, Action.REMOVE)
+        return self.action(Action.REMOVE)
 
     @property
     def replace(self) -> TurboStreamAction:
-        return TurboStreamAction(self.target, Action.REPLACE)
+        return self.action(Action.REPLACE)
 
     @property
     def update(self) -> TurboStreamAction:
-        return TurboStreamAction(self.target, Action.UPDATE)
+        return self.action(Action.UPDATE)
 
 
 class TurboStreamTemplateProxy:
