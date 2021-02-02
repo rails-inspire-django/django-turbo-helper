@@ -68,7 +68,7 @@ class TurboStreamArgsMixin:
 
 
 class TurboFrameArgsMixin:
-    turbo_frame_dom_id = None
+    turbo_frame_dom_id: Optional[str] = None
 
     def get_turbo_frame(self) -> TurboFrame:
         return TurboFrame(self.get_turbo_frame_dom_id_or_raise())
@@ -224,15 +224,15 @@ class TurboStreamFormMixin(TurboStreamArgsMixin, TurboFormMixin):
 
     def render_turbo_stream_response(self, **context) -> HttpResponse:
 
-        return (
-            self.get_turbo_stream()
-            .template(
-                self.get_turbo_stream_template_names(),
-                context=self.get_context_data(is_turbo_stream=True, **context),
-                using=self.template_engine,
-            )
-            .response(self.request)
-        )
+        stream = self.get_turbo_stream()
+
+        return stream.template(
+            self.get_turbo_stream_template_names(),
+            context=self.get_context_data(
+                is_turbo_stream=True, turbo_stream_target=stream.target, **context
+            ),
+            using=self.template_engine,
+        ).response(self.request)
 
     def form_invalid(self, form: forms.Form) -> HttpResponse:
         return self.render_turbo_stream_response(form=form)
