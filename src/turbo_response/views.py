@@ -1,5 +1,5 @@
 # Standard Library
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 # Django
 from django.http import HttpRequest, HttpResponse
@@ -73,7 +73,7 @@ class TurboStreamDeleteView(TurboStreamResponseMixin, DeleteView):
 
     turbo_stream_action = Action.REMOVE
 
-    def get_turbo_stream_target(self) -> str:
+    def get_turbo_stream_target(self) -> Optional[str]:
         return f"{self.object._meta.model_name}-{self.object.pk}"
 
     def delete(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
