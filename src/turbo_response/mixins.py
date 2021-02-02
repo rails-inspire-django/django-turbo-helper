@@ -26,12 +26,34 @@ class TurboStreamArgsMixin:
     turbo_stream_action: Optional[Action] = None
     turbo_stream_target: Optional[str] = None
 
+    def get_turbo_stream_action_or_raise(self) -> Action:
+        """Returns the turbo-stream action parameter
+
+        :return: turbo-stream action
+        :raise: ImproperlyConfigured
+        """
+        action = self.get_turbo_stream_action()
+        if not action:
+            raise ImproperlyConfigured("turbo stream action not defined")
+        return action
+
     def get_turbo_stream_action(self) -> Optional[Action]:
         """Returns the turbo-stream action parameter
 
         :return: turbo-stream action
         """
         return self.turbo_stream_action
+
+    def get_turbo_stream_target_or_raise(self) -> str:
+        """Returns the turbo-stream action parameter
+
+        :return: turbo-stream target
+        :raise: ImproperlyConfigured
+        """
+        target = self.get_turbo_stream_target()
+        if not target:
+            raise ImproperlyConfigured("turbo stream target not defined")
+        return target
 
     def get_turbo_stream_target(self) -> Optional[str]:
         """Returns the turbo-stream target parameter
@@ -59,14 +81,8 @@ class TurboStreamResponseMixin(TurboStreamArgsMixin):
 
     def render_turbo_stream(self, **response_kwargs) -> TurboStreamResponse:
         """Returns a turbo-stream response."""
-        target = self.get_turbo_stream_target()
-        action = self.get_turbo_stream_action()
-
-        if target is None:
-            raise ImproperlyConfigured("target is None")
-
-        if action is None:
-            raise ImproperlyConfigured("action is None")
+        target = self.get_turbo_stream_target_or_raise()
+        action = self.get_turbo_stream_action_or_raise()
 
         return TurboStreamResponse(
             action=action,
@@ -91,14 +107,8 @@ class TurboStreamTemplateResponseMixin(TurboStreamArgsMixin):
         :param context: template context
         """
 
-        target = self.get_turbo_stream_target()
-        action = self.get_turbo_stream_action()
-
-        if target is None:
-            raise ImproperlyConfigured("target is None")
-
-        if action is None:
-            raise ImproperlyConfigured("action is None")
+        target = self.get_turbo_stream_target_or_raise()
+        action = self.get_turbo_stream_action_or_raise()
 
         return TurboStreamTemplateResponse(
             request=self.request,
@@ -179,26 +189,20 @@ class TurboStreamFormMixin(TurboStreamArgsMixin, TurboFormMixin):
         start, join, name = template_name.rpartition("/")
         return start + join + self.turbo_stream_template_prefix + name
 
-    def get_turbo_stream_target(self) -> str:
+    def get_turbo_stream_target(self) -> Optional[str]:
         # "target" is deprecated: should be turbo_stream_target
         target = getattr(self, "target", None)
         if target:
             warnings.warn("'target' is deprecated: use turbo_stream_target instead")
             return target
 
-        target = super().get_turbo_stream_target()
-        if not target:
-            raise ImproperlyConfigured("turbo_stream_target not set")
-        return target
+        return super().get_turbo_stream_target()
 
-    def get_turbo_stream_action(self) -> Action:
+    def get_turbo_stream_action(self) -> Optional[Action]:
         if hasattr(self, "action") and self.action != Action.REPLACE:
             warnings.warn("'action' is deprecated: use turbo_stream_action instead")
             return self.action
-        action = super().get_turbo_stream_action()
-        if not action:
-            raise ImproperlyConfigured("turbo_stream_action not set")
-        return action
+        return super().get_turbo_stream_action()
 
     def get_turbo_stream_template_names(self) -> List[str]:
         if self.turbo_stream_template_name:
@@ -210,13 +214,13 @@ class TurboStreamFormMixin(TurboStreamArgsMixin, TurboFormMixin):
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         if "turbo_stream_target" not in kwargs:
-            kwargs["turbo_stream_target"] = self.get_turbo_stream_target()
+            kwargs["turbo_stream_target"] = self.get_turbo_stream_target_or_raise()
 
         return super().get_context_data(**kwargs)
 
     def render_turbo_stream_response(self, **context) -> HttpResponse:
-        target = self.get_turbo_stream_target()
-        action = self.get_turbo_stream_action()
+        target = self.get_turbo_stream_target_or_raise()
+        action = self.get_turbo_stream_action_or_raise()
 
         return TurboStreamTemplateResponse(
             request=self.request,
@@ -237,18 +241,18 @@ class TurboStreamFormModelMixin(TurboStreamFormMixin):
     object: Optional[Model]
     model: Type[Model]
 
-    def get_turbo_stream_target(self) -> str:
-        try:
-            return super().get_turbo_stream_target()
+    def get_turbo_stream_target(self) -> Optional[str]:
+        target = super().get_turbo_stream_target()
+        if target:
+            return target
 
-        except ImproperlyConfigured:
-            if isinstance(self.object, Model):
-                return f"form-{self.object._meta.model_name}-{self.object.pk}"
+        if isinstance(self.object, Model):
+            return f"form-{self.object._meta.model_name}-{self.object.pk}"
 
-            elif self.model:
-                return f"form-{self.model._meta.model_name}"
+        elif self.model:
+            return f"form-{self.model._meta.model_name}"
 
-            raise
+        return None
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
         self.object = form.save()
