@@ -14,17 +14,17 @@ from django.views.generic.edit import FormMixin
 # Local
 from .constants import Action
 from .redirects import HttpResponseSeeOther
-from .response import (
-    TurboFrameResponse,
-    TurboFrameTemplateResponse,
-    TurboStreamResponse,
-    TurboStreamTemplateResponse,
-)
+from .shortcuts import TurboFrame, TurboStream, TurboStreamAction
 
 
 class TurboStreamArgsMixin:
     turbo_stream_action: Optional[Action] = None
     turbo_stream_target: Optional[str] = None
+
+    def get_turbo_stream(self) -> TurboStreamAction:
+        return TurboStream(self.get_turbo_stream_target_or_raise()).action(
+            self.get_turbo_stream_action_or_raise()
+        )
 
     def get_turbo_stream_action_or_raise(self) -> Action:
         """Returns the turbo-stream action parameter
@@ -70,6 +70,9 @@ class TurboStreamArgsMixin:
 class TurboFrameArgsMixin:
     turbo_frame_dom_id = None
 
+    def get_turbo_frame(self) -> TurboFrame:
+        return TurboFrame(self.get_turbo_frame_dom_id_or_raise())
+
     def get_turbo_frame_dom_id_or_raise(self) -> str:
 
         dom_id = self.get_turbo_frame_dom_id()
@@ -92,16 +95,10 @@ class TurboStreamResponseMixin(TurboStreamArgsMixin):
 
         return ""
 
-    def render_turbo_stream(self, **response_kwargs) -> TurboStreamResponse:
+    def render_turbo_stream(self, **response_kwargs) -> HttpResponse:
         """Returns a turbo-stream response."""
-        target = self.get_turbo_stream_target_or_raise()
-        action = self.get_turbo_stream_action_or_raise()
-
-        return TurboStreamResponse(
-            action=action,
-            target=target,
-            content=self.get_response_content(),
-            **response_kwargs,
+        return self.get_turbo_stream().response(
+            self.get_response_content(), **response_kwargs
         )
 
 
@@ -114,22 +111,16 @@ class TurboStreamTemplateResponseMixin(TurboStreamArgsMixin):
 
     def render_turbo_stream(
         self, context: Dict[str, Any], **response_kwargs
-    ) -> TurboStreamTemplateResponse:
+    ) -> HttpResponse:
         """Renders a turbo-stream template response.
 
         :param context: template context
         """
 
-        target = self.get_turbo_stream_target_or_raise()
-        action = self.get_turbo_stream_action_or_raise()
-
-        return TurboStreamTemplateResponse(
-            request=self.request,
-            template=self.get_template_names(),
-            target=target,
-            action=action,
-            context=context,
-            using=self.template_engine,
+        return (
+            self.get_turbo_stream()
+            .template(self.get_template_names(), context, using=self.template_engine)
+            .response(self.request)
         )
 
 
@@ -232,18 +223,15 @@ class TurboStreamFormMixin(TurboStreamArgsMixin, TurboFormMixin):
         return super().get_context_data(**kwargs)
 
     def render_turbo_stream_response(self, **context) -> HttpResponse:
-        target = self.get_turbo_stream_target_or_raise()
-        action = self.get_turbo_stream_action_or_raise()
 
-        return TurboStreamTemplateResponse(
-            request=self.request,
-            template=self.get_turbo_stream_template_names(),
-            target=target,
-            action=action,
-            context=self.get_context_data(
-                is_turbo_stream=True, turbo_stream_target=target, **context
-            ),
-            using=self.template_engine,
+        return (
+            self.get_turbo_stream()
+            .template(
+                self.get_turbo_stream_template_names(),
+                context=self.get_context_data(is_turbo_stream=True, **context),
+                using=self.template_engine,
+            )
+            .response(self.request)
         )
 
     def form_invalid(self, form: forms.Form) -> HttpResponse:
@@ -278,15 +266,11 @@ class TurboFrameResponseMixin(TurboFrameArgsMixin):
     def get_response_content(self) -> str:
         return ""
 
-    def render_turbo_frame(self, **response_kwargs) -> TurboFrameResponse:
+    def render_turbo_frame(self, **response_kwargs) -> HttpResponse:
         """Renders a turbo frame to response."""
 
-        dom_id = self.get_turbo_frame_dom_id_or_raise()
-
-        return TurboFrameResponse(
-            content=self.get_response_content(),
-            dom_id=dom_id,
-            **response_kwargs,
+        return self.get_turbo_frame().response(
+            self.get_response_content(), **response_kwargs
         )
 
 
@@ -299,18 +283,13 @@ class TurboFrameTemplateResponseMixin(TurboFrameArgsMixin):
 
     def render_turbo_frame(
         self, context: Dict[str, Any], **response_kwargs
-    ) -> TurboFrameTemplateResponse:
+    ) -> HttpResponse:
         """Returns a turbo-frame response.
 
         :param context: template context
         """
-        dom_id = self.get_turbo_frame_dom_id_or_raise()
-
-        return TurboFrameTemplateResponse(
-            request=self.request,
-            template=self.get_template_names(),
-            dom_id=dom_id,
-            context=context,
-            using=self.template_engine,
-            **response_kwargs,
+        return (
+            self.get_turbo_frame()
+            .template(self.get_template_names(), context, using=self.template_engine)
+            .response(self.request)
         )

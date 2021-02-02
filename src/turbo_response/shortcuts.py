@@ -1,6 +1,6 @@
 # Standard Library
 import http
-from typing import Any, Dict, Iterable, Optional, Union
+from typing import Any, Dict, Iterable, List, Optional, Union
 
 # Django
 from django.forms import Form
@@ -49,7 +49,10 @@ class TurboStreamAction:
         )
 
     def template(
-        self, template_name: str, context=Optional[Dict[str, Any]], **template_kwargs
+        self,
+        template_name: Union[str, List[str]],
+        context=Optional[Dict[str, Any]],
+        **template_kwargs,
     ):
         """
         :param template_name: Django template name
@@ -104,7 +107,15 @@ class TurboStream:
 class TurboStreamTemplateProxy:
     """Wraps template functionality."""
 
-    def __init__(self, template_name, context, *, action, target, **template_kwargs):
+    def __init__(
+        self,
+        template_name: Union[str, List[str]],
+        context: Dict[str, Any],
+        *,
+        action: Action,
+        target: str,
+        **template_kwargs,
+    ):
         self.action = action
         self.target = target
         self.template_name = template_name
@@ -136,7 +147,7 @@ class TurboFrameTemplateProxy:
 
     def __init__(
         self,
-        template_name: str,
+        template_name: Union[str, List[str]],
         context: Dict[str, Any],
         *,
         dom_id: str,
@@ -192,7 +203,10 @@ class TurboFrame:
         )
 
     def template(
-        self, template_name: str, context=Optional[Dict[str, Any]], **template_kwargs
+        self,
+        template_name: Union[str, List[str]],
+        context=Optional[Dict[str, Any]],
+        **template_kwargs,
     ) -> TurboFrameTemplateProxy:
         """
         :param template_name: Django template name(s)
