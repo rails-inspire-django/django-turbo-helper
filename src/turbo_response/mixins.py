@@ -120,7 +120,7 @@ class TurboFormMixin(FormMixin):
         )
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
-        super().form_valid(form)
+        super().form_valid(form)  # type: ignore
         return HttpResponseSeeOther(self.get_success_url())
 
 
