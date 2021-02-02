@@ -8,6 +8,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Model
 from django.http import HttpRequest, HttpResponse
 from django.template.engine import Engine
+from django.views.generic.edit import FormMixin
 
 # Local
 from .constants import Action
@@ -108,14 +109,9 @@ class TurboStreamTemplateResponseMixin(TurboStreamArgsMixin):
         )
 
 
-class TurboFormMixin:
+class TurboFormMixin(FormMixin):
     """Mixin for handling form validation. Ensures response
     has 422 status on invalid and 303 on success"""
-
-    request: HttpRequest
-    render_to_response: Callable
-    get_success_url: Callable
-    get_context_data: Callable
 
     def form_invalid(self, form: forms.Form) -> HttpResponse:
         return self.render_to_response(
