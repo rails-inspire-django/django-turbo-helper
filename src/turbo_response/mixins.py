@@ -17,7 +17,7 @@ from .redirects import HttpResponseSeeOther
 from .shortcuts import TurboFrame, TurboStream, TurboStreamAction
 
 
-class TurboStreamArgsMixin:
+class TurboStreamMixin:
     turbo_stream_action: Optional[Action] = None
     turbo_stream_target: Optional[str] = None
 
@@ -67,7 +67,7 @@ class TurboStreamArgsMixin:
         return self.turbo_stream_target
 
 
-class TurboFrameArgsMixin:
+class TurboFrameMixin:
     turbo_frame_dom_id: Optional[str] = None
 
     def get_turbo_frame(self) -> TurboFrame:
@@ -87,7 +87,7 @@ class TurboFrameArgsMixin:
         return self.turbo_frame_dom_id
 
 
-class TurboStreamResponseMixin(TurboStreamArgsMixin):
+class TurboStreamResponseMixin(TurboStreamMixin):
     """Handles turbo-stream responses"""
 
     def get_response_content(self) -> str:
@@ -102,7 +102,7 @@ class TurboStreamResponseMixin(TurboStreamArgsMixin):
         )
 
 
-class TurboStreamTemplateResponseMixin(TurboStreamArgsMixin):
+class TurboStreamTemplateResponseMixin(TurboStreamMixin):
     """Handles turbo-stream template responses."""
 
     request: HttpRequest
@@ -149,7 +149,7 @@ class TurboFormModelMixin(TurboFormMixin):
         return super().form_valid(form)
 
 
-class TurboStreamFormMixin(TurboStreamArgsMixin, TurboFormMixin):
+class TurboStreamFormMixin(TurboStreamMixin, TurboFormMixin):
     """Returns a turbo stream when form is invalid.
 
     You should define a partial template corresponding to the template
@@ -260,7 +260,7 @@ class TurboStreamFormModelMixin(TurboStreamFormMixin):
         return super().form_valid(form)
 
 
-class TurboFrameResponseMixin(TurboFrameArgsMixin):
+class TurboFrameResponseMixin(TurboFrameMixin):
     """Renders turbo-frame responses"""
 
     def get_response_content(self) -> str:
@@ -274,7 +274,7 @@ class TurboFrameResponseMixin(TurboFrameArgsMixin):
         )
 
 
-class TurboFrameTemplateResponseMixin(TurboFrameArgsMixin):
+class TurboFrameTemplateResponseMixin(TurboFrameMixin):
     """Handles turbo-frame template responses."""
 
     request: HttpRequest
