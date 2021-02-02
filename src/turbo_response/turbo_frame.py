@@ -9,7 +9,7 @@ from .response import TurboFrameResponse, TurboFrameTemplateResponse, render_tur
 from .template import render_turbo_frame_template
 
 
-class TurboFrameTemplateProxy:
+class TurboFrameTemplate:
     """Wraps template functionality."""
 
     def __init__(
@@ -74,12 +74,12 @@ class TurboFrame:
         template_name: Union[str, List[str]],
         context=Optional[Dict[str, Any]],
         **template_kwargs,
-    ) -> TurboFrameTemplateProxy:
+    ) -> TurboFrameTemplate:
         """
         :param template_name: Django template name(s)
         :param context: template context
         :return: a *<turbo-frame>* HTTP response
         """
-        return TurboFrameTemplateProxy(
+        return TurboFrameTemplate(
             template_name, context, dom_id=self.dom_id, **template_kwargs
         )
