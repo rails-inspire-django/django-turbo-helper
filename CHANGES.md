@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.31] - 2021-2-2
+
+Refactoring mixin classes
+
 ## [0.0.30] - 2021-2-1
 
 **TurboStreamIterableResponse** removed
