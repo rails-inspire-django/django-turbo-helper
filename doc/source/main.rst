@@ -90,7 +90,7 @@ You can also render templates:
 
   TurboFrame("msg").template("msg.html", {"msg": "hello"}).render()
 
-You can also return an *HTTPResponse* subclass. The content type *text/html; turbo-stream;* will be added to the response:
+You can also return an *HTTPResponse* subclass. The content type *text/html; turbo-stream;* will be added to turbo stream responses.
 
 
 .. code-block:: python
