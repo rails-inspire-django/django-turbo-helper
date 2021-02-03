@@ -1,5 +1,5 @@
 # Django Turbo Response
-from turbo_response.turbo_stream import TurboStream
+from turbo_response import TurboStream
 
 
 class TestTurboStream:

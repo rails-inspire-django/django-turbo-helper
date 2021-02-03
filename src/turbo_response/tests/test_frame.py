@@ -1,5 +1,5 @@
 # Django Turbo Response
-from turbo_response.turbo_frame import TurboFrame
+from turbo_response import TurboFrame
 
 
 class TestTurboFrame:

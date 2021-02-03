@@ -1,5 +1,6 @@
 # Local
 from .constants import Action
+from .frame import TurboFrame
 from .renderers import render_turbo_frame, render_turbo_stream
 from .response import (
     HttpResponseSeeOther,
@@ -10,9 +11,8 @@ from .response import (
     TurboStreamTemplateResponse,
 )
 from .shortcuts import redirect_303, render_form_response
+from .stream import TurboStream
 from .template import render_turbo_frame_template, render_turbo_stream_template
-from .turbo_frame import TurboFrame
-from .turbo_stream import TurboStream
 
 __all__ = [
     "Action",

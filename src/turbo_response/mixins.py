@@ -12,9 +12,9 @@ from django.views.generic.edit import FormMixin
 
 # Local
 from .constants import Action
+from .frame import TurboFrame
 from .response import HttpResponseSeeOther
-from .turbo_frame import TurboFrame
-from .turbo_stream import TurboStream, TurboStreamAction
+from .stream import TurboStream, TurboStreamAction
 
 
 class TurboStreamMixin:
