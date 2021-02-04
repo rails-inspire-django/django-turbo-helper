@@ -3,12 +3,14 @@ import http
 
 # Django
 from django import forms
+from django.views.generic import CreateView
 
 # Third Party Libraries
 import pytest
 
 # Django Turbo Response
 from turbo_response import Action
+from turbo_response.mixins import TurboFormAdapterMixin
 from turbo_response.tests.testapp.forms import TodoForm
 from turbo_response.tests.testapp.models import TodoItem
 from turbo_response.views import (
@@ -30,6 +32,44 @@ pytestmark = pytest.mark.django_db
 
 class MyForm(forms.Form):
     description = forms.CharField()
+
+
+class TestTurboFormAdapterView:
+    """Adapt an existing view without touching internals"""
+
+    class MyView(TurboFormAdapterMixin, CreateView):
+        form_class = TodoForm
+        model = TodoItem
+        success_url = "/done/"
+
+    def test_get(self, rf):
+        req = rf.get("/")
+        resp = self.MyView.as_view()(req)
+        assert resp.status_code == http.HTTPStatus.OK
+        assert resp["Content-Type"] == "text/html; charset=utf-8"
+        assert "form" in resp.context_data
+        assert resp.template_name == ["testapp/todoitem_form.html"]
+
+    def test_get_with_explicit_target(self, rf):
+        req = rf.get("/")
+        resp = self.MyView.as_view()(req)
+        assert resp.status_code == http.HTTPStatus.OK
+        assert resp["Content-Type"] == "text/html; charset=utf-8"
+        assert "form" in resp.context_data
+        assert resp.template_name == ["testapp/todoitem_form.html"]
+
+    def test_post_with_validation_errors(self, rf):
+        req = rf.post("/", {})
+        resp = self.MyView.as_view()(req)
+        assert resp.status_code == http.HTTPStatus.UNPROCESSABLE_ENTITY
+        assert resp.template_name == ["testapp/todoitem_form.html"]
+
+    def test_post_success(self, rf):
+        req = rf.post("/", {"description": "ok"})
+        resp = self.MyView.as_view()(req)
+        assert resp.url == "/done/"
+        assert resp.status_code == http.HTTPStatus.SEE_OTHER
+        assert TodoItem.objects.count() == 1
 
 
 class TestTurboStreamView:

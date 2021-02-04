@@ -108,19 +108,36 @@ class TurboStreamTemplateResponseMixin(TurboStreamMixin):
         )
 
 
-class TurboFormMixin(FormMixin):
-    """Mixin for handling form validation. Ensures response
-    has 422 status on invalid and 303 on success"""
-
+class TurboFormValidationMixin(FormMixin):
     def form_invalid(self, form: forms.Form) -> HttpResponse:
         return self.render_to_response(
             self.get_context_data(form=form),
             status=http.HTTPStatus.UNPROCESSABLE_ENTITY,
         )
 
+
+class TurboFormMixin(TurboFormValidationMixin, FormMixin):
+    """Mixin for handling form validation. Ensures response
+    has 422 status on invalid and 303 on success"""
+
     def form_valid(self, form: forms.Form) -> HttpResponse:
         super().form_valid(form)  # type: ignore
         return HttpResponseSeeOther(self.get_success_url())
+
+
+class TurboFormAdapterMixin(TurboFormValidationMixin, FormMixin):
+    """This is used when you want to adapt an existing view,
+    e.g. in 3rd party code."""
+
+    def form_valid(self, form: forms.Form) -> HttpResponse:
+        response = super().form_valid(form)  # type: ignore
+        # if we already return a response, just change the status code
+        if response.status_code in (
+            http.HTTPStatus.MOVED_PERMANENTLY,
+            http.HTTPStatus.FOUND,
+        ):
+            response.status_code = http.HTTPStatus.SEE_OTHER
+        return response
 
 
 class TurboFormModelMixin(TurboFormMixin):
