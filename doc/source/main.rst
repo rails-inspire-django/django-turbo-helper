@@ -422,7 +422,7 @@ Or using a generator:
           yield TurboStream("cart-summary-total").replace.render(total_amount)
       return TurboStreamStreamingResponse(render_response())
 
-That's it! In this example are returning a very simple string value, so we don't need to wrap the responses in templates. If you want to do so, use **turbo_response.render_stream_template** instead.
+That's it! In this example are returning a very simple string value, so we don't need to wrap the responses in templates.
 
 Note that this technique is something of an anti-pattern; if you have to update multiple parts of a page, a full refresh (i.e. a normal Turbo visit) is probably a better idea. It's useful though in some edge cases where you need to avoid this.
 
