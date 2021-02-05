@@ -45,12 +45,10 @@ This is useful if you want to check if a stream is requested, so you can optiona
 
 .. code-block:: python
 
-  from turbo_response import redirect_303
-
   if request.turbo:
-      return TurboStreamResponse(action=Action.REPLACE, target="item")
+      return TurboStream("item").replace.response("OK")
   else:
-      return redirect_303("index")
+      return redirect("index")
 
 If the request originates from a turbo-frame it will also set the *frame* property:
 
@@ -60,6 +58,7 @@ If the request originates from a turbo-frame it will also set the *frame* proper
   if request.turbo.frame == "my-playlist":
       return TurboFrame(request.turbo.frame).response("OK")
 
+**Note**: there is an open bug https://github.com/hotwired/turbo/issues/86 (still open as of turbo beta.4) where the turbo frame header is not added when posting from a form. Until this is fixed, *request.turbo.frame* will only work with links, not forms.
 
 ===========================
 TurboFrame and TurboStream
