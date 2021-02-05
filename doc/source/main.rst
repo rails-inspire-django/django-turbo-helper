@@ -574,7 +574,7 @@ When the user visits this page, they will see the loading gif at the bottom of t
 Channels
 ========
 
-This library can also be used with `django-channels <https://channels.readthedocs.io/en/stable/>`_ Consumers with the helper functions **render_turbo_stream()** and **render_turbo_stream_template()** when broadcasting streams (or the equivalent **TurboStream** methods):
+This library can also be used with `django-channels <https://channels.readthedocs.io/en/stable/>`_. As with multiple streams, you can use the **TurboStream** class to broadcast turbo-stream content from your consumers.
 
 .. code-block:: python
 
@@ -591,20 +591,17 @@ This library can also be used with `django-channels <https://channels.readthedoc
 
           if message:
               await self.send(
-                  render_turbo_stream(
-                      str(num_unread_messages),
-                      action=Action.REPLACE,
-                      target="unread_message_counter"
-                  )
+                  TurboStream("unread_message_counter")
+                  .replace.render(str(num_unread_messages))
+              )
 
               await self.send(
-                  render_turbo_stream_template(
-                      "chat/_message.html",
-                      {"message": message, "user": self.scope['user']},
-                      action=Action.APPEND,
-                      target="messages",
-                  )
+                  TurboStream("messages").append.template(
+                    "chat/_message.html",
+                    {"message": message, "user": self.scope['user']},
+                  ).render()
               )
+
 
 See the django-channels documentation for more details on setting up ASGI and channels. Note that you will need to set up your WebSockets in the client, for example in a Stimulus controller:
 
@@ -631,6 +628,8 @@ See the django-channels documentation for more details on setting up ASGI and ch
       }
     }
   }
+
+**Note** if you want to add reactivity directly to your models, so that model changes broadcast turbo-streams automatically, we recommend the `turbo-django <https://github.com/hotwire-django/turbo-django>`_ package.
 
 =====
 Links
