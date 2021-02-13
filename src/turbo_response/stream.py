@@ -17,7 +17,7 @@ class TurboStreamTemplate:
     def __init__(
         self,
         template_name: Union[str, List[str]],
-        context: Dict[str, Any],
+        context: Optional[Dict[str, Any]] = None,
         *,
         action: Action,
         target: str,
@@ -29,16 +29,19 @@ class TurboStreamTemplate:
         self.context = context
         self.template_kwargs = template_kwargs
 
-    def render(self) -> str:
+    def render(self, **kwargs) -> str:
         return render_turbo_stream_template(
             self.template_name,
             self.context,
             action=self.action,
             target=self.target,
-            **self.template_kwargs,
+            **{**self.template_kwargs, **kwargs},
         )
 
-    def response(self, request: HttpRequest, **kwargs) -> TurboStreamTemplateResponse:
+    def response(
+        self, request: Optional[HttpRequest] = None, **kwargs
+    ) -> TurboStreamTemplateResponse:
+        request = request or self.template_kwargs.pop("request", None)
         return TurboStreamTemplateResponse(
             request,
             self.template_name,
@@ -81,7 +84,7 @@ class TurboStreamAction:
     def template(
         self,
         template_name: Union[str, List[str]],
-        context=Optional[Dict[str, Any]],
+        context: Optional[Dict[str, Any]] = None,
         **template_kwargs,
     ) -> TurboStreamTemplate:
         """

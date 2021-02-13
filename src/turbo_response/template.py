@@ -1,5 +1,5 @@
 # Standard Library
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 
 # Django
 from django.template.loader import render_to_string
@@ -11,7 +11,7 @@ from .renderers import render_turbo_frame, render_turbo_stream
 
 def render_turbo_stream_template(
     template: Union[str, List[str]],
-    context: Dict[str, Any],
+    context: Optional[Dict[str, Any]] = None,
     *,
     action: Action,
     target: str,
@@ -30,7 +30,7 @@ def render_turbo_stream_template(
         render_to_string(
             template,
             {
-                **context,
+                **(context or {}),
                 "turbo_stream_target": target,
                 "turbo_stream_action": action.value,
                 "is_turbo_stream": True,
@@ -41,7 +41,11 @@ def render_turbo_stream_template(
 
 
 def render_turbo_frame_template(
-    template: Union[str, List[str]], context: Dict[str, Any], *, dom_id: str, **kwargs
+    template: Union[str, List[str]],
+    context: Optional[Dict[str, Any]] = None,
+    *,
+    dom_id: str,
+    **kwargs
 ) -> str:
     """Renders a *<turbo-frame>* template.
 
@@ -54,7 +58,7 @@ def render_turbo_frame_template(
         dom_id,
         render_to_string(
             template,
-            {**context, "turbo_frame_dom_id": dom_id, "is_turbo_frame": True},
+            {**(context or {}), "turbo_frame_dom_id": dom_id, "is_turbo_frame": True},
             **kwargs,
         ),
     )

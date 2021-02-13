@@ -92,7 +92,7 @@ class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
         self,
         request: HttpRequest,
         template: Union[str, Iterable[str]],
-        context: Dict[str, Any],
+        context: Optional[Dict[str, Any]] = None,
         *,
         action: Action,
         target: str,
@@ -103,7 +103,7 @@ class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
             request,
             template,
             {
-                **context,
+                **(context or {}),
                 "turbo_stream_action": action.value,
                 "turbo_stream_target": target,
                 "is_turbo_stream": True,

@@ -15,7 +15,7 @@ class TurboFrameTemplate:
     def __init__(
         self,
         template_name: Union[str, List[str]],
-        context: Dict[str, Any],
+        context: Optional[Dict[str, Any]] = None,
         *,
         dom_id: str,
         **template_kwargs,
@@ -25,16 +25,22 @@ class TurboFrameTemplate:
         self.template_kwargs = template_kwargs
         self.dom_id = dom_id
 
-    def render(self) -> str:
+    def render(self, **kwargs) -> str:
         """
         :param content: enclosed content
         :return: a *<turbo-frame>* string
         """
         return render_turbo_frame_template(
-            self.template_name, self.context, dom_id=self.dom_id, **self.template_kwargs
+            self.template_name,
+            self.context,
+            dom_id=self.dom_id,
+            **{**self.template_kwargs, **kwargs},
         )
 
-    def response(self, request: HttpRequest, **kwargs) -> TurboFrameTemplateResponse:
+    def response(
+        self, request: Optional[HttpRequest] = None, **kwargs
+    ) -> TurboFrameTemplateResponse:
+        request = request or self.template_kwargs.pop("request", None)
         return TurboFrameTemplateResponse(
             request,
             self.template_name,
