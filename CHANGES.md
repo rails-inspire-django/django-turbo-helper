@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.34] - 2021-2-13
+
+Tidy up argument parsing in API
+
 ## [0.0.33] - 2021-2-4
 
 Mixin **TurboFormAdapterMixin** added
