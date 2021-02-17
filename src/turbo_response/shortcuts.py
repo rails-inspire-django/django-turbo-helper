@@ -42,16 +42,21 @@ def render_form_response(
 
     context = {"form": form, **(context or {})}
 
-    if turbo_stream_target:
-        context["turbo_stream_target"] = turbo_stream_target
-
-    if form.errors and turbo_stream_template and turbo_stream_target:
-        return (
-            TurboStream(turbo_stream_target)
-            .action(turbo_stream_action)
-            .template(turbo_stream_template, context)
-            .response(request)
+    if turbo_stream_template and turbo_stream_target:
+        context.update(
+            {
+                "turbo_stream_target": turbo_stream_target,
+                "turbo_stream_template": turbo_stream_template,
+            }
         )
+
+        if form.errors:
+            return (
+                TurboStream(turbo_stream_target)
+                .action(turbo_stream_action)
+                .template(turbo_stream_template, context)
+                .response(request)
+            )
 
     return TemplateResponse(
         request,
