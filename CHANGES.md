@@ -1,5 +1,9 @@
 # Changelog
 
+## [Latest]
+
+**render_form_response** adds turbo_stream_template name to context
+
 ## [0.0.35] - 2021-2-17
 
 **render_form_response** can optionally re-render form as turbo stream
