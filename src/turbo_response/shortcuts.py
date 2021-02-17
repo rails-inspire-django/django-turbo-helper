@@ -55,7 +55,7 @@ def render_form_response(
                 TurboStream(turbo_stream_target)
                 .action(turbo_stream_action)
                 .template(turbo_stream_template, context)
-                .response(request)
+                .response(request, **response_kwargs)
             )
 
     return TemplateResponse(
