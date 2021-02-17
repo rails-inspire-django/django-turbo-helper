@@ -29,7 +29,7 @@ def render_form_response(
     template: Union[str, List[str]],
     context: Optional[Dict] = None,
     *,
-    partial_template: Optional[Union[str, List[str]]] = None,
+    turbo_stream_template: Optional[Union[str, List[str]]] = None,
     turbo_stream_target: Optional[str] = None,
     turbo_stream_action: Action = Action.REPLACE,
     **response_kwargs,
@@ -45,11 +45,11 @@ def render_form_response(
     if turbo_stream_target:
         context["turbo_stream_target"] = turbo_stream_target
 
-    if form.errors and partial_template and turbo_stream_target:
+    if form.errors and turbo_stream_template and turbo_stream_target:
         return (
             TurboStream(turbo_stream_target)
             .action(turbo_stream_action)
-            .template(partial_template, context)
+            .template(turbo_stream_template, context)
             .response(request)
         )
 
