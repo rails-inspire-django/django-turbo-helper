@@ -36,7 +36,7 @@ def render_form_response(
 ) -> TemplateResponse:
     """Returns a TemplateResponse with the correct status if the form contains errors.
 
-    If `partial_template` is provided along with `turbo_stream_target`, a TurboStream
+    If `turbo_stream_template` is provided along with `turbo_stream_target`, a TurboStream
     response will be returned instead if there are form validation errors.
     """
 
