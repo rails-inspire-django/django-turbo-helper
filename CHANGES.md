@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.35] - 2021-2-17
+
+**render_form_response** can optionally re-render form as turbo stream
+
 ## [0.0.34] - 2021-2-13
 
 Tidy up argument parsing in API
