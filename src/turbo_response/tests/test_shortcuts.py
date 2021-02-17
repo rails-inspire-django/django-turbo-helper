@@ -34,6 +34,37 @@ class TestRenderFormResponse:
     class MyForm(forms.Form):
         comment = forms.CharField()
 
+    def test_render_partial_no_errors(self, rf):
+        req = rf.get("/")
+        form = self.MyForm()
+        resp = render_form_response(
+            req,
+            form,
+            "my_form.html",
+            turbo_stream_target="my-form",
+            partial_template="_my_form.html",
+        )
+        assert resp.status_code == http.HTTPStatus.OK
+        assert resp.context_data["form"] == form
+        assert resp.context_data["turbo_stream_target"] == "my-form"
+
+    def test_render_partial_errors(self, rf):
+        req = rf.get("/")
+        form = self.MyForm({})
+        # missing comment, should be error
+        assert not form.is_valid()
+        assert form.errors
+        resp = render_form_response(
+            req,
+            form,
+            "my_form.html",
+            turbo_stream_target="my-form",
+            partial_template="_my_form.html",
+        )
+        assert resp.status_code == http.HTTPStatus.OK
+        assert resp.context_data["form"] == form
+        assert resp.context_data["turbo_stream_target"] == "my-form"
+
     def test_render_no_errors(self, rf):
         req = rf.get("/")
         form = self.MyForm()

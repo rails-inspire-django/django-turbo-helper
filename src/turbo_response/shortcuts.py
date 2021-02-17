@@ -1,6 +1,6 @@
 # Standard Library
 import http
-from typing import Any, Dict, Iterable, Optional, Union
+from typing import Dict, List, Optional, Union
 
 # Django
 from django.db.models import Model
@@ -10,7 +10,9 @@ from django.shortcuts import resolve_url
 from django.template.response import TemplateResponse
 
 # Local
+from .constants import Action
 from .response import HttpResponseSeeOther
+from .stream import TurboStream
 
 
 def redirect_303(to: Union[str, Model], *args, **kwargs) -> HttpResponseSeeOther:
@@ -24,16 +26,37 @@ def redirect_303(to: Union[str, Model], *args, **kwargs) -> HttpResponseSeeOther
 def render_form_response(
     request: HttpRequest,
     form: Form,
-    template: Union[str, Iterable[str]],
-    context: Optional[Dict[str, Any]] = None,
+    template: Union[str, List[str]],
+    context: Optional[Dict] = None,
+    *,
+    partial_template: Optional[Union[str, List[str]]] = None,
+    turbo_stream_target: Optional[str] = None,
+    turbo_stream_action: Action = Action.REPLACE,
     **response_kwargs,
 ) -> TemplateResponse:
-    """Returns a TemplateResponse with the correct status if the form contains errors."""
+    """Returns a TemplateResponse with the correct status if the form contains errors.
+
+    If `partial_template` is provided along with `turbo_stream_target`, a TurboStream
+    response will be returned instead if there are form validation errors.
+    """
+
+    context = {"form": form, **(context or {})}
+
+    if turbo_stream_target:
+        context["turbo_stream_target"] = turbo_stream_target
+
+    if form.errors and partial_template and turbo_stream_target:
+        return (
+            TurboStream(turbo_stream_target)
+            .action(turbo_stream_action)
+            .template(partial_template, context)
+            .response(request)
+        )
 
     return TemplateResponse(
         request,
         template,
-        context={"form": form, **(context or {})},
+        context,
         status=http.HTTPStatus.UNPROCESSABLE_ENTITY
         if form.errors
         else http.HTTPStatus.OK,
