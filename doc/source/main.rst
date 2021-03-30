@@ -425,108 +425,79 @@ That's it! In this example are returning a very simple string value, so we don't
 
 Note that this technique is something of an anti-pattern; if you have to update multiple parts of a page, a full refresh (i.e. a normal Turbo visit) is probably a better idea. It's useful though in some edge cases where you need to avoid this.
 
+===================================
+The turbo_stream_response decorator
+===================================
+
+You can accomplish the above using the **turbo_stream_response** decorator with your view. This will check the output and wrap the response in a **TurboStreamResponse** or **TurboStreamStreamingResponse**:
+
+.. code-block:: python
+
+  from turbo_response import TurboStream
+  from turbo_response.decorators import turbo_stream_response
+
+  @turbo_stream_response
+  def update_cart_item(request, item_id):
+      # item saved to e.g. session or db
+      save_cart_item(request, item_id)
+
+      # for brevity, assume "total amount" is returned here as a
+      # correctly formatted string in the correct local currency
+      total_amount = calc_total_cart_amount(request)
+
+      return [
+          TurboStream("nav-cart-total").replace.render(total_amount),
+          TurboStream("cart-summary-total").replace.render(total_amount),
+      ]
+
+Or using *yield* statements:
+
+.. code-block:: python
+
+  @turbo_stream_response
+  def update_cart_item(request, item_id):
+      # item saved to e.g. session or db
+      save_cart_item(request, item_id)
+
+      # for brevity, assume "total amount" is returned here as a
+      # correctly formatted string in the correct local currency
+      total_amount = calc_total_cart_amount(request)
+
+      yield TurboStream("nav-cart-total").replace.render(total_amount)
+      yield TurboStream("cart-summary-total").replace.render(total_amount)
+
+
+If you return an HttpResponse subclass from your view (e.g. an HttpResponseRedirect, TemplateResponse or a TurboStreamResponse) this will be ignored by the decorator and returned as normal.
+
 ==================
 Using Turbo Frames
 ==================
 
-Rendering Turbo Frames is straightforward. Let's say you have a "Subscribe" button in your page. When the button is clicked, you want the "Subscribe" label to be changed to "Unsubscribe"; when the button is clicked again it should turn back to "Subscribe."
+Turbo frames are straightforward using the **TurboFrame** class.
 
-Our template looks something like this:
 
-.. code-block:: html
-
-  {% extends "base.html" %}
-  {% block content %}
-  <h1>Welcome to my blog</h1>
-  {{ blog.description }}
-  {% if user.is_authenticated %}
-  <turbo-frame id="subscribe">
-    {% include "_subscribe.html" %}
-  </turbo-frame>
-  {% endif %}
-  {% endblock %}
-
-Note that we surround the partial template with the *<turbo-frame>* tags. These will be replaced by Turbo when a Turbo Frame response matching the DOM ID "subscribe" is returned from the server.
-
-Our partial template, *_subscribe.html* looks like this:
+For example, suppose we want to render some content inside a frame with the ID "content":
 
 .. code-block:: html
 
-  <form method="post" action="{% url 'toggle_subscribe' blog.id %}">
-    {% csrf_token %}
-    <button>{{ is_subscribed|yesno:"Unsubscribe,Subscribe" }}</button>
-  </form>
-
-Note that the button uses a POST form to handle the toggle. As it's a POST we also need to include the CSRF token, or we'll get a 403 error.
+  <div id="content"></div>
+  <a href="/my-view" data-turbo-frame="content">add something here!</a>
 
 
-Here are the views:
+The view looks like this:
 
 .. code-block:: python
 
-  from django.contrib.auth.decorators import login_required
-  from django.template.response import TemplateResponse
-  from django.shortcuts import get_object_or_404
+  def my_view(request):
+    return TurboFrame("content").response("hello")
 
-  from turbo_response import TurboFrame
 
-  from myapp.blogs.models import Blog
-
-  def blog_detail(request, blog_id):
-      blog = get_object_or_404(Blog, pk=blog_id)
-      is_subscribed = blog.is_subscribed(request.user)
-      return TemplateResponse(
-          request,
-          "blogs/detail.html",
-          {"blog": blog, "is_subscribed": is_subscribed}
-      )
-
-  @login_required
-  def subscribe(request, blog_id):
-      blog = get_object_or_404(Blog, pk=blog_id)
-      is_subscribed = blog.toggle_subscribe(request.user)
-      return TurboFrame("subscribe").template(
-          "blogs/_subscribe.html",
-          {"blog": blog, "is_subscribed": is_subscribed},
-      ).response(request)
-
-The *subscribe* view returns a response wrapped in the *<turbo-frame>* tag with the DOM id "subscribe". Turbo will look for a corresponding frame in the HTML body with the matching ID, and replace the frame with the one returned from the server. Unlike a full Turbo visit, we don't need to return the entire body - just the snippet we want to update.
-
-If we wanted to use CBVs instead:
+As with streams, you can also render a template:
 
 .. code-block:: python
 
-  from django.contrib.auth.mixins import LoginRequiredMixin
-  from django.views.generic.detail import DetailView, SingleObjectMixin
-
-  from turbo_response.views import TurboFrameTemplateView
-
-  from myapp.blogs.models import Blog
-
-  class BlogDetail(DetailView):
-      model = Blog
-      template_name = "blogs/detail.html"
-
-      def get_context_data(self, **context):
-          return {
-              **context,
-              "is_subscribed": blog.is_subscribed(request.user)
-          }
-
-  class Subscribe(LoginRequiredMixin,
-                  SingleObjectMixin,
-                  TurboFrameTemplateView):
-
-    turbo_frame_dom_id = "subscribe"
-    template_name = "blogs/_subscribe.html"
-
-    def post(request, pk):
-        blog = self.get_object()
-        is_subscribed = blog.toggle_subscribe(request.user)
-
-        return self.render_to_response(
-            {"blog": blog, "is_subscribed": is_subscribed},
-        )
+  def my_view(request):
+      return TurboFrame("content").template("_content.html", {"message": "hello"}).response(request)
 
 
 ==========================
