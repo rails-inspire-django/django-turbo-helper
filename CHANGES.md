@@ -1,8 +1,10 @@
 # Changelog
 
-## [Latest]
+## [0.0.36] - 2021-3-30
 
 **render_form_response** adds turbo_stream_template name to context
+
+**turbo_stream_response** decorator
 
 ## [0.0.35] - 2021-2-17
 
