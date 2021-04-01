@@ -319,6 +319,7 @@ class TestTurboFrameView:
         resp = self.MyView.as_view()(req)
         assert resp.status_code == http.HTTPStatus.OK
         assert resp["Content-Type"] == "text/html; charset=utf-8"
+        resp.content.startswith(b'<turbo-frame id="test"><div>my content</div>')
         assert resp.content == b'<turbo-frame id="test">done</turbo-frame>'
 
 
@@ -332,7 +333,6 @@ class TestTurboFrameTemplateView:
         resp = self.MyView.as_view()(req)
         assert resp.status_code == http.HTTPStatus.OK
         assert resp["Content-Type"] == "text/html; charset=utf-8"
-        assert (
-            resp.render().content
-            == b'<turbo-frame id="test"><div>my content</div></turbo-frame>'
+        assert resp.render().content.startswith(
+            b'<turbo-frame id="test"><div>my content</div>'
         )

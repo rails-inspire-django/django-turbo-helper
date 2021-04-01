@@ -1,4 +1,7 @@
 # Local
+# Django
+from django.template import Context, Template
+
 from .constants import Action
 
 
@@ -11,10 +14,12 @@ def render_turbo_stream(action: Action, target: str, content: str = "") -> str:
 
     :return: *<turbo-stream>* string
     """
-    return (
-        f'<turbo-stream action="{action.value}" target="{target}"><template>'
-        + content.strip()
-        + "</template></turbo-stream>"
+    turbo_stream_tmpl = Template(
+        '<turbo-stream action="{{ action }}" target="{{ target }}"><template>{{ content }}</template></turbo-stream>'
+    )
+
+    return turbo_stream_tmpl.render(
+        Context({"action": action.value, "target": target, "content": content})
     )
 
 
@@ -28,4 +33,7 @@ def render_turbo_frame(dom_id: str, content: str = "") -> str:
 
     :return: *<turbo-frame>* string
     """
-    return f'<turbo-frame id="{dom_id}">' + content.strip() + "</turbo-frame>"
+    turbo_frame_tmpl = Template(
+        '<turbo-frame id="{{ dom_id }}">{{ content }}</turbo-frame>'
+    )
+    return turbo_frame_tmpl.render(Context({"dom_id": dom_id, "content": content}))

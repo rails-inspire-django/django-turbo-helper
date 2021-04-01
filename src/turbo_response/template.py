@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, Union
 
 # Django
 from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
 
 # Local
 from .constants import Action
@@ -27,15 +28,17 @@ def render_turbo_stream_template(
     return render_turbo_stream(
         action,
         target,
-        render_to_string(
-            template,
-            {
-                **(context or {}),
-                "turbo_stream_target": target,
-                "turbo_stream_action": action.value,
-                "is_turbo_stream": True,
-            },
-            **template_kwargs,
+        mark_safe(
+            render_to_string(
+                template,
+                {
+                    **(context or {}),
+                    "turbo_stream_target": target,
+                    "turbo_stream_action": action.value,
+                    "is_turbo_stream": True,
+                },
+                **template_kwargs,
+            ).strip()
         ),
     )
 
@@ -56,9 +59,15 @@ def render_turbo_frame_template(
 
     return render_turbo_frame(
         dom_id,
-        render_to_string(
-            template,
-            {**(context or {}), "turbo_frame_dom_id": dom_id, "is_turbo_frame": True},
-            **kwargs,
+        mark_safe(
+            render_to_string(
+                template,
+                {
+                    **(context or {}),
+                    "turbo_frame_dom_id": dom_id,
+                    "is_turbo_frame": True,
+                },
+                **kwargs,
+            ).strip()
         ),
     )
