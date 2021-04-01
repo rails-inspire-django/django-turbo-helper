@@ -10,20 +10,6 @@ from django.utils.safestring import mark_safe
 from .constants import Action
 
 
-@lru_cache()
-def get_turbo_stream_template() -> Template:
-    return Engine.get_default().from_string(
-        '<turbo-stream action="{{ action }}" target="{{ target }}"><template>{{ content }}</template></turbo-stream>',
-    )
-
-
-@lru_cache()
-def get_turbo_frame_template() -> Template:
-    return Engine.get_default().from_string(
-        '<turbo-frame id="{{ dom_id }}">{{ content }}</turbo-frame>'
-    )
-
-
 def render_turbo_stream(
     action: Action, target: str, content: str = "", is_safe: bool = False
 ) -> str:
@@ -60,4 +46,18 @@ def render_turbo_frame(dom_id: str, content: str = "", is_safe: bool = False) ->
 
     return get_turbo_frame_template().render(
         Context({"dom_id": dom_id, "content": content})
+    )
+
+
+@lru_cache()
+def get_turbo_stream_template() -> Template:
+    return Engine.get_default().from_string(
+        '<turbo-stream action="{{ action }}" target="{{ target }}"><template>{{ content }}</template></turbo-stream>',
+    )
+
+
+@lru_cache()
+def get_turbo_frame_template() -> Template:
+    return Engine.get_default().from_string(
+        '<turbo-frame id="{{ dom_id }}">{{ content }}</turbo-frame>'
     )
