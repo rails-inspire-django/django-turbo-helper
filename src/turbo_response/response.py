@@ -68,11 +68,12 @@ class TurboStreamResponse(TurboStreamResponseMixin, HttpResponse):
         *,
         action: Optional[Action] = None,
         target: Optional[str] = None,
-        **kwargs,
+        is_safe: bool = False,
+        **response_kwargs,
     ):
         if action and target and isinstance(content, str):
-            content = render_turbo_stream(action, target, content)
-        super().__init__(content, **kwargs)
+            content = render_turbo_stream(action, target, content, is_safe=is_safe)
+        super().__init__(content, **response_kwargs)
 
 
 class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
@@ -117,17 +118,27 @@ class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
     @property
     def rendered_content(self) -> str:
         return render_turbo_stream(
-            action=self._action, target=self._target, content=super().rendered_content
+            action=self._action,
+            target=self._target,
+            content=super().rendered_content,
+            is_safe=True,
         )
 
 
 class TurboFrameResponse(HttpResponse):
     """Handles turbo-frame template response."""
 
-    def __init__(self, content: str = "", *, dom_id: str, **kwargs):
+    def __init__(
+        self,
+        content: str = "",
+        *,
+        dom_id: str,
+        is_safe: bool = False,
+        **response_kwargs,
+    ):
         super().__init__(
-            render_turbo_frame(dom_id, content),
-            **kwargs,
+            render_turbo_frame(dom_id, content, is_safe=is_safe),
+            **response_kwargs,
         )
 
 
@@ -164,4 +175,4 @@ class TurboFrameTemplateResponse(TemplateResponse):
 
     @property
     def rendered_content(self) -> str:
-        return render_turbo_frame(self._dom_id, super().rendered_content)
+        return render_turbo_frame(self._dom_id, super().rendered_content, is_safe=True)

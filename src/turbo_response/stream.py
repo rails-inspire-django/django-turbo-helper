@@ -63,22 +63,30 @@ class TurboStreamAction:
         self.action = action
         self.target = target
 
-    def render(self, content: str = "") -> str:
+    def render(self, content: str = "", is_safe: bool = False) -> str:
         """
         :param content: enclosed content
+        :param is_safe: mark content safe for HTML escaping.
+
         :return: a *<turbo-stream>* string
         """
         return render_turbo_stream(
-            action=self.action, target=self.target, content=content
+            action=self.action, target=self.target, content=content, is_safe=is_safe
         )
 
-    def response(self, content: str = "", **response_kwargs) -> TurboStreamResponse:
+    def response(
+        self, content: str = "", is_safe: bool = False, **response_kwargs
+    ) -> TurboStreamResponse:
         """
         :param content: enclosed content
         :return: a *<turbo-stream>* HTTP response wrapper
         """
         return TurboStreamResponse(
-            action=self.action, target=self.target, content=content, **response_kwargs
+            action=self.action,
+            target=self.target,
+            content=content,
+            is_safe=is_safe,
+            **response_kwargs,
         )
 
     def template(
