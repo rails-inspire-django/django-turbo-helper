@@ -11,7 +11,11 @@ def render_turbo_stream(action: Action, target: str, content: str = "") -> str:
 
     :return: *<turbo-stream>* string
     """
-    return f'<turbo-stream action="{action.value}" target="{target}"><template>{content.strip()}</template></turbo-stream>'
+    return (
+        f'<turbo-stream action="{action.value}" target="{target}"><template>'
+        + content.strip()
+        + "</template></turbo-stream>"
+    )
 
 
 def render_turbo_frame(dom_id: str, content: str = "") -> str:
@@ -24,4 +28,4 @@ def render_turbo_frame(dom_id: str, content: str = "") -> str:
 
     :return: *<turbo-frame>* string
     """
-    return f'<turbo-frame id="{dom_id}">{content.strip()}</turbo-frame>'
+    return f'<turbo-frame id="{dom_id}">' + content.strip() + "</turbo-frame>"
