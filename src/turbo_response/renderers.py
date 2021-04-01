@@ -14,13 +14,9 @@ def render_turbo_stream(action: Action, target: str, content: str = "") -> str:
 
     :return: *<turbo-stream>* string
     """
-    turbo_stream_tmpl = Template(
+    return Template(
         '<turbo-stream action="{{ action }}" target="{{ target }}"><template>{{ content }}</template></turbo-stream>'
-    )
-
-    return turbo_stream_tmpl.render(
-        Context({"action": action.value, "target": target, "content": content})
-    )
+    ).render(Context({"action": action.value, "target": target, "content": content}))
 
 
 def render_turbo_frame(dom_id: str, content: str = "") -> str:
@@ -33,7 +29,6 @@ def render_turbo_frame(dom_id: str, content: str = "") -> str:
 
     :return: *<turbo-frame>* string
     """
-    turbo_frame_tmpl = Template(
+    return Template(
         '<turbo-frame id="{{ dom_id }}">{{ content }}</turbo-frame>'
-    )
-    return turbo_frame_tmpl.render(Context({"dom_id": dom_id, "content": content}))
+    ).render(Context({"dom_id": dom_id, "content": content}))
