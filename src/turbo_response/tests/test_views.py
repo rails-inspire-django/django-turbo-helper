@@ -94,6 +94,9 @@ class TestTurboStreamTemplateView:
         class MyView(TurboStreamTemplateView):
             template_name = "simple.html"
 
+            def get_context_data(self, **kwargs):
+                return {**kwargs, "msg": "my content"}
+
         req = rf.get("/")
         resp = MyView.as_view(
             turbo_stream_target="test", turbo_stream_action=Action.REPLACE
@@ -327,6 +330,9 @@ class TestTurboFrameTemplateView:
     class MyView(TurboFrameTemplateView):
         turbo_frame_dom_id = "test"
         template_name = "simple.html"
+
+        def get_context_data(self, **kwargs):
+            return {**kwargs, "msg": "my content"}
 
     def test_get(self, rf):
         req = rf.get("/")

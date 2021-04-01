@@ -8,7 +8,11 @@ class TestTurboFrame:
         assert s == '<turbo-frame id="my-form">OK</turbo-frame>'
 
     def test_template(self):
-        s = TurboFrame("my-form").template("simple.html", {}).render()
+        s = (
+            TurboFrame("my-form")
+            .template("simple.html", {"msg": "my content"})
+            .render()
+        )
         assert "my content" in s
         assert '<turbo-frame id="my-form">' in s
 
@@ -20,19 +24,31 @@ class TestTurboFrame:
 
     def test_template_render(self, rf):
         req = rf.get("/")
-        s = TurboFrame("my-form").template("simple.html", {}, request=req).render()
+        s = (
+            TurboFrame("my-form")
+            .template("simple.html", {"msg": "my content"}, request=req)
+            .render()
+        )
         assert "my content" in s
         assert '<turbo-frame id="my-form"' in s
 
     def test_template_render_req_in_arg(self, rf):
         req = rf.get("/")
-        s = TurboFrame("my-form").template("simple.html", {}).render(request=req)
+        s = (
+            TurboFrame("my-form")
+            .template("simple.html", {"msg": "my content"})
+            .render(request=req)
+        )
         assert "my content" in s
         assert '<turbo-frame id="my-form"' in s
 
     def test_template_response(self, rf):
         req = rf.get("/")
-        resp = TurboFrame("my-form").template("simple.html", {}, request=req).response()
+        resp = (
+            TurboFrame("my-form")
+            .template("simple.html", {"msg": "my content"}, request=req)
+            .response()
+        )
         assert resp.status_code == 200
         assert "is_turbo_frame" in resp.context_data
         assert resp._request == req
@@ -42,7 +58,11 @@ class TestTurboFrame:
 
     def test_template_response_req_in_arg(self, rf):
         req = rf.get("/")
-        resp = TurboFrame("my-form").template("simple.html", {}).response(req)
+        resp = (
+            TurboFrame("my-form")
+            .template("simple.html", {"msg": "my content"})
+            .response(req)
+        )
         assert resp.status_code == 200
         assert "is_turbo_frame" in resp.context_data
         assert resp._request == req

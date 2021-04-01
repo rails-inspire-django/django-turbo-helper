@@ -9,7 +9,7 @@ from turbo_response import (
 class TestRenderTurboStreamTemplate:
     def test_render(self):
         s = render_turbo_stream_template(
-            "simple.html", {}, action=Action.UPDATE, target="test"
+            "simple.html", {"msg": "my content"}, action=Action.UPDATE, target="test"
         )
         assert (
             s
@@ -19,5 +19,7 @@ class TestRenderTurboStreamTemplate:
 
 class TestRenderTurboTemplate:
     def test_render(self):
-        s = render_turbo_frame_template("simple.html", {}, dom_id="test")
+        s = render_turbo_frame_template(
+            "simple.html", {"msg": "my content"}, dom_id="test"
+        )
         assert s == '<turbo-frame id="test"><div>my content</div></turbo-frame>'
