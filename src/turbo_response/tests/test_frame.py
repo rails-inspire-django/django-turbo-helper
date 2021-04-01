@@ -7,6 +7,16 @@ class TestTurboFrame:
         s = TurboFrame("my-form").render("OK")
         assert s == '<turbo-frame id="my-form">OK</turbo-frame>'
 
+    def test_render_xss(self):
+        s = TurboFrame("my-form").render("<script></script>")
+        assert (
+            s == '<turbo-frame id="my-form">&lt;script&gt;&lt;/script&gt;</turbo-frame>'
+        )
+
+    def test_render_is_safe(self):
+        s = TurboFrame("my-form").render("<script></script>", is_safe=True)
+        assert s == '<turbo-frame id="my-form"><script></script></turbo-frame>'
+
     def test_template(self):
         s = (
             TurboFrame("my-form")
@@ -22,6 +32,18 @@ class TestTurboFrame:
         assert b"OK" in resp.content
         assert b'<turbo-frame id="my-form"' in resp.content
 
+    def test_response_xss(self):
+        resp = TurboFrame("my-form").response("<script></script>")
+        assert resp.status_code == 200
+        assert b"&lt;script&gt;&lt;/script&gt;" in resp.content
+        assert b'<turbo-frame id="my-form"' in resp.content
+
+    def test_response_is_safe(self):
+        resp = TurboFrame("my-form").response("<script></script>", is_safe=True)
+        assert resp.status_code == 200
+        assert b"<script></script>" in resp.content
+        assert b'<turbo-frame id="my-form"' in resp.content
+
     def test_template_render(self, rf):
         req = rf.get("/")
         s = (
@@ -30,6 +52,16 @@ class TestTurboFrame:
             .render()
         )
         assert "my content" in s
+        assert '<turbo-frame id="my-form"' in s
+
+    def test_template_render_xss(self, rf):
+        req = rf.get("/")
+        s = (
+            TurboFrame("my-form")
+            .template("simple.html", {"msg": "<script></script>"}, request=req)
+            .render()
+        )
+        assert "&lt;script&gt;&lt;/script&gt;" in s
         assert '<turbo-frame id="my-form"' in s
 
     def test_template_render_req_in_arg(self, rf):
