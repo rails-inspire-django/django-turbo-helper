@@ -32,6 +32,18 @@ class TestRenderTurboStream:
             == '<turbo-stream action="replace" target="test"><template>&lt;script&gt;&lt;/script&gt;</template></turbo-stream>'
         )
 
+    def test_render_content_is_safe(self):
+        s = render_turbo_stream(
+            action=Action.REPLACE,
+            target="test",
+            content="<script></script>",
+            is_safe=True,
+        )
+        assert (
+            s
+            == '<turbo-stream action="replace" target="test"><template><script></script></template></turbo-stream>'
+        )
+
 
 class TestRenderTurboFrame:
     def test_render_empty_frame(self):
@@ -45,9 +57,10 @@ class TestRenderTurboFrame:
         )
         assert s == '<turbo-frame id="test">my content</turbo-frame>'
 
-    def test_render_content_xss(self):
+    def test_render_content_is_safe(self):
         s = render_turbo_frame(
             dom_id="test",
             content="<script></script>",
+            is_safe=True,
         )
-        assert s == '<turbo-frame id="test">&lt;script&gt;&lt;/script&gt;</turbo-frame>'
+        assert s == '<turbo-frame id="test"><script></script></turbo-frame>'
