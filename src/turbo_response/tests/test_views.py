@@ -88,6 +88,39 @@ class TestTurboStreamView:
             b'<turbo-stream action="replace" target="test"><template>hello'
         )
 
+    def test_get_xss(self, rf):
+        class MyView(TurboStreamView):
+            def get_response_content(self):
+                return "<script />"
+
+        req = rf.get("/")
+        resp = MyView.as_view(
+            turbo_stream_target="test", turbo_stream_action=Action.REPLACE
+        )(req)
+        assert resp.status_code == http.HTTPStatus.OK
+        assert "text/vnd.turbo-stream.html;" in resp["Content-Type"]
+        assert resp.content.startswith(
+            b'<turbo-stream action="replace" target="test"><template>&lt;script /&gt;'
+        )
+
+    def test_get_is_safe(self, rf):
+        class MyView(TurboStreamView):
+            def get_response_content(self):
+                return "<script />"
+
+            def render_turbo_stream(self, **kwargs):
+                return super().render_turbo_stream(is_safe=True, **kwargs)
+
+        req = rf.get("/")
+        resp = MyView.as_view(
+            turbo_stream_target="test", turbo_stream_action=Action.REPLACE
+        )(req)
+        assert resp.status_code == http.HTTPStatus.OK
+        assert "text/vnd.turbo-stream.html;" in resp["Content-Type"]
+        assert resp.content.startswith(
+            b'<turbo-stream action="replace" target="test"><template><script />'
+        )
+
 
 class TestTurboStreamTemplateView:
     def test_get(self, rf):
@@ -311,19 +344,47 @@ class TestTurboStreamDeleteView:
 
 
 class TestTurboFrameView:
-    class MyView(TurboFrameView):
-        turbo_frame_dom_id = "test"
-
-        def get_response_content(self):
-            return "done"
-
     def test_get(self, rf):
+        class MyView(TurboFrameView):
+            turbo_frame_dom_id = "test"
+
+            def get_response_content(self):
+                return "done"
+
         req = rf.get("/")
-        resp = self.MyView.as_view()(req)
+        resp = MyView.as_view()(req)
         assert resp.status_code == http.HTTPStatus.OK
         assert resp["Content-Type"] == "text/html; charset=utf-8"
-        resp.content.startswith(b'<turbo-frame id="test"><div>my content</div>')
         assert resp.content == b'<turbo-frame id="test">done</turbo-frame>'
+
+    def test_get_xss(self, rf):
+        class MyView(TurboFrameView):
+            turbo_frame_dom_id = "test"
+
+            def get_response_content(self):
+                return "<script />"
+
+        req = rf.get("/")
+        resp = MyView.as_view()(req)
+        assert resp.status_code == http.HTTPStatus.OK
+        assert resp["Content-Type"] == "text/html; charset=utf-8"
+        assert resp.content == b'<turbo-frame id="test">&lt;script /&gt;</turbo-frame>'
+
+    def test_get_is_safe(self, rf):
+        class MyView(TurboFrameView):
+            turbo_frame_dom_id = "test"
+
+            def get_response_content(self):
+                return "<script />"
+
+            def render_turbo_frame(self):
+                return super().render_turbo_frame(is_safe=True)
+
+        req = rf.get("/")
+        resp = MyView.as_view()(req)
+        assert resp.status_code == http.HTTPStatus.OK
+        assert resp["Content-Type"] == "text/html; charset=utf-8"
+        assert resp.content == b'<turbo-frame id="test"><script /></turbo-frame>'
 
 
 class TestTurboFrameTemplateView:
