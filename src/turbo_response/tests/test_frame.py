@@ -67,5 +67,5 @@ class TestTurboFrame:
         assert "is_turbo_frame" in resp.context_data
         assert resp._request == req
         content = resp.render().content
-        assert b"my content" in content
+        assert b"<div>my content</div>" in content
         assert b'<turbo-frame id="my-form"' in content

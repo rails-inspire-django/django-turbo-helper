@@ -68,5 +68,5 @@ class TestTurboStream:
         assert "is_turbo_stream" in resp.context_data
         assert resp._request == req
         content = resp.render().content
-        assert b"my content" in content
+        assert b"<div>my content</div>" in content
         assert b'<turbo-stream action="append" target="my-form"' in content
