@@ -25,11 +25,11 @@ class TestRenderTurboStream:
         s = render_turbo_stream(
             action=Action.REPLACE,
             target="test",
-            content="<div>my content</div>",
+            content="<script></script>",
         )
         assert (
             s
-            == '<turbo-stream action="replace" target="test"><template>&lt;div&gt;my content&lt;/div&gt;</template></turbo-stream>'
+            == '<turbo-stream action="replace" target="test"><template>&lt;script&gt;&lt;/script&gt;</template></turbo-stream>'
         )
 
 
@@ -48,9 +48,6 @@ class TestRenderTurboFrame:
     def test_render_content_xss(self):
         s = render_turbo_frame(
             dom_id="test",
-            content="<div>my content</div>",
+            content="<script></script>",
         )
-        assert (
-            s
-            == '<turbo-frame id="test">&lt;div&gt;my content&lt;/div&gt;</turbo-frame>'
-        )
+        assert s == '<turbo-frame id="test">&lt;script&gt;&lt;/script&gt;</turbo-frame>'
