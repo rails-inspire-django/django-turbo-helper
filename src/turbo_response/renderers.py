@@ -1,16 +1,27 @@
 import pathlib
 from functools import lru_cache
-from typing import Optional
+from typing import Dict, Optional
 
-from django.forms.renderers import BaseRenderer
-from django.forms.renderers import EngineMixin as BaseEngineMixin
-from django.forms.renderers import TemplatesSetting as BaseTemplatesSetting
+from django.template import Template
 from django.template.backends.django import DjangoTemplates as DjangoTemplatesBackend
+from django.template.engine import Engine
+from django.template.loader import get_template
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
 from django.utils.safestring import mark_safe
 
 from .constants import Action
+
+
+class BaseRenderer:
+    """This is based on django form widget renderers"""
+
+    def get_template(self, template_name: str) -> Template:
+        raise NotImplementedError("subclasses must implement get_template()")
+
+    def render(self, template_name: str, context: Dict) -> str:
+        template = self.get_template(template_name)
+        return template.render(context).strip()
 
 
 def render_turbo_stream(
@@ -35,10 +46,9 @@ def render_turbo_stream(
 
     renderer = renderer or get_default_renderer()
 
-    return (
-        renderer.get_template("turbo_response/turbo_stream.html")
-        .render({"action": action.value, "target": target, "content": content})
-        .strip()
+    return renderer.render(
+        "turbo_response/turbo_stream.html",
+        {"action": action.value, "target": target, "content": content},
     )
 
 
@@ -64,10 +74,8 @@ def render_turbo_frame(
 
     renderer = renderer or get_default_renderer()
 
-    return (
-        renderer.get_template("turbo_response/turbo_frame.html")
-        .render({"dom_id": dom_id, "content": content})
-        .strip()
+    return renderer.render(
+        "turbo_response/turbo_frame.html", {"dom_id": dom_id, "content": content}
     )
 
 
@@ -88,10 +96,14 @@ def get_default_renderer() -> BaseRenderer:
     return renderer_class()
 
 
-class EngineMixin(BaseEngineMixin):
-    # uses the django widget renderer resolution to determine backend
+class EngineMixin:
+    backend: Engine
+
+    def get_template(self, template_name: str) -> Template:
+        return self.engine.get_template(template_name)
+
     @cached_property
-    def engine(self):
+    def engine(self) -> Engine:
         return self.backend(
             {
                 "APP_DIRS": True,
@@ -108,11 +120,12 @@ class DjangoTemplates(EngineMixin, BaseRenderer):
 
 class Jinja2(EngineMixin, BaseRenderer):
     @cached_property
-    def backend(self):
+    def backend(self) -> Engine:
         from django.template.backends.jinja2 import Jinja2
 
         return Jinja2
 
 
-class TemplatesSetting(BaseTemplatesSetting):
-    ...
+class TemplatesSetting(BaseRenderer):
+    def get_template(self, template_name: str) -> Template:
+        return get_template(template_name)
