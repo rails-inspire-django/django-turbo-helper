@@ -1,6 +1,6 @@
 # Django Turbo Response
 from turbo_response import Action, render_turbo_frame, render_turbo_stream
-from turbo_response.renderers import Jinja2
+from turbo_response.renderers import DjangoTemplates, Jinja2
 
 
 class TestRenderTurboStream:
@@ -22,7 +22,19 @@ class TestRenderTurboStream:
             == '<turbo-stream action="replace" target="test"><template>my content</template></turbo-stream>'
         )
 
-    def test_render_content_with_jinja2(self):
+    def test_render_content_django_templates(self):
+        s = render_turbo_stream(
+            action=Action.REPLACE,
+            target="test",
+            content="my content",
+            renderer=DjangoTemplates(),
+        )
+        assert (
+            s
+            == '<turbo-stream action="replace" target="test"><template>my content</template></turbo-stream>'
+        )
+
+    def test_render_content_jinja2(self):
         s = render_turbo_stream(
             action=Action.REPLACE,
             target="test",

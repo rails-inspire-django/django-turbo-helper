@@ -1,7 +1,6 @@
 import http
 from typing import Any, Dict, Iterable, Mapping, Optional, Union
 
-from django.forms.renderers import BaseRenderer
 from django.http import (
     HttpRequest,
     HttpResponse,
@@ -11,7 +10,7 @@ from django.http import (
 from django.template.response import TemplateResponse
 
 from .constants import TURBO_STREAM_MIME_TYPE, Action
-from .renderers import render_turbo_frame, render_turbo_stream
+from .renderers import BaseRenderer, render_turbo_frame, render_turbo_stream
 
 
 class HttpResponseSeeOther(HttpResponseRedirect):
