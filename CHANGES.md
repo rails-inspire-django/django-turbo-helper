@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.46] - 2021-4-2
+
+Remove tests dir from distribution
+
 ## [0.0.45] - 2021-4-2
 
 Refactor renderers and remove dependency on form widget renderer classes
