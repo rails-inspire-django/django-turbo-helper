@@ -13,37 +13,6 @@ from django.utils.safestring import mark_safe
 from .constants import Action
 
 
-@lru_cache()
-def get_default_renderer() -> BaseRenderer:
-    """Get the default renderer class.
-
-    :return: renderer subclass: default DjangoTemplates
-
-    """
-    from django.conf import settings
-
-    renderer_class_name = getattr(
-        settings, "TURBO_RESPONSE_RENDERER", "turbo_response.renderers.DjangoTemplates"
-    )
-
-    renderer_class = import_string(renderer_class_name)
-    return renderer_class()
-
-
-class EngineMixin(BaseEngineMixin):
-    # uses the django widget renderer resolution to determine backend
-    @cached_property
-    def engine(self):
-        return self.backend(
-            {
-                "APP_DIRS": True,
-                "DIRS": [pathlib.Path(__file__).parent / self.backend.app_dirname],
-                "NAME": "turbo_response",
-                "OPTIONS": {},
-            }
-        )
-
-
 def render_turbo_stream(
     action: Action,
     target: str,
@@ -100,6 +69,37 @@ def render_turbo_frame(
         .render({"dom_id": dom_id, "content": content})
         .strip()
     )
+
+
+@lru_cache()
+def get_default_renderer() -> BaseRenderer:
+    """Get the default renderer class.
+
+    :return: renderer subclass: default DjangoTemplates
+
+    """
+    from django.conf import settings
+
+    renderer_class_name = getattr(
+        settings, "TURBO_RESPONSE_RENDERER", "turbo_response.renderers.DjangoTemplates"
+    )
+
+    renderer_class = import_string(renderer_class_name)
+    return renderer_class()
+
+
+class EngineMixin(BaseEngineMixin):
+    # uses the django widget renderer resolution to determine backend
+    @cached_property
+    def engine(self):
+        return self.backend(
+            {
+                "APP_DIRS": True,
+                "DIRS": [pathlib.Path(__file__).parent / self.backend.app_dirname],
+                "NAME": "turbo_response",
+                "OPTIONS": {},
+            }
+        )
 
 
 class DjangoTemplates(EngineMixin, BaseRenderer):
