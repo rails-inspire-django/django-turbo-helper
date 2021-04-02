@@ -1,10 +1,7 @@
-# Standard Library
 from typing import Any, Dict, List, Optional, Union
 
-# Django
 from django.http import HttpRequest
 
-# Local
 from .response import TurboFrameResponse, TurboFrameTemplateResponse, render_turbo_frame
 from .template import render_turbo_frame_template
 
@@ -59,27 +56,22 @@ class TurboFrame:
         """
         self.dom_id = dom_id
 
-    def render(self, content: str = "", is_safe: bool = False) -> str:
+    def render(self, content: str = "", **kwargs) -> str:
         """
         :param content: enclosed content
-        :param is_safe: mark content safe for HTML escaping.
 
         :return: a *<turbo-frame>* string
         """
-        return render_turbo_frame(dom_id=self.dom_id, content=content, is_safe=is_safe)
+        return render_turbo_frame(dom_id=self.dom_id, content=content, **kwargs)
 
-    def response(
-        self, content: str = "", is_safe: bool = False, **response_kwargs
-    ) -> TurboFrameResponse:
+    def response(self, content: str = "", **kwargs) -> TurboFrameResponse:
         """
         :param content: enclosed content
         :param is_safe: mark content safe for HTML escaping.
 
         :return: a *<turbo-frame>* HTTP response
         """
-        return TurboFrameResponse(
-            dom_id=self.dom_id, content=content, is_safe=is_safe, **response_kwargs
-        )
+        return TurboFrameResponse(dom_id=self.dom_id, content=content, **kwargs)
 
     def template(
         self,

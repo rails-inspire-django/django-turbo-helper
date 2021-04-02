@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 
 # Local
 from .constants import Action
-from .renderers import render_turbo_frame, render_turbo_stream
+from .renderers import BaseRenderer, render_turbo_frame, render_turbo_stream
 
 
 def render_turbo_stream_template(
@@ -15,6 +15,7 @@ def render_turbo_stream_template(
     *,
     action: Action,
     target: str,
+    renderer: Optional[BaseRenderer] = None,
     **template_kwargs
 ) -> str:
     """Renders a *<turbo-stream>* template.
@@ -38,6 +39,7 @@ def render_turbo_stream_template(
             **template_kwargs,
         ).strip(),
         is_safe=True,
+        renderer=renderer,
     )
 
 
@@ -46,6 +48,7 @@ def render_turbo_frame_template(
     context: Optional[Dict[str, Any]] = None,
     *,
     dom_id: str,
+    renderer: Optional[BaseRenderer] = None,
     **kwargs
 ) -> str:
     """Renders a *<turbo-frame>* template.
@@ -67,4 +70,5 @@ def render_turbo_frame_template(
             **kwargs,
         ).strip(),
         is_safe=True,
+        renderer=renderer,
     )

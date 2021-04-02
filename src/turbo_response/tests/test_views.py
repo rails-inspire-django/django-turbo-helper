@@ -1,16 +1,13 @@
-# Standard Library
 import http
 
-# Django
 from django import forms
 from django.views.generic import CreateView
 
-# Third Party Libraries
 import pytest
 
-# Django Turbo Response
 from turbo_response import Action
 from turbo_response.mixins import TurboFormAdapterMixin
+from turbo_response.renderers import Jinja2
 from turbo_response.tests.testapp.forms import TodoForm
 from turbo_response.tests.testapp.models import TodoItem
 from turbo_response.views import (
@@ -350,6 +347,22 @@ class TestTurboFrameView:
 
             def get_response_content(self):
                 return "done"
+
+        req = rf.get("/")
+        resp = MyView.as_view()(req)
+        assert resp.status_code == http.HTTPStatus.OK
+        assert resp["Content-Type"] == "text/html; charset=utf-8"
+        assert resp.content == b'<turbo-frame id="test">done</turbo-frame>'
+
+    def test_get_jinja2(self, rf):
+        class MyView(TurboFrameView):
+            turbo_frame_dom_id = "test"
+
+            def get_response_content(self):
+                return "done"
+
+            def render_turbo_frame(self):
+                return super().render_turbo_frame(renderer=Jinja2())
 
         req = rf.get("/")
         resp = MyView.as_view()(req)
