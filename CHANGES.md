@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.40] - 2021-4-2
+
+Use file-based templates for rendering streams/frames
+
 ## [0.0.39] - 2021-4-2
 
 Fix for https://github.com/hotwire-django/django-turbo-response/issues/5

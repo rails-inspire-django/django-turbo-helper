@@ -2,7 +2,7 @@
 # Third Party Libraries
 from setuptools import setup
 
-version = "0.0.39"
+version = "0.0.40"
 
 setup(
     name="django-turbo-response",
