@@ -36,7 +36,8 @@ def render_turbo_stream_template(
                 "is_turbo_stream": True,
             },
             **template_kwargs,
-        ),
+        ).strip(),
+        is_safe=True,
     )
 
 
@@ -58,7 +59,12 @@ def render_turbo_frame_template(
         dom_id,
         render_to_string(
             template,
-            {**(context or {}), "turbo_frame_dom_id": dom_id, "is_turbo_frame": True},
+            {
+                **(context or {}),
+                "turbo_frame_dom_id": dom_id,
+                "is_turbo_frame": True,
+            },
             **kwargs,
-        ),
+        ).strip(),
+        is_safe=True,
     )

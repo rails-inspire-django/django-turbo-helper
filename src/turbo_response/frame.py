@@ -59,20 +59,26 @@ class TurboFrame:
         """
         self.dom_id = dom_id
 
-    def render(self, content: str = "") -> str:
+    def render(self, content: str = "", is_safe: bool = False) -> str:
         """
         :param content: enclosed content
+        :param is_safe: mark content safe for HTML escaping.
+
         :return: a *<turbo-frame>* string
         """
-        return render_turbo_frame(dom_id=self.dom_id, content=content)
+        return render_turbo_frame(dom_id=self.dom_id, content=content, is_safe=is_safe)
 
-    def response(self, content: str = "", **response_kwargs) -> TurboFrameResponse:
+    def response(
+        self, content: str = "", is_safe: bool = False, **response_kwargs
+    ) -> TurboFrameResponse:
         """
         :param content: enclosed content
+        :param is_safe: mark content safe for HTML escaping.
+
         :return: a *<turbo-frame>* HTTP response
         """
         return TurboFrameResponse(
-            dom_id=self.dom_id, content=content, **response_kwargs
+            dom_id=self.dom_id, content=content, is_safe=is_safe, **response_kwargs
         )
 
     def template(

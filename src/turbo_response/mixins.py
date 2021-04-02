@@ -79,10 +79,12 @@ class TurboStreamResponseMixin(TurboStreamMixin):
 
         return ""
 
-    def render_turbo_stream(self, **response_kwargs) -> HttpResponse:
+    def render_turbo_stream(
+        self, is_safe: bool = False, **response_kwargs
+    ) -> HttpResponse:
         """Returns a turbo-stream response."""
         return self.get_turbo_stream().response(
-            self.get_response_content(), **response_kwargs
+            self.get_response_content(), is_safe=is_safe, **response_kwargs
         )
 
 
@@ -254,11 +256,13 @@ class TurboFrameResponseMixin(TurboFrameMixin):
     def get_response_content(self) -> str:
         return ""
 
-    def render_turbo_frame(self, **response_kwargs) -> HttpResponse:
+    def render_turbo_frame(
+        self, is_safe: bool = False, **response_kwargs
+    ) -> HttpResponse:
         """Renders a turbo frame to response."""
 
         return self.get_turbo_frame().response(
-            self.get_response_content(), **response_kwargs
+            self.get_response_content(), is_safe=is_safe, **response_kwargs
         )
 
 
