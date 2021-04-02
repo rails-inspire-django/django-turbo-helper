@@ -1,17 +1,67 @@
-# Standard Library
+import pathlib
 from functools import lru_cache
+from typing import Optional
 
-# Django
+from django.forms.renderers import BaseRenderer
+from django.forms.renderers import EngineMixin as BaseEngineMixin
+from django.forms.renderers import TemplatesSetting as BaseTemplatesSetting
 from django.template import Context, Template
+from django.template.backends.django import DjangoTemplates as DjangoTemplatesBackend
 from django.template.engine import Engine
+from django.utils.functional import cached_property
+from django.utils.module_loading import import_string
 from django.utils.safestring import mark_safe
 
-# Local
 from .constants import Action
 
 
+@lru_cache()
+def get_default_renderer():
+    from django.conf import settings
+
+    renderer_class_name = getattr(
+        settings, "TURBO_RESPONSE_RENDERER", "turbo_response.renderers.DjangoTemplates"
+    )
+
+    renderer_class = import_string(renderer_class_name)
+    return renderer_class()
+
+
+class EngineMixin(BaseEngineMixin):
+    @cached_property
+    def engine(self):
+        return self.backend(
+            {
+                "APP_DIRS": True,
+                "DIRS": [pathlib.Path(__file__).parent / self.backend.app_dirname],
+                "NAME": "turbo_response",
+                "OPTIONS": {},
+            }
+        )
+
+
+class DjangoTemplates(EngineMixin, BaseRenderer):
+    backend = DjangoTemplatesBackend
+
+
+class Jinja2(EngineMixin, BaseRenderer):
+    @cached_property
+    def backend(self):
+        from django.template.backends.jinja2 import Jinja2
+
+        return Jinja2
+
+
+class TemplatesSetting(BaseTemplatesSetting):
+    ...
+
+
 def render_turbo_stream(
-    action: Action, target: str, content: str = "", is_safe: bool = False
+    action: Action,
+    target: str,
+    content: str = "",
+    is_safe: bool = False,
+    renderer: Optional[BaseRenderer] = None,
 ) -> str:
     """Wraps content in correct <turbo-stream> tags.
 
@@ -25,8 +75,12 @@ def render_turbo_stream(
     if is_safe:
         content = mark_safe(content)
 
-    return get_turbo_stream_template().render(
-        Context({"action": action.value, "target": target, "content": content})
+    renderer = renderer or get_default_renderer()
+
+    return (
+        renderer.get_template("turbo_response/turbo_stream.html")
+        .render({"action": action.value, "target": target, "content": content})
+        .strip()
     )
 
 

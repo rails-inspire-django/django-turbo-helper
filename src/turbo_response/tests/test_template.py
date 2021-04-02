@@ -10,7 +10,7 @@ class TestRenderTurboStreamTemplate:
     def test_render(self):
         s = render_turbo_stream_template(
             "simple.html", {"msg": "my content"}, action=Action.UPDATE, target="test"
-        )
+        ).strip()
         assert (
             s
             == '<turbo-stream action="update" target="test"><template><div>my content</div></template></turbo-stream>'
@@ -22,7 +22,7 @@ class TestRenderTurboStreamTemplate:
             {"msg": "<script></script>"},
             action=Action.UPDATE,
             target="test",
-        )
+        ).strip()
         assert (
             s
             == '<turbo-stream action="update" target="test"><template><div>&lt;script&gt;&lt;/script&gt;</div></template></turbo-stream>'

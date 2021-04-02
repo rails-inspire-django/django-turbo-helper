@@ -4,21 +4,25 @@ from turbo_response import TurboStream
 
 class TestTurboStream:
     def test_render(self):
-        s = TurboStream("my-form").append.render("OK")
+        s = TurboStream("my-form").append.render("OK").strip()
         assert (
             s
             == '<turbo-stream action="append" target="my-form"><template>OK</template></turbo-stream>'
         )
 
     def test_render_xss(self):
-        s = TurboStream("my-form").append.render("<script></script>")
+        s = TurboStream("my-form").append.render("<script></script>").strip()
         assert (
             s
             == '<turbo-stream action="append" target="my-form"><template>&lt;script&gt;&lt;/script&gt;</template></turbo-stream>'
         )
 
     def test_render_is_safe(self):
-        s = TurboStream("my-form").append.render("<script></script>", is_safe=True)
+        s = (
+            TurboStream("my-form")
+            .append.render("<script></script>", is_safe=True)
+            .strip()
+        )
         assert (
             s
             == '<turbo-stream action="append" target="my-form"><template><script></script></template></turbo-stream>'
