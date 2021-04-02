@@ -14,7 +14,7 @@ from .constants import Action
 
 
 @lru_cache()
-def get_default_renderer():
+def get_default_renderer() -> BaseRenderer:
     from django.conf import settings
 
     renderer_class_name = getattr(

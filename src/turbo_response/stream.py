@@ -1,10 +1,7 @@
-# Standard Library
 from typing import Any, Dict, List, Optional, Union
 
-# Django
 from django.http import HttpRequest
 
-# Local
 from .constants import Action
 from .renderers import render_turbo_stream
 from .response import TurboStreamResponse, TurboStreamTemplateResponse
@@ -63,19 +60,24 @@ class TurboStreamAction:
         self.action = action
         self.target = target
 
-    def render(self, content: str = "", is_safe: bool = False) -> str:
+    def render(
+        self,
+        content: str = "",
+        **kwargs,
+    ) -> str:
         """
         :param content: enclosed content
-        :param is_safe: mark content safe for HTML escaping.
 
         :return: a *<turbo-stream>* string
         """
         return render_turbo_stream(
-            action=self.action, target=self.target, content=content, is_safe=is_safe
+            action=self.action, target=self.target, content=content, **kwargs
         )
 
     def response(
-        self, content: str = "", is_safe: bool = False, **response_kwargs
+        self,
+        content: str = "",
+        **kwargs,
     ) -> TurboStreamResponse:
         """
         :param content: enclosed content
@@ -85,8 +87,7 @@ class TurboStreamAction:
             action=self.action,
             target=self.target,
             content=content,
-            is_safe=is_safe,
-            **response_kwargs,
+            **kwargs,
         )
 
     def template(

@@ -1,8 +1,7 @@
-# Standard Library
 import http
 from typing import Any, Dict, Iterable, Mapping, Optional, Union
 
-# Django
+from django.forms.renderers import BaseRenderer
 from django.http import (
     HttpRequest,
     HttpResponse,
@@ -11,7 +10,6 @@ from django.http import (
 )
 from django.template.response import TemplateResponse
 
-# Local
 from .constants import TURBO_STREAM_MIME_TYPE, Action
 from .renderers import render_turbo_frame, render_turbo_stream
 
@@ -69,10 +67,13 @@ class TurboStreamResponse(TurboStreamResponseMixin, HttpResponse):
         action: Optional[Action] = None,
         target: Optional[str] = None,
         is_safe: bool = False,
+        renderer: Optional[BaseRenderer] = None,
         **response_kwargs,
     ):
         if action and target and isinstance(content, str):
-            content = render_turbo_stream(action, target, content, is_safe=is_safe)
+            content = render_turbo_stream(
+                action, target, content, is_safe=is_safe, renderer=renderer
+            )
         super().__init__(content, **response_kwargs)
 
 
@@ -97,6 +98,7 @@ class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
         *,
         action: Action,
         target: str,
+        renderer: Optional[BaseRenderer] = None,
         **kwargs,
     ):
 
@@ -114,6 +116,7 @@ class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
 
         self._target = target
         self._action = action
+        self._renderer = renderer
 
     @property
     def rendered_content(self) -> str:
@@ -121,6 +124,7 @@ class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
             action=self._action,
             target=self._target,
             content=super().rendered_content,
+            renderer=self._renderer,
             is_safe=True,
         )
 
@@ -134,10 +138,11 @@ class TurboFrameResponse(HttpResponse):
         *,
         dom_id: str,
         is_safe: bool = False,
+        renderer: Optional[BaseRenderer] = None,
         **response_kwargs,
     ):
         super().__init__(
-            render_turbo_frame(dom_id, content, is_safe=is_safe),
+            render_turbo_frame(dom_id, content, is_safe=is_safe, renderer=renderer),
             **response_kwargs,
         )
 
@@ -161,6 +166,7 @@ class TurboFrameTemplateResponse(TemplateResponse):
         context: Optional[Mapping[str, Any]] = None,
         *,
         dom_id,
+        renderer: Optional[BaseRenderer] = None,
         **kwargs,
     ):
 
@@ -172,7 +178,13 @@ class TurboFrameTemplateResponse(TemplateResponse):
         )
 
         self._dom_id = dom_id
+        self._renderer = renderer
 
     @property
     def rendered_content(self) -> str:
-        return render_turbo_frame(self._dom_id, super().rendered_content, is_safe=True)
+        return render_turbo_frame(
+            self._dom_id,
+            super().rendered_content,
+            is_safe=True,
+            renderer=self._renderer,
+        )

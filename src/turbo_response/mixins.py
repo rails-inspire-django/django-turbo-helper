@@ -79,13 +79,9 @@ class TurboStreamResponseMixin(TurboStreamMixin):
 
         return ""
 
-    def render_turbo_stream(
-        self, is_safe: bool = False, **response_kwargs
-    ) -> HttpResponse:
+    def render_turbo_stream(self, **kwargs) -> HttpResponse:
         """Returns a turbo-stream response."""
-        return self.get_turbo_stream().response(
-            self.get_response_content(), is_safe=is_safe, **response_kwargs
-        )
+        return self.get_turbo_stream().response(self.get_response_content(), **kwargs)
 
 
 class TurboStreamTemplateResponseMixin(TurboStreamMixin):
@@ -256,14 +252,9 @@ class TurboFrameResponseMixin(TurboFrameMixin):
     def get_response_content(self) -> str:
         return ""
 
-    def render_turbo_frame(
-        self, is_safe: bool = False, **response_kwargs
-    ) -> HttpResponse:
+    def render_turbo_frame(self, **kwargs) -> HttpResponse:
         """Renders a turbo frame to response."""
-
-        return self.get_turbo_frame().response(
-            self.get_response_content(), is_safe=is_safe, **response_kwargs
-        )
+        return self.get_turbo_frame().response(self.get_response_content(), **kwargs)
 
 
 class TurboFrameTemplateResponseMixin(TurboFrameMixin):
@@ -273,9 +264,7 @@ class TurboFrameTemplateResponseMixin(TurboFrameMixin):
     template_engine: Engine
     get_template_names: Callable
 
-    def render_turbo_frame(
-        self, context: Dict[str, Any], **response_kwargs
-    ) -> HttpResponse:
+    def render_turbo_frame(self, context: Dict[str, Any], **kwargs) -> HttpResponse:
         """Returns a turbo-frame response.
 
         :param context: template context
@@ -283,5 +272,5 @@ class TurboFrameTemplateResponseMixin(TurboFrameMixin):
         return (
             self.get_turbo_frame()
             .template(self.get_template_names(), context, using=self.template_engine)
-            .response(self.request)
+            .response(self.request, **kwargs)
         )
