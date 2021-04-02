@@ -5,9 +5,7 @@ from typing import Optional
 from django.forms.renderers import BaseRenderer
 from django.forms.renderers import EngineMixin as BaseEngineMixin
 from django.forms.renderers import TemplatesSetting as BaseTemplatesSetting
-from django.template import Context, Template
 from django.template.backends.django import DjangoTemplates as DjangoTemplatesBackend
-from django.template.engine import Engine
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
 from django.utils.safestring import mark_safe
@@ -84,7 +82,12 @@ def render_turbo_stream(
     )
 
 
-def render_turbo_frame(dom_id: str, content: str = "", is_safe: bool = False) -> str:
+def render_turbo_frame(
+    dom_id: str,
+    content: str = "",
+    is_safe: bool = False,
+    renderer: Optional[BaseRenderer] = None,
+) -> str:
     """
 
     Wraps a response in correct *<turbo-frame>* tags.
@@ -98,24 +101,10 @@ def render_turbo_frame(dom_id: str, content: str = "", is_safe: bool = False) ->
     if is_safe:
         content = mark_safe(content)
 
-    return get_turbo_frame_template().render(
-        Context({"dom_id": dom_id, "content": content})
+    renderer = renderer or get_default_renderer()
+
+    return (
+        renderer.get_template("turbo_response/turbo_frame.html")
+        .render({"dom_id": dom_id, "content": content})
+        .strip()
     )
-
-
-@lru_cache()
-def get_turbo_stream_template() -> Template:
-    return get_template_from_string(
-        '<turbo-stream action="{{ action }}" target="{{ target }}"><template>{{ content }}</template></turbo-stream>',
-    )
-
-
-@lru_cache()
-def get_turbo_frame_template() -> Template:
-    return get_template_from_string(
-        '<turbo-frame id="{{ dom_id }}">{{ content }}</turbo-frame>'
-    )
-
-
-def get_template_from_string(template_code: str) -> Template:
-    return Engine.get_default().from_string(template_code)
