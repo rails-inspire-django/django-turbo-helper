@@ -1,4 +1,3 @@
-# Django Turbo Response
 from turbo_response import Action, render_turbo_frame, render_turbo_stream
 from turbo_response.renderers import DjangoTemplates, Jinja2
 

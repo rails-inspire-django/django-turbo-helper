@@ -1,10 +1,7 @@
-# Django
 from django.http import HttpResponse
 
-# Third Party Libraries
 import pytest
 
-# Django Turbo Response
 from turbo_response.middleware import TurboMiddleware
 
 
