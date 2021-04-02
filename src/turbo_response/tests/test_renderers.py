@@ -1,10 +1,11 @@
 # Django Turbo Response
 from turbo_response import Action, render_turbo_frame, render_turbo_stream
+from turbo_response.renderers import Jinja2
 
 
 class TestRenderTurboStream:
     def test_render_empty_stream(self):
-        s = render_turbo_stream(action=Action.REMOVE, target="test").strip()
+        s = render_turbo_stream(action=Action.REMOVE, target="test")
         assert (
             s
             == '<turbo-stream action="remove" target="test"><template></template></turbo-stream>'
@@ -15,7 +16,19 @@ class TestRenderTurboStream:
             action=Action.REPLACE,
             target="test",
             content="my content",
-        ).strip()
+        )
+        assert (
+            s
+            == '<turbo-stream action="replace" target="test"><template>my content</template></turbo-stream>'
+        )
+
+    def test_render_content_with_jinja2(self):
+        s = render_turbo_stream(
+            action=Action.REPLACE,
+            target="test",
+            content="my content",
+            renderer=Jinja2(),
+        )
         assert (
             s
             == '<turbo-stream action="replace" target="test"><template>my content</template></turbo-stream>'
@@ -26,7 +39,7 @@ class TestRenderTurboStream:
             action=Action.REPLACE,
             target="test",
             content="<script></script>",
-        ).strip()
+        )
         assert (
             s
             == '<turbo-stream action="replace" target="test"><template>&lt;script&gt;&lt;/script&gt;</template></turbo-stream>'
@@ -38,7 +51,7 @@ class TestRenderTurboStream:
             target="test",
             content="<script></script>",
             is_safe=True,
-        ).strip()
+        )
         assert (
             s
             == '<turbo-stream action="replace" target="test"><template><script></script></template></turbo-stream>'
