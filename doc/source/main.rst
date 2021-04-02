@@ -111,7 +111,7 @@ You can also return an *HTTPResponse* subclass. The content type *text/html; tur
 
 .. code-block:: python
 
-      TurboFrame("msg").render("<b>OK</b>", is_safe=True)
+      TurboStream("msg").replace.render("<b>OK</b>", is_safe=True)
 
       TurboFrame("msg").response("<b>OK</b>", is_safe=True)
 
