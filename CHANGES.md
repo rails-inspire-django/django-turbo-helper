@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.44] - 2021-4-2
+
+Allow renderer as arg for all stream and frame mixins/classes
+
 ## [0.0.40] - 2021-4-2
 
 Use file-based templates for rendering streams/frames
