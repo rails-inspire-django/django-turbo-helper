@@ -1,8 +1,6 @@
-# Standard Library
 import http
 from typing import Any, Callable, Dict, List, Optional, Type
 
-# Django
 from django import forms
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Model
@@ -10,7 +8,6 @@ from django.http import HttpRequest, HttpResponse
 from django.template.engine import Engine
 from django.views.generic.edit import FormMixin
 
-# Local
 from .constants import Action
 from .frame import TurboFrame
 from .renderers import BaseRenderer
