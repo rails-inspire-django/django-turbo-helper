@@ -15,6 +15,11 @@ from .constants import Action
 
 @lru_cache()
 def get_default_renderer() -> BaseRenderer:
+    """Get the default renderer class.
+
+    :return: renderer subclass: default DjangoTemplates
+
+    """
     from django.conf import settings
 
     renderer_class_name = getattr(
@@ -67,6 +72,7 @@ def render_turbo_stream(
     :param target: the DOM ID target of the stream
     :param content: content to be wrapped. Can be empty.
     :param is_safe: mark content safe for HTML escaping.
+    :param renderer: template renderer class
 
     :return: *<turbo-stream>* string
     """
@@ -95,6 +101,7 @@ def render_turbo_frame(
     :param dom_id: a DOM ID present in the content
     :param content: content of the turbo-frame
     :param is_safe: mark content safe for HTML escaping.
+    :param renderer: template renderer class
 
     :return: *<turbo-frame>* string
     """
