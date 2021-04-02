@@ -13,6 +13,7 @@ from django.views.generic.edit import FormMixin
 # Local
 from .constants import Action
 from .frame import TurboFrame
+from .renderers import BaseRenderer
 from .response import HttpResponseSeeOther
 from .stream import TurboStream, TurboStreamAction
 
@@ -91,9 +92,7 @@ class TurboStreamTemplateResponseMixin(TurboStreamMixin):
     template_engine: Engine
     get_template_names: Callable
 
-    def render_turbo_stream(
-        self, context: Dict[str, Any], **response_kwargs
-    ) -> HttpResponse:
+    def render_turbo_stream(self, context: Dict[str, Any], **kwargs) -> HttpResponse:
         """Renders a turbo-stream template response.
 
         :param context: template context
@@ -102,7 +101,7 @@ class TurboStreamTemplateResponseMixin(TurboStreamMixin):
         return (
             self.get_turbo_stream()
             .template(self.get_template_names(), context, using=self.template_engine)
-            .response(self.request)
+            .response(self.request, **kwargs)
         )
 
 
@@ -193,6 +192,9 @@ class TurboStreamFormMixin(TurboStreamMixin, TurboFormMixin):
             for template in self.get_template_names()
         ]
 
+    def get_turbo_stream_renderer(self) -> Optional[BaseRenderer]:
+        return None
+
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         # TurboStream response will automatically add this,
         # but we also want to access it in the initial render
@@ -217,7 +219,7 @@ class TurboStreamFormMixin(TurboStreamMixin, TurboFormMixin):
                 context=self.get_context_data(**context),
                 using=self.template_engine,
             )
-            .response(self.request)
+            .response(self.request, renderer=self.get_turbo_stream_renderer())
         )
 
     def form_invalid(self, form: forms.Form) -> HttpResponse:
