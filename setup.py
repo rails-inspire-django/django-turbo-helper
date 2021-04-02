@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-# Third Party Libraries
-from setuptools import setup
+from setuptools import find_packages, setup
 
-version = "0.0.41"
+version = "0.0.42"
 
 setup(
     name="django-turbo-response",
@@ -16,10 +15,10 @@ setup(
     license="MIT",
     python_requires=">=3.7",
     requires=["django (>=3.0)"],
-    packages=["turbo_response"],
+    packages=find_packages("src"),
     package_dir={"": "src"},
-    package_data={"turbo_response": ["templates/*.html", "jinja2/*.html"]},
-    # include_package_data=True,
+    package_data={"turbo_response": ["templates/**/*.html", "jinja2/**/*.html"]},
+    include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Framework :: Django",
