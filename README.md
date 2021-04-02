@@ -19,6 +19,8 @@ To install from Git:
 
 > python setup.py install
 
+Make sure to add *turbo_response* to **INSTALLED_APPS**.
+
 **Note**: This library does not include any client libraries (Turbo or Stimulus). You may wish to add these yourself using your preferred Javascript build tool, or use a CDN. Please refer to the Hotwire documentation on installing these libraries.
 
 Full documentation on ReadTheDocs:
