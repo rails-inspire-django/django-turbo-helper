@@ -32,7 +32,7 @@ Next update **INSTALLED_APPS**:
     ...
   ]
 
-The turbo stream and frame rendering uses **turbo_response.renderers.DjangoTemplates** by default. If you want to change this default import string with the Django setting **TURBO_RESPONSE_RENDERER**.
+The turbo stream and frame rendering uses **turbo_response.renderers.DjangoTemplates** by default. If you want to change this default import string with the Django setting **TURBO_RESPONSE_RENDERER**. For example, if you want to render all templates through Jinja2 you can use **turbo_response.renderers.Jinja2**.  In almost all cases however there is probably no need to change the default settings.
 
 **Note**: This install does not include any client libraries (Turbo or Stimulus). You may wish to add these yourself using your preferred Javascript build tool, or use a CDN. Please refer to the Hotwire documentation on installing these libraries.
 
