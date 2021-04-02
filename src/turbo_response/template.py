@@ -24,6 +24,7 @@ def render_turbo_stream_template(
     :param context: template context
     :param action: turbo-stream action
     :param target: turbo-stream target
+    :param renderer: turbo-stream template renderer
     """
     return render_turbo_stream(
         action,
@@ -56,6 +57,7 @@ def render_turbo_frame_template(
     :param template: template name or names
     :param context: template context
     :param dom_id: turbo-frame DOM ID
+    :param renderer: turbo-frame template renderer
     """
 
     return render_turbo_frame(
