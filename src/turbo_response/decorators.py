@@ -8,7 +8,7 @@ from .response import TurboStreamResponse, TurboStreamStreamingResponse
 
 def turbo_stream_response(view: Callable) -> Callable:
     @functools.wraps(view)
-    def wrapper(request: HttpRequest, *args, **kwargs):
+    def wrapper(request: HttpRequest, *args, **kwargs) -> HttpResponse:
         response = view(request, *args, **kwargs)
         if isinstance(response, HttpResponse):
             return response
