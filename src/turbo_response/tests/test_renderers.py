@@ -107,6 +107,12 @@ class TestRenderTurboFrame:
         )
         assert s == '<turbo-frame id="test">my content</turbo-frame>'
 
+    def test_render_content_django_templates(self):
+        s = render_turbo_frame(
+            dom_id="test", content="my content", renderer=DjangoTemplates()
+        )
+        assert s == '<turbo-frame id="test">my content</turbo-frame>'
+
     def test_render_xss(self):
         s = render_turbo_frame(
             dom_id="test",

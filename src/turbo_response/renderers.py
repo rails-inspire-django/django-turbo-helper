@@ -14,7 +14,8 @@ from .constants import Action
 
 
 class BaseRenderer:
-    """This is based on django form widget renderers"""
+    """This classes is based on django form widget renderer: we can determine
+    the template engine used to render the wrapper templates in settings or per instance."""
 
     def get_template(self, template_name: str) -> Template:
         raise NotImplementedError("subclasses must implement get_template()")
