@@ -32,6 +32,7 @@ Next update **INSTALLED_APPS**:
     ...
   ]
 
+The turbo stream and frame rendering uses **turbo_response.renderers.DjangoTemplates** by default. If you want to change this default import string with the Django setting **TURBO_RESPONSE_RENDERER**.
 
 **Note**: This install does not include any client libraries (Turbo or Stimulus). You may wish to add these yourself using your preferred Javascript build tool, or use a CDN. Please refer to the Hotwire documentation on installing these libraries.
 

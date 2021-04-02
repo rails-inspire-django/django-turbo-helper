@@ -31,6 +31,7 @@ def get_default_renderer() -> BaseRenderer:
 
 
 class EngineMixin(BaseEngineMixin):
+    # uses the django widget renderer resolution to determine backend
     @cached_property
     def engine(self):
         return self.backend(
@@ -41,22 +42,6 @@ class EngineMixin(BaseEngineMixin):
                 "OPTIONS": {},
             }
         )
-
-
-class DjangoTemplates(EngineMixin, BaseRenderer):
-    backend = DjangoTemplatesBackend
-
-
-class Jinja2(EngineMixin, BaseRenderer):
-    @cached_property
-    def backend(self):
-        from django.template.backends.jinja2 import Jinja2
-
-        return Jinja2
-
-
-class TemplatesSetting(BaseTemplatesSetting):
-    ...
 
 
 def render_turbo_stream(
@@ -115,3 +100,19 @@ def render_turbo_frame(
         .render({"dom_id": dom_id, "content": content})
         .strip()
     )
+
+
+class DjangoTemplates(EngineMixin, BaseRenderer):
+    backend = DjangoTemplatesBackend
+
+
+class Jinja2(EngineMixin, BaseRenderer):
+    @cached_property
+    def backend(self):
+        from django.template.backends.jinja2 import Jinja2
+
+        return Jinja2
+
+
+class TemplatesSetting(BaseTemplatesSetting):
+    ...
