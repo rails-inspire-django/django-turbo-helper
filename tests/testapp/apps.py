@@ -3,5 +3,5 @@ from django.apps import AppConfig
 
 
 class TestAppConfig(AppConfig):
-    name = "turbo_response.tests.testapp"
+    name = "tests.testapp"
     verbose_name = "TestApp"

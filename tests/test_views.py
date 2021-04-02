@@ -8,8 +8,6 @@ import pytest
 from turbo_response import Action
 from turbo_response.mixins import TurboFormAdapterMixin
 from turbo_response.renderers import Jinja2
-from turbo_response.tests.testapp.forms import TodoForm
-from turbo_response.tests.testapp.models import TodoItem
 from turbo_response.views import (
     TurboCreateView,
     TurboFormView,
@@ -23,6 +21,9 @@ from turbo_response.views import (
     TurboStreamView,
     TurboUpdateView,
 )
+
+from .testapp.forms import TodoForm
+from .testapp.models import TodoItem
 
 pytestmark = pytest.mark.django_db
 
