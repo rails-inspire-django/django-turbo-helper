@@ -107,6 +107,19 @@ You can also return an *HTTPResponse* subclass. The content type *text/html; tur
       return TurboFrame("msg").template("msg.html", {"msg": "OK"}).response(request)
 
 
+**Note** if you are using the plain TurboStream or TurboFrame *render()* and *response()* non-template methods, any HTML will be automatically escaped. To prevent this pass **is_safe** (assuming you know the HTML is safe, of course):
+
+.. code-block:: python
+
+      TurboFrame("msg").render("<b>OK</b>", is_safe=True)
+
+      TurboFrame("msg").response("<b>OK</b>", is_safe=True)
+
+You don't need to do this with the template methods as HTML output is assumed:
+
+.. code-block:: python
+
+      TurboFrame("msg").template("msg.html", {"msg": "OK"}).response(request)
 
 See the API docs for more details.
 
