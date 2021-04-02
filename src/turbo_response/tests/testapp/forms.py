@@ -1,7 +1,5 @@
-# Django
 from django import forms
 
-# Local
 from .models import TodoItem
 
 
