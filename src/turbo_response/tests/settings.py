@@ -9,7 +9,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [pathlib.Path(__file__).parent.absolute() / "templates"],
-        "APP_DIRS": False,
+        "APP_DIRS": True,
         "OPTIONS": {
             "debug": False,
             "context_processors": [],
@@ -29,3 +29,5 @@ INSTALLED_APPS = [
 ]
 
 ROOT_URLCONF = "turbo_response.tests.testapp.urls"
+
+TURBO_RESPONSE_RENDERER = "turbo_response.renderers.TemplatesSetting"
