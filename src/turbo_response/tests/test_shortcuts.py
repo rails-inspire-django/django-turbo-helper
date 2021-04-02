@@ -1,13 +1,9 @@
-# Standard Library
 import http
 
-# Django
 from django import forms
 
-# Third Party Libraries
 import pytest
 
-# Django Turbo Response
 from turbo_response.shortcuts import redirect_303, render_form_response
 
 pytestmark = pytest.mark.django_db

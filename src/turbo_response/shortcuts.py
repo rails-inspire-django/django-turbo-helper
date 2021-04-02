@@ -1,15 +1,12 @@
-# Standard Library
 import http
 from typing import Dict, List, Optional, Union
 
-# Django
 from django.db.models import Model
 from django.forms import Form
 from django.http import HttpRequest
 from django.shortcuts import resolve_url
 from django.template.response import TemplateResponse
 
-# Local
 from .constants import Action
 from .response import HttpResponseSeeOther
 from .stream import TurboStream

@@ -1,7 +1,5 @@
-# Standard Library
 from typing import Any, Dict, Optional
 
-# Django
 from django.http import HttpRequest, HttpResponse
 from django.views.generic import (
     CreateView,
@@ -12,7 +10,6 @@ from django.views.generic import (
     View,
 )
 
-# Local
 from . import Action
 from .mixins import (
     TurboFormMixin,

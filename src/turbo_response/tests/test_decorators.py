@@ -1,10 +1,7 @@
-# Standard Library
 import http
 
-# Django
 from django.http import HttpResponse
 
-# Django Turbo Response
 from turbo_response import (
     TurboStream,
     TurboStreamResponse,

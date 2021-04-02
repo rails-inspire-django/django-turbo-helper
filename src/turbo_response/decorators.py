@@ -1,11 +1,8 @@
-# Standard Library
 import functools
 from typing import Callable, Generator
 
-# Django
 from django.http import HttpRequest, HttpResponse
 
-# Local
 from .response import TurboStreamResponse, TurboStreamStreamingResponse
 
 

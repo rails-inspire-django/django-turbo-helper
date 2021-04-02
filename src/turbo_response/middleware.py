@@ -1,11 +1,8 @@
-# Standard Library
 from typing import Callable
 
-# Django
 from django.http import HttpRequest, HttpResponse
 from django.utils.functional import SimpleLazyObject
 
-# Local
 from .constants import TURBO_STREAM_MIME_TYPE
 
 
