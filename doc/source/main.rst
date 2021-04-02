@@ -83,10 +83,13 @@ To render plain strings:
 
 .. code-block:: python
 
-  from turbo_response import TurboFrame, TurboStream
+  from turbo_response import TurboFrame, TurboStream, Action
 
   # returns <turbo-stream action="replace" target="msg><template>OK</template></turbo-stream>
   TurboStream("msg").replace.render("OK")
+
+  # set action dynamically
+  TurboStream("msg").action(Action.REPLACE).render("OK")
 
   # returns <turbo-stream action="remove" target="msg><template></template></turbo-stream>
   TurboStream("msg").remove.render()
@@ -103,7 +106,6 @@ You can also render templates:
   TurboFrame("msg").template("msg.html", {"msg": "hello"}).render()
 
 You can also return an *HTTPResponse* subclass. The content type *text/html; turbo-stream;* will be added to turbo stream responses.
-
 
 .. code-block:: python
 
