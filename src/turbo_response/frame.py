@@ -2,7 +2,8 @@ from typing import Any, Dict, List, Optional, Union
 
 from django.http import HttpRequest
 
-from .response import TurboFrameResponse, TurboFrameTemplateResponse, render_turbo_frame
+from .renderers import render_turbo_frame
+from .response import TurboFrameResponse, TurboFrameTemplateResponse
 from .template import render_turbo_frame_template
 
 
