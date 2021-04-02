@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.45] - 2021-4-2
+
+Refactor renderers and remove dependency on form widget renderer classes
+
 ## [0.0.44] - 2021-4-2
 
 Allow renderer as arg for all stream and frame mixins/classes
