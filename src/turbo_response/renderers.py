@@ -51,13 +51,17 @@ def render_turbo_frame(dom_id: str, content: str = "", is_safe: bool = False) ->
 
 @lru_cache()
 def get_turbo_stream_template() -> Template:
-    return Engine.get_default().from_string(
+    return get_template_from_string(
         '<turbo-stream action="{{ action }}" target="{{ target }}"><template>{{ content }}</template></turbo-stream>',
     )
 
 
 @lru_cache()
 def get_turbo_frame_template() -> Template:
-    return Engine.get_default().from_string(
+    return get_template_from_string(
         '<turbo-frame id="{{ dom_id }}">{{ content }}</turbo-frame>'
     )
+
+
+def get_template_from_string(template_code: str) -> Template:
+    return Engine.get_default().from_string(template_code)
