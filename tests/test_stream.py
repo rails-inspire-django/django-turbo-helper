@@ -1,3 +1,5 @@
+import http
+
 from turbo_response import TurboStream
 from turbo_response.renderers import Jinja2
 
@@ -78,25 +80,25 @@ class TestTurboStream:
 
     def test_response(self):
         resp = TurboStream("my-form").append.response("OK")
-        assert resp.status_code == 200
+        assert resp.status_code == http.HTTPStatus.OK
         assert b"OK" in resp.content
         assert b'<turbo-stream action="append" target="my-form"' in resp.content
 
     def test_response_jinja2(self):
         resp = TurboStream("my-form").append.response("OK", renderer=Jinja2())
-        assert resp.status_code == 200
+        assert resp.status_code == http.HTTPStatus.OK
         assert b"OK" in resp.content
         assert b'<turbo-stream action="append" target="my-form"' in resp.content
 
     def test_response_xss(self):
         resp = TurboStream("my-form").append.response("<script></script>")
-        assert resp.status_code == 200
+        assert resp.status_code == http.HTTPStatus.OK
         assert b"&lt;script&gt;&lt;/script&gt;" in resp.content
         assert b'<turbo-stream action="append" target="my-form"' in resp.content
 
     def test_response_is_safe(self):
         resp = TurboStream("my-form").append.response("<script></script>", is_safe=True)
-        assert resp.status_code == 200
+        assert resp.status_code == http.HTTPStatus.OK
         assert b"<script></script>" in resp.content
         assert b'<turbo-stream action="append" target="my-form"' in resp.content
 
@@ -107,7 +109,7 @@ class TestTurboStream:
             .append.template("simple.html", {"msg": "my content"}, request=req)
             .response()
         )
-        assert resp.status_code == 200
+        assert resp.status_code == http.HTTPStatus.OK
         assert "is_turbo_stream" in resp.context_data
         assert resp._request == req
         content = resp.render().content
@@ -121,7 +123,7 @@ class TestTurboStream:
             .append.template("simple.html", {"msg": "my content"})
             .response(req)
         )
-        assert resp.status_code == 200
+        assert resp.status_code == http.HTTPStatus.OK
         assert "is_turbo_stream" in resp.context_data
         assert resp._request == req
         content = resp.render().content
@@ -135,7 +137,7 @@ class TestTurboStream:
             .append.template("simple.html", {"msg": "my content"})
             .response(req, renderer=Jinja2())
         )
-        assert resp.status_code == 200
+        assert resp.status_code == http.HTTPStatus.OK
         assert "is_turbo_stream" in resp.context_data
         assert resp._request == req
         content = resp.render().content
