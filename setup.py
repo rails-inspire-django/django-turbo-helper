@@ -20,7 +20,7 @@ setup(
     package_data={"turbo_response": ["templates/**/*.html", "jinja2/**/*.html"]},
     include_package_data=True,
     classifiers=[
-        "Development Status :: 5 - Production/Stable",
+        "Development Status :: 4 - Beta",
         "Framework :: Django",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
