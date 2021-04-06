@@ -14,7 +14,7 @@ setup(
     long_description_content_type="text/markdown",
     license="MIT",
     python_requires=">=3.8",
-    requires=["django (>=3.0)"],
+    requires=["django (>=3.1)"],
     packages=find_packages("src"),
     package_dir={"": "src"},
     package_data={"turbo_response": ["templates/**/*.html", "jinja2/**/*.html"]},
