@@ -42,14 +42,12 @@ def render_turbo_stream(
 
     :return: *<turbo-stream>* string
     """
-    if is_safe:
-        content = mark_safe(content)
-
-    renderer = renderer or get_default_renderer()
-
-    return renderer.render(
+    return render(
         "turbo_response/turbo_stream.html",
-        {"action": action.value, "target": target, "content": content},
+        content,
+        is_safe,
+        renderer,
+        extra_context={"action": action.value, "target": target},
     )
 
 
@@ -70,13 +68,12 @@ def render_turbo_frame(
 
     :return: *<turbo-frame>* string
     """
-    if is_safe:
-        content = mark_safe(content)
-
-    renderer = renderer or get_default_renderer()
-
-    return renderer.render(
-        "turbo_response/turbo_frame.html", {"dom_id": dom_id, "content": content}
+    return render(
+        "turbo_response/turbo_frame.html",
+        content,
+        is_safe,
+        renderer,
+        extra_context={"dom_id": dom_id},
     )
 
 
@@ -95,6 +92,22 @@ def get_default_renderer() -> BaseRenderer:
 
     renderer_class = import_string(renderer_class_name)
     return renderer_class()
+
+
+def render(
+    template_name: str,
+    content: str,
+    is_safe: bool,
+    renderer: Optional[BaseRenderer] = None,
+    extra_context: Optional[Dict] = None,
+) -> str:
+
+    renderer = renderer or get_default_renderer()
+
+    if is_safe:
+        content = mark_safe(content)
+
+    return renderer.render(template_name, {"content": content, **(extra_context or {})})
 
 
 class EngineMixin:
