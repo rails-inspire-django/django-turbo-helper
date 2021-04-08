@@ -5,7 +5,7 @@ This package provides helpers for server-side rendering of [Hotwired/Turbo](http
 
 ## Requirements
 
-This library requires Python 3.8+ and Django 3.1+.
+This library requires Python 3.8+ and Django 3.0+.
 
 ## Installation
 
