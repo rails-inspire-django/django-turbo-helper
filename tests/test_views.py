@@ -86,6 +86,24 @@ class TestTurboStreamView:
             b'<turbo-stream action="replace" target="test"><template>hello'
         )
 
+    def test_get_jinja2(self, rf):
+        class MyView(TurboStreamView):
+            def get_response_content(self):
+                return "hello"
+
+            def get_turbo_stream_renderer(self):
+                return Jinja2()
+
+        req = rf.get("/")
+        resp = MyView.as_view(
+            turbo_stream_target="test", turbo_stream_action=Action.REPLACE
+        )(req)
+        assert resp.status_code == http.HTTPStatus.OK
+        assert "text/vnd.turbo-stream.html;" in resp["Content-Type"]
+        assert resp.content.startswith(
+            b'<turbo-stream action="replace" target="test"><template>hello'
+        )
+
     def test_get_xss(self, rf):
         class MyView(TurboStreamView):
             def get_response_content(self):
@@ -103,11 +121,11 @@ class TestTurboStreamView:
 
     def test_get_is_safe(self, rf):
         class MyView(TurboStreamView):
+
+            turbo_stream_content_safe = True
+
             def get_response_content(self):
                 return "<script />"
-
-            def render_turbo_stream(self, **kwargs):
-                return super().render_turbo_stream(is_safe=True, **kwargs)
 
         req = rf.get("/")
         resp = MyView.as_view(
@@ -359,11 +377,11 @@ class TestTurboFrameView:
         class MyView(TurboFrameView):
             turbo_frame_dom_id = "test"
 
+            def get_turbo_frame_renderer(self):
+                return Jinja2()
+
             def get_response_content(self):
                 return "done"
-
-            def render_turbo_frame(self):
-                return super().render_turbo_frame(renderer=Jinja2())
 
         req = rf.get("/")
         resp = MyView.as_view()(req)
@@ -387,12 +405,10 @@ class TestTurboFrameView:
     def test_get_is_safe(self, rf):
         class MyView(TurboFrameView):
             turbo_frame_dom_id = "test"
+            turbo_frame_content_safe = True
 
             def get_response_content(self):
                 return "<script />"
-
-            def render_turbo_frame(self):
-                return super().render_turbo_frame(is_safe=True)
 
         req = rf.get("/")
         resp = MyView.as_view()(req)

@@ -19,6 +19,9 @@ class TurboStreamMixin:
     turbo_stream_action: Optional[Action] = None
     turbo_stream_target: Optional[str] = None
 
+    def get_turbo_stream_renderer(self) -> Optional[BaseRenderer]:
+        return None
+
     def get_turbo_stream(self) -> TurboStreamAction:
 
         target = self.get_turbo_stream_target()
@@ -55,6 +58,9 @@ class TurboStreamMixin:
 class TurboFrameMixin:
     turbo_frame_dom_id: Optional[str] = None
 
+    def get_turbo_frame_renderer(self) -> Optional[BaseRenderer]:
+        return None
+
     def get_turbo_frame(self) -> TurboFrame:
         dom_id = self.get_turbo_frame_dom_id()
         if not dom_id:
@@ -72,6 +78,12 @@ class TurboFrameMixin:
 class TurboStreamResponseMixin(TurboStreamMixin):
     """Handles turbo-stream responses"""
 
+    turbo_stream_content_safe: bool = False
+
+    def is_turbo_stream_content_safe(self) -> bool:
+        """If content can be rendered without escaping"""
+        return self.turbo_stream_content_safe
+
     def get_response_content(self) -> str:
         """Returns turbo-stream content."""
 
@@ -79,7 +91,12 @@ class TurboStreamResponseMixin(TurboStreamMixin):
 
     def render_turbo_stream(self, **kwargs) -> HttpResponse:
         """Returns a turbo-stream response."""
-        return self.get_turbo_stream().response(self.get_response_content(), **kwargs)
+        return self.get_turbo_stream().response(
+            self.get_response_content(),
+            is_safe=self.is_turbo_stream_content_safe(),
+            renderer=self.get_turbo_stream_renderer(),
+            **kwargs,
+        )
 
 
 class TurboStreamTemplateResponseMixin(TurboStreamMixin):
@@ -98,7 +115,7 @@ class TurboStreamTemplateResponseMixin(TurboStreamMixin):
         return (
             self.get_turbo_stream()
             .template(self.get_template_names(), context, using=self.template_engine)
-            .response(self.request, **kwargs)
+            .response(self.request, renderer=self.get_turbo_stream_renderer(), **kwargs)
         )
 
 
@@ -248,12 +265,23 @@ class TurboStreamFormModelMixin(TurboStreamFormMixin):
 class TurboFrameResponseMixin(TurboFrameMixin):
     """Renders turbo-frame responses"""
 
+    turbo_frame_content_safe: bool = False
+
+    def is_turbo_frame_content_safe(self) -> bool:
+        """If content can be rendered without escaping"""
+        return self.turbo_frame_content_safe
+
     def get_response_content(self) -> str:
         return ""
 
     def render_turbo_frame(self, **kwargs) -> HttpResponse:
         """Renders a turbo frame to response."""
-        return self.get_turbo_frame().response(self.get_response_content(), **kwargs)
+        return self.get_turbo_frame().response(
+            self.get_response_content(),
+            is_safe=self.is_turbo_frame_content_safe(),
+            renderer=self.get_turbo_frame_renderer(),
+            **kwargs,
+        )
 
 
 class TurboFrameTemplateResponseMixin(TurboFrameMixin):
@@ -271,5 +299,5 @@ class TurboFrameTemplateResponseMixin(TurboFrameMixin):
         return (
             self.get_turbo_frame()
             .template(self.get_template_names(), context, using=self.template_engine)
-            .response(self.request, **kwargs)
+            .response(self.request, renderer=self.get_turbo_frame_renderer(), **kwargs)
         )
