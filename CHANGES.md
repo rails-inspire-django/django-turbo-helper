@@ -6,6 +6,8 @@ Add support for Django 3.2
 
 Remove support for Django 3.0
 
+Add rendering options to mixin classes
+
 ## [0.0.47] - 2021-4-4
 
 Removing support for Python 3.7
