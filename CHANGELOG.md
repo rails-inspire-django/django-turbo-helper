@@ -1,6 +1,6 @@
 # Changelog
 
-## [Latest]
+## [0.0.48] - 2021-4-9
 
 Add support for Django 3.2
 
