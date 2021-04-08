@@ -206,9 +206,6 @@ class TurboStreamFormMixin(TurboStreamMixin, TurboFormMixin):
             for template in self.get_template_names()
         ]
 
-    def get_turbo_stream_renderer(self) -> Optional[BaseRenderer]:
-        return None
-
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         # TurboStream response will automatically add this,
         # but we also want to access it in the initial render
