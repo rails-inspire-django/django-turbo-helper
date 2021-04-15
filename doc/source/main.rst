@@ -1,6 +1,6 @@
 This package provides helpers for server-side rendering of `Hotwired/Turbo <https://turbo.hotwire.dev/>`_ streams and frames.
 
-**Disclaimer**: the Hotwired/Turbo client libraries are, at time of writing, still in Beta. We expect there will be breaking changes both to the client library and this package until the first stable release. This package, and the Turbo client, should therefore be used with caution in a production environment. The version used in testing is *@hotwired/turbo==7.0.0-beta.4*.
+**Disclaimer**: the Hotwired/Turbo client libraries are, at time of writing, still in Beta. We expect there will be breaking changes both to the client library and this package until the first stable release. This package, and the Turbo client, should therefore be used with caution in a production environment. The version used in testing is *@hotwired/turbo==7.0.0-beta.5*.
 
 ============
 Requirements
@@ -70,8 +70,6 @@ If the request originates from a turbo-frame it will also set the *frame* proper
 
   if request.turbo.frame == "my-playlist":
       return TurboFrame(request.turbo.frame).response("OK")
-
-**Note**: there is an open bug https://github.com/hotwired/turbo/issues/86 (still open as of turbo beta.4) where the turbo frame header is not added when posting from a form. Until this is fixed, *request.turbo.frame* will only work with links, not forms.
 
 ===========================
 TurboFrame and TurboStream
