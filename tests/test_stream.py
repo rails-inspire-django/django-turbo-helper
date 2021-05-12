@@ -1,19 +1,11 @@
 import http
 
 from turbo_response import TurboStream
-from turbo_response.renderers import Jinja2
 
 
 class TestTurboStream:
     def test_render(self):
         s = TurboStream("my-form").append.render("OK")
-        assert (
-            s
-            == '<turbo-stream action="append" target="my-form"><template>OK</template></turbo-stream>'
-        )
-
-    def test_render_jinja2(self):
-        s = TurboStream("my-form").append.render("OK", renderer=Jinja2())
         assert (
             s
             == '<turbo-stream action="append" target="my-form"><template>OK</template></turbo-stream>'
@@ -38,15 +30,6 @@ class TestTurboStream:
             TurboStream("my-form")
             .append.template("simple.html", {"msg": "my content"})
             .render()
-        )
-        assert "my content" in s
-        assert '<turbo-stream action="append" target="my-form">' in s
-
-    def test_template_jinja2(self):
-        s = (
-            TurboStream("my-form")
-            .append.template("simple.html", {"msg": "my content"})
-            .render(renderer=Jinja2())
         )
         assert "my content" in s
         assert '<turbo-stream action="append" target="my-form">' in s
@@ -84,12 +67,6 @@ class TestTurboStream:
         assert b"OK" in resp.content
         assert b'<turbo-stream action="append" target="my-form"' in resp.content
 
-    def test_response_jinja2(self):
-        resp = TurboStream("my-form").append.response("OK", renderer=Jinja2())
-        assert resp.status_code == http.HTTPStatus.OK
-        assert b"OK" in resp.content
-        assert b'<turbo-stream action="append" target="my-form"' in resp.content
-
     def test_response_xss(self):
         resp = TurboStream("my-form").append.response("<script></script>")
         assert resp.status_code == http.HTTPStatus.OK
@@ -122,20 +99,6 @@ class TestTurboStream:
             TurboStream("my-form")
             .append.template("simple.html", {"msg": "my content"})
             .response(req)
-        )
-        assert resp.status_code == http.HTTPStatus.OK
-        assert "is_turbo_stream" in resp.context_data
-        assert resp._request == req
-        content = resp.render().content
-        assert b"<div>my content</div>" in content
-        assert b'<turbo-stream action="append" target="my-form"' in content
-
-    def test_template_response_jinja2(self, rf):
-        req = rf.get("/")
-        resp = (
-            TurboStream("my-form")
-            .append.template("simple.html", {"msg": "my content"})
-            .response(req, renderer=Jinja2())
         )
         assert resp.status_code == http.HTTPStatus.OK
         assert "is_turbo_stream" in resp.context_data

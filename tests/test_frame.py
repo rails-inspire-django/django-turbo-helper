@@ -1,16 +1,11 @@
 import http
 
 from turbo_response import TurboFrame
-from turbo_response.renderers import Jinja2
 
 
 class TestTurboFrame:
     def test_render(self):
         s = TurboFrame("my-form").render("OK")
-        assert s == '<turbo-frame id="my-form">OK</turbo-frame>'
-
-    def test_render_jinja2(self):
-        s = TurboFrame("my-form").render("OK", renderer=Jinja2())
         assert s == '<turbo-frame id="my-form">OK</turbo-frame>'
 
     def test_render_xss(self):
@@ -32,23 +27,8 @@ class TestTurboFrame:
         assert "my content" in s
         assert '<turbo-frame id="my-form">' in s
 
-    def test_template_jinja2(self):
-        s = (
-            TurboFrame("my-form")
-            .template("simple.html", {"msg": "my content"})
-            .render(renderer=Jinja2())
-        )
-        assert "my content" in s
-        assert '<turbo-frame id="my-form">' in s
-
     def test_response(self):
         resp = TurboFrame("my-form").response("OK")
-        assert resp.status_code == http.HTTPStatus.OK
-        assert b"OK" in resp.content
-        assert b'<turbo-frame id="my-form"' in resp.content
-
-    def test_response_jinja2(self):
-        resp = TurboFrame("my-form").response("OK", renderer=Jinja2())
         assert resp.status_code == http.HTTPStatus.OK
         assert b"OK" in resp.content
         assert b'<turbo-frame id="my-form"' in resp.content
@@ -71,16 +51,6 @@ class TestTurboFrame:
             TurboFrame("my-form")
             .template("simple.html", {"msg": "my content"}, request=req)
             .render()
-        )
-        assert "my content" in s
-        assert '<turbo-frame id="my-form"' in s
-
-    def test_template_render_jinja2(self, rf):
-        req = rf.get("/")
-        s = (
-            TurboFrame("my-form")
-            .template("simple.html", {"msg": "my content"}, request=req)
-            .render(renderer=Jinja2())
         )
         assert "my content" in s
         assert '<turbo-frame id="my-form"' in s
@@ -111,20 +81,6 @@ class TestTurboFrame:
             TurboFrame("my-form")
             .template("simple.html", {"msg": "my content"}, request=req)
             .response()
-        )
-        assert resp.status_code == http.HTTPStatus.OK
-        assert "is_turbo_frame" in resp.context_data
-        assert resp._request == req
-        content = resp.render().content
-        assert b"my content" in content
-        assert b'<turbo-frame id="my-form"' in content
-
-    def test_template_response_jinja2(self, rf):
-        req = rf.get("/")
-        resp = (
-            TurboFrame("my-form")
-            .template("simple.html", {"msg": "my content"}, request=req)
-            .response(renderer=Jinja2())
         )
         assert resp.status_code == http.HTTPStatus.OK
         assert "is_turbo_frame" in resp.context_data

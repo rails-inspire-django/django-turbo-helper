@@ -7,7 +7,6 @@ import pytest
 
 from turbo_response import Action
 from turbo_response.mixins import TurboFormAdapterMixin
-from turbo_response.renderers import Jinja2
 from turbo_response.views import (
     TurboCreateView,
     TurboFormView,
@@ -75,24 +74,6 @@ class TestTurboStreamView:
         class MyView(TurboStreamView):
             def get_response_content(self):
                 return "hello"
-
-        req = rf.get("/")
-        resp = MyView.as_view(
-            turbo_stream_target="test", turbo_stream_action=Action.REPLACE
-        )(req)
-        assert resp.status_code == http.HTTPStatus.OK
-        assert "text/vnd.turbo-stream.html;" in resp["Content-Type"]
-        assert resp.content.startswith(
-            b'<turbo-stream action="replace" target="test"><template>hello'
-        )
-
-    def test_get_jinja2(self, rf):
-        class MyView(TurboStreamView):
-            def get_response_content(self):
-                return "hello"
-
-            def get_turbo_stream_renderer(self):
-                return Jinja2()
 
         req = rf.get("/")
         resp = MyView.as_view(
@@ -363,22 +344,6 @@ class TestTurboFrameView:
     def test_get(self, rf):
         class MyView(TurboFrameView):
             turbo_frame_dom_id = "test"
-
-            def get_response_content(self):
-                return "done"
-
-        req = rf.get("/")
-        resp = MyView.as_view()(req)
-        assert resp.status_code == http.HTTPStatus.OK
-        assert resp["Content-Type"] == "text/html; charset=utf-8"
-        assert resp.content == b'<turbo-frame id="test">done</turbo-frame>'
-
-    def test_get_jinja2(self, rf):
-        class MyView(TurboFrameView):
-            turbo_frame_dom_id = "test"
-
-            def get_turbo_frame_renderer(self):
-                return Jinja2()
 
             def get_response_content(self):
                 return "done"

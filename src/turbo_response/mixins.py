@@ -10,7 +10,6 @@ from django.views.generic.edit import FormMixin
 
 from .constants import Action
 from .frame import TurboFrame
-from .renderers import BaseRenderer
 from .response import HttpResponseSeeOther
 from .stream import TurboStream, TurboStreamAction
 
@@ -18,9 +17,6 @@ from .stream import TurboStream, TurboStreamAction
 class TurboStreamMixin:
     turbo_stream_action: Optional[Action] = None
     turbo_stream_target: Optional[str] = None
-
-    def get_turbo_stream_renderer(self) -> Optional[BaseRenderer]:
-        return None
 
     def get_turbo_stream(self) -> TurboStreamAction:
 
@@ -58,9 +54,6 @@ class TurboStreamMixin:
 class TurboFrameMixin:
     turbo_frame_dom_id: Optional[str] = None
 
-    def get_turbo_frame_renderer(self) -> Optional[BaseRenderer]:
-        return None
-
     def get_turbo_frame(self) -> TurboFrame:
         dom_id = self.get_turbo_frame_dom_id()
         if not dom_id:
@@ -94,7 +87,6 @@ class TurboStreamResponseMixin(TurboStreamMixin):
         return self.get_turbo_stream().response(
             self.get_response_content(),
             is_safe=self.is_turbo_stream_content_safe(),
-            renderer=self.get_turbo_stream_renderer(),
             **kwargs,
         )
 
@@ -115,7 +107,7 @@ class TurboStreamTemplateResponseMixin(TurboStreamMixin):
         return (
             self.get_turbo_stream()
             .template(self.get_template_names(), context, using=self.template_engine)
-            .response(self.request, renderer=self.get_turbo_stream_renderer(), **kwargs)
+            .response(self.request, **kwargs)
         )
 
 
@@ -230,7 +222,7 @@ class TurboStreamFormMixin(TurboStreamMixin, TurboFormMixin):
                 context=self.get_context_data(**context),
                 using=self.template_engine,
             )
-            .response(self.request, renderer=self.get_turbo_stream_renderer())
+            .response(self.request)
         )
 
     def form_invalid(self, form: forms.Form) -> HttpResponse:
@@ -276,7 +268,6 @@ class TurboFrameResponseMixin(TurboFrameMixin):
         return self.get_turbo_frame().response(
             self.get_response_content(),
             is_safe=self.is_turbo_frame_content_safe(),
-            renderer=self.get_turbo_frame_renderer(),
             **kwargs,
         )
 
@@ -296,5 +287,5 @@ class TurboFrameTemplateResponseMixin(TurboFrameMixin):
         return (
             self.get_turbo_frame()
             .template(self.get_template_names(), context, using=self.template_engine)
-            .response(self.request, renderer=self.get_turbo_frame_renderer(), **kwargs)
+            .response(self.request, **kwargs)
         )
