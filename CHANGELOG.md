@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.49] - 2021-5-12
+
+Use format_html for rendering
+
 ## [0.0.48] - 2021-4-9
 
 Add support for Django 3.2
