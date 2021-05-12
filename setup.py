@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from setuptools import find_packages, setup
 
-VERSION = "0.0.48"
+VERSION = "0.0.49"
 
 setup(
     name="django-turbo-response",
