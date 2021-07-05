@@ -126,8 +126,16 @@ class TurboStream:
         return TurboStreamAction(self.target, action)
 
     @property
+    def after(self) -> TurboStreamAction:
+        return self.action(Action.AFTER)
+
+    @property
     def append(self) -> TurboStreamAction:
         return self.action(Action.APPEND)
+
+    @property
+    def before(self) -> TurboStreamAction:
+        return self.action(Action.BEFORE)
 
     @property
     def prepend(self) -> TurboStreamAction:

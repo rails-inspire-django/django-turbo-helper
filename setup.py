@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from setuptools import find_packages, setup
 
-VERSION = "0.0.49"
+VERSION = "0.0.50"
 
 setup(
     name="django-turbo-response",
@@ -17,8 +17,6 @@ setup(
     requires=["django (>=3.0)"],
     packages=find_packages("src"),
     package_dir={"": "src"},
-    package_data={"turbo_response": ["templates/**/*.html", "jinja2/**/*.html"]},
-    include_package_data=True,
     classifiers=[
         "Development Status :: 4 - Beta",
         "Framework :: Django",
