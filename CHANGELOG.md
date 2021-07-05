@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.49] - 2021-7-5
+
+Add BEFORE and AFTER actions
+
 ## [0.0.49] - 2021-5-12
 
 Use format_html for rendering
