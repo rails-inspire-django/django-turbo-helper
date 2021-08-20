@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.0.49] - 2021-8-20
+## [0.0.50] - 2021-8-20
 
 TurboCreateView/TurboUpdateView inheritance fix
 
