@@ -81,16 +81,19 @@ To render plain strings:
 
   from turbo_response import TurboFrame, TurboStream, Action
 
-  # returns <turbo-stream action="replace" target="msg><template>OK</template></turbo-stream>
+  # returns <turbo-stream action="replace" target="msg"><template>OK</template></turbo-stream>
   TurboStream("msg").replace.render("OK")
+
+  # returns <turbo-stream action="replace" targets=".msg"><template>OK</template></turbo-stream>
+  TurboStream(".msg", is_multiple=True).replace.render("OK")
 
   # set action dynamically
   TurboStream("msg").action(Action.REPLACE).render("OK")
 
-  # returns <turbo-stream action="remove" target="msg><template></template></turbo-stream>
+  # returns <turbo-stream action="remove" target="msg"><template></template></turbo-stream>
   TurboStream("msg").remove.render()
 
-  # returns <turbo-frame id="msg>OK</turbo-frame>
+  # returns <turbo-frame id="msg">OK</turbo-frame>
   TurboFrame("msg").render("OK")
 
 You can also render templates:
@@ -98,6 +101,8 @@ You can also render templates:
 .. code-block:: python
 
   TurboStream("msg").replace.template("msg.html", {"msg": "hello"}).render()
+
+  TurboStream(".msg", is_multiple=True).replace.template("msg.html", {"msg": "hello"}).render()
 
   TurboFrame("msg").template("msg.html", {"msg": "hello"}).render()
 
