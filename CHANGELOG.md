@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.51] - 2021-9-6
+
+Support multiple targets
+
 ## [0.0.49] - 2021-7-5
 
 Add BEFORE and AFTER actions
