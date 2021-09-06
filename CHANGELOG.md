@@ -1,10 +1,14 @@
 # Changelog
 
-## [0.0.51] - 2021-9-6
+## [0.0.52] - 2021-9-6
 
 Support multiple targets
 
-## [0.0.49] - 2021-7-5
+## [0.0.51] - 2021-8-20
+
+TurboCreateView/TurboUpdateView inheritance fix
+
+## [0.0.50] - 2021-7-5
 
 Add BEFORE and AFTER actions
 

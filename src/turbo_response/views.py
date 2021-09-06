@@ -7,7 +7,6 @@ from django.views.generic.detail import SingleObjectMixin
 from . import Action
 from .mixins import (
     TurboFormMixin,
-    TurboFormModelMixin,
     TurboFrameResponseMixin,
     TurboFrameTemplateResponseMixin,
     TurboStreamFormMixin,
@@ -37,11 +36,11 @@ class TurboFormView(TurboFormMixin, FormView):
     ...
 
 
-class TurboCreateView(TurboFormModelMixin, CreateView):
+class TurboCreateView(TurboFormMixin, CreateView):
     ...
 
 
-class TurboUpdateView(TurboFormModelMixin, UpdateView):
+class TurboUpdateView(TurboFormMixin, UpdateView):
     ...
 
 
