@@ -20,6 +20,18 @@ class TestRenderTurboStream:
             == '<turbo-stream action="replace" target="test"><template>my content</template></turbo-stream>'
         )
 
+    def test_render_multiple_targets(self):
+        s = render_turbo_stream(
+            action=Action.REPLACE,
+            target=".test",
+            content="my content",
+            is_multiple=True,
+        )
+        assert (
+            s
+            == '<turbo-stream action="replace" targets=".test"><template>my content</template></turbo-stream>'
+        )
+
     def test_render_content_xss(self):
         s = render_turbo_stream(
             action=Action.REPLACE,

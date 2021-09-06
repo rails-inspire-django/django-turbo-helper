@@ -330,6 +330,7 @@ class TestTurboStreamDeleteView:
     class MyView(TurboStreamDeleteView):
         template_name = "simple.html"
         model = TodoItem
+        success_url = "/"
 
     def test_post(self, rf, todo):
         req = rf.post("/")

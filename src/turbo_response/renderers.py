@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
@@ -6,16 +8,18 @@ from .constants import Action
 
 def render_turbo_stream(
     action: Action,
-    target: str,
+    target: Optional[str] = None,
     content: str = "",
     is_safe: bool = False,
+    is_multiple: bool = False,
 ) -> str:
     """Wraps content in correct <turbo-stream> tags.
 
     :param action: action type
-    :param target: the DOM ID target of the stream
+    :param target: the DOM ID target of the stream or CSS selector for multiple targetss
     :param content: content to be wrapped. Can be empty.
     :param is_safe: mark content safe for HTML escaping.
+    :param is_multiple: multiple targets
 
     :return: *<turbo-stream>* string
     """
@@ -24,9 +28,9 @@ def render_turbo_stream(
         content = mark_safe(content)
 
     return format_html(
-        '<turbo-stream action="{}" target="{}">'
-        "<template>{}</template></turbo-stream>",
+        '<turbo-stream action="{}" {}="{}">' "<template>{}</template></turbo-stream>",
         action.value,
+        "targets" if is_multiple else "target",
         target,
         content,
     )
