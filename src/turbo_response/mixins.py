@@ -17,10 +17,10 @@ from .stream import TurboStream, TurboStreamAction
 class TurboStreamMixin:
     turbo_stream_action: Optional[Action] = None
     turbo_stream_target: Optional[str] = None
-    is_multiple: bool = False
+    turbo_stream_multiple: bool = False
 
-    def is_turbo_stream_targets(self) -> bool:
-        return self.is_multiple
+    def is_turbo_stream_multiple(self) -> bool:
+        return self.turbo_stream_multiple
 
     def get_turbo_stream(self) -> TurboStreamAction:
 
@@ -38,9 +38,10 @@ class TurboStreamMixin:
                 f"turbo stream action not defined in {self.__class__}.get_turbo_stream_action"
             )
 
-        return TurboStream(target, is_multiple=self.is_turbo_stream_targets()).action(
-            action
-        )
+        return TurboStream(
+            target,
+            is_multiple=self.is_turbo_stream_multiple(),
+        ).action(action)
 
     def get_turbo_stream_action(self) -> Optional[Action]:
         """Returns the turbo-stream action parameter

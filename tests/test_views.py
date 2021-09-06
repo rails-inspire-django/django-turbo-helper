@@ -94,7 +94,7 @@ class TestTurboStreamView:
         resp = MyView.as_view(
             turbo_stream_target=".test",
             turbo_stream_action=Action.REPLACE,
-            is_multiple=True,
+            turbo_stream_multiple=True,
         )(req)
         assert resp.status_code == http.HTTPStatus.OK
         assert "text/vnd.turbo-stream.html;" in resp["Content-Type"]
