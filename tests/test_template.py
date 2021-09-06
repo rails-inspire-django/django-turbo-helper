@@ -15,6 +15,19 @@ class TestRenderTurboStreamTemplate:
             == '<turbo-stream action="update" target="test"><template><div>my content</div></template></turbo-stream>'
         )
 
+    def test_multiple(self):
+        s = render_turbo_stream_template(
+            "simple.html",
+            {"msg": "my content"},
+            action=Action.UPDATE,
+            target=".tests",
+            is_multiple=True,
+        ).strip()
+        assert (
+            s
+            == '<turbo-stream action="update" targets=".tests"><template><div>my content</div></template></turbo-stream>'
+        )
+
     def test_render_with_xss(self):
         s = render_turbo_stream_template(
             "simple.html",

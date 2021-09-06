@@ -11,6 +11,13 @@ class TestTurboStream:
             == '<turbo-stream action="append" target="my-form"><template>OK</template></turbo-stream>'
         )
 
+    def test_render_multiple(self):
+        s = TurboStream(".my-forms", is_multiple=True).append.render("OK")
+        assert (
+            s
+            == '<turbo-stream action="append" targets=".my-forms"><template>OK</template></turbo-stream>'
+        )
+
     def test_render_xss(self):
         s = TurboStream("my-form").append.render("<script></script>")
         assert (
@@ -33,6 +40,15 @@ class TestTurboStream:
         )
         assert "my content" in s
         assert '<turbo-stream action="append" target="my-form">' in s
+
+    def test_template_multiple(self):
+        s = (
+            TurboStream(".my-forms", is_multiple=True)
+            .append.template("simple.html", {"msg": "my content"})
+            .render()
+        )
+        assert "my content" in s
+        assert '<turbo-stream action="append" targets=".my-forms">' in s
 
     def test_template_xss(self):
         s = (

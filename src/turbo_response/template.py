@@ -37,6 +37,7 @@ def render_turbo_stream_template(
             **template_kwargs,
         ).strip(),
         is_safe=True,
+        is_multiple=is_multiple,
     )
 
 
