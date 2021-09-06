@@ -85,6 +85,23 @@ class TestTurboStreamView:
             b'<turbo-stream action="replace" target="test"><template>hello'
         )
 
+    def test_get_multiple(self, rf):
+        class MyView(TurboStreamView):
+            def get_response_content(self):
+                return "hello"
+
+        req = rf.get("/")
+        resp = MyView.as_view(
+            turbo_stream_target=".test",
+            turbo_stream_action=Action.REPLACE,
+            is_multiple=True,
+        )(req)
+        assert resp.status_code == http.HTTPStatus.OK
+        assert "text/vnd.turbo-stream.html;" in resp["Content-Type"]
+        assert resp.content.startswith(
+            b'<turbo-stream action="replace" targets=".test"><template>hello'
+        )
+
     def test_get_xss(self, rf):
         class MyView(TurboStreamView):
             def get_response_content(self):

@@ -18,10 +18,12 @@ class TurboStreamTemplate:
         *,
         action: Action,
         target: str,
+        is_multiple: bool = False,
         **template_kwargs,
     ):
         self.action = action
         self.target = target
+        self.is_multiple = is_multiple
         self.template_name = template_name
         self.context = context
         self.template_kwargs = template_kwargs
@@ -32,6 +34,7 @@ class TurboStreamTemplate:
             self.context,
             action=self.action,
             target=self.target,
+            is_multiple=self.is_multiple,
             **{**self.template_kwargs, **kwargs},
         )
 
@@ -45,6 +48,7 @@ class TurboStreamTemplate:
             self.context,
             action=self.action,
             target=self.target,
+            is_multiple=self.is_multiple,
             **{**self.template_kwargs, **kwargs},
         )
 
@@ -52,13 +56,14 @@ class TurboStreamTemplate:
 class TurboStreamAction:
     """Returns strings and responses for a specific Turbo Stream action type."""
 
-    def __init__(self, target: str, action: Action):
+    def __init__(self, target: str, action: Action, is_multiple: bool = False):
         """
         :param target: Turbo Stream target
         :param action: Turbo Stream action
         """
         self.action = action
         self.target = target
+        self.is_multiple = is_multiple
 
     def render(
         self,
@@ -71,7 +76,11 @@ class TurboStreamAction:
         :return: a *<turbo-stream>* string
         """
         return render_turbo_stream(
-            action=self.action, target=self.target, content=content, **kwargs
+            action=self.action,
+            target=self.target,
+            is_multiple=self.is_multiple,
+            content=content,
+            **kwargs,
         )
 
     def response(
@@ -86,6 +95,7 @@ class TurboStreamAction:
         return TurboStreamResponse(
             action=self.action,
             target=self.target,
+            is_multiple=self.is_multiple,
             content=content,
             **kwargs,
         )
@@ -107,6 +117,7 @@ class TurboStreamAction:
             context,
             action=self.action,
             target=self.target,
+            is_multiple=self.is_multiple,
             **template_kwargs,
         )
 
@@ -116,14 +127,15 @@ class TurboStream:
     Class for creating Turbo Stream strings and responses.
     """
 
-    def __init__(self, target: str):
+    def __init__(self, target: str, is_multiple: bool = False):
         """
         :param target: stream target
         """
         self.target = target
+        self.is_multiple = is_multiple
 
     def action(self, action: Action) -> TurboStreamAction:
-        return TurboStreamAction(self.target, action)
+        return TurboStreamAction(self.target, action, is_multiple=self.is_multiple)
 
     @property
     def after(self) -> TurboStreamAction:

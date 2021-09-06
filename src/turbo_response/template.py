@@ -12,6 +12,7 @@ def render_turbo_stream_template(
     *,
     action: Action,
     target: str,
+    is_multiple: bool = False,
     **template_kwargs
 ) -> str:
     """Renders a *<turbo-stream>* template.
@@ -31,6 +32,7 @@ def render_turbo_stream_template(
                 "turbo_stream_target": target,
                 "turbo_stream_action": action.value,
                 "is_turbo_stream": True,
+                "is_multiple": is_multiple,
             },
             **template_kwargs,
         ).strip(),

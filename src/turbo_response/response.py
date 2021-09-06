@@ -66,10 +66,13 @@ class TurboStreamResponse(TurboStreamResponseMixin, HttpResponse):
         action: Optional[Action] = None,
         target: Optional[str] = None,
         is_safe: bool = False,
+        is_multiple: bool = False,
         **response_kwargs,
     ):
         if action and target and isinstance(content, str):
-            content = render_turbo_stream(action, target, content, is_safe=is_safe)
+            content = render_turbo_stream(
+                action, target, content, is_safe=is_safe, is_multiple=is_multiple
+            )
         super().__init__(content, **response_kwargs)
 
 
@@ -94,6 +97,7 @@ class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
         *,
         action: Action,
         target: str,
+        is_multiple: bool = False,
         **kwargs,
     ):
 
@@ -105,18 +109,21 @@ class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
                 "turbo_stream_action": action.value,
                 "turbo_stream_target": target,
                 "is_turbo_stream": True,
+                "is_multiple": is_multiple,
             },
             **kwargs,
         )
 
         self._target = target
         self._action = action
+        self._is_multiple = is_multiple
 
     @property
     def rendered_content(self) -> str:
         return render_turbo_stream(
             action=self._action,
             target=self._target,
+            is_multiple=self._is_multiple,
             content=super().rendered_content,
             is_safe=True,
         )
