@@ -255,7 +255,7 @@ In some cases you may wish to return a turbo-stream response containing just the
           if form.is_valid():
               # save data etc...
               return redirect_303("/")
-          return TurboStream("form-target").replace.template("_my_form.html").render(request)
+          return TurboStream("form-target").replace.template("_my_form.html").render(request=request)
       else:
           form = MyForm()
       return TemplateResponse(request, "my_form.html", {"form": my_form})
@@ -269,7 +269,7 @@ In some cases you may wish to return a turbo-stream response containing just the
           return redirect_303("/")
 
       def form_invalid(self, form):
-          return TurboStream("form-target").replace.template("_my_form.html").render(request)
+          return TurboStream("form-target").replace.template("_my_form.html").render(request=request)
 
 And your templates would look like this:
 
