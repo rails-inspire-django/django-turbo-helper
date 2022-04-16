@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional, Union
 
-from django.template.loader import render_to_string
 from django.http import HttpRequest
+from django.template.loader import render_to_string
 
 from .constants import Action
 from .renderers import render_turbo_frame, render_turbo_stream

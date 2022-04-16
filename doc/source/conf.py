@@ -62,9 +62,13 @@ html_static_path = ["_static"]
 
 
 html_context = {
-    'topbar' : [
+    "topbar": [
         {"url": "https://turbo-django.readthedocs.io/", "name": "Turbo Django"},
-        {"url": "https://django-turbo-response.readthedocs.io/", "name": "Django Turbo Response", "active": True},
+        {
+            "url": "https://django-turbo-response.readthedocs.io/",
+            "name": "Django Turbo Response",
+            "active": True,
+        },
         {"name": "Stimulus Django"},
     ]
 }
