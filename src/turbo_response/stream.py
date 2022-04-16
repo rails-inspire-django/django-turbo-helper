@@ -28,13 +28,14 @@ class TurboStreamTemplate:
         self.context = context
         self.template_kwargs = template_kwargs
 
-    def render(self, **kwargs) -> str:
+    def render(self, request=None, **kwargs) -> str:
         return render_turbo_stream_template(
             self.template_name,
             self.context,
             action=self.action,
             target=self.target,
             is_multiple=self.is_multiple,
+            request=request,
             **{**self.template_kwargs, **kwargs},
         )
 

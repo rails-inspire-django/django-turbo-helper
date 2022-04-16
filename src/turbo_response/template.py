@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, Optional, Union
 
 from django.template.loader import render_to_string
+from django.http import HttpRequest
 
 from .constants import Action
 from .renderers import render_turbo_frame, render_turbo_stream
@@ -13,6 +14,7 @@ def render_turbo_stream_template(
     action: Action,
     target: str,
     is_multiple: bool = False,
+    request: Optional[HttpRequest] = None,
     **template_kwargs
 ) -> str:
     """Renders a *<turbo-stream>* template.
@@ -34,6 +36,7 @@ def render_turbo_stream_template(
                 "is_turbo_stream": True,
                 "is_multiple": is_multiple,
             },
+            request=request,
             **template_kwargs,
         ).strip(),
         is_safe=True,
