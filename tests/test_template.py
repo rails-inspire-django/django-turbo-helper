@@ -1,3 +1,5 @@
+from django.http import HttpRequest
+
 from turbo_response import (
     Action,
     render_turbo_frame_template,
@@ -14,6 +16,17 @@ class TestRenderTurboStreamTemplate:
             s
             == '<turbo-stream action="update" target="test"><template><div>my content</div></template></turbo-stream>'
         )
+
+    def test_render_with_csrf(self):
+        s = render_turbo_stream_template(
+            "csrf.html",
+            {"msg": "my content"},
+            action=Action.UPDATE,
+            target="test",
+            request=HttpRequest(),
+        ).strip()
+        assert '<input type="hidden" name="csrfmiddlewaretoken"' in s
+        assert "my content" in s
 
     def test_multiple(self):
         s = render_turbo_stream_template(

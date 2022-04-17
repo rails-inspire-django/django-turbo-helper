@@ -1,5 +1,7 @@
 import http
 
+from django.http import HttpRequest
+
 from turbo_response import TurboStream
 
 
@@ -39,6 +41,16 @@ class TestTurboStream:
             .render()
         )
         assert "my content" in s
+        assert '<turbo-stream action="append" target="my-form">' in s
+
+    def test_template_csrf(self):
+        s = (
+            TurboStream("my-form")
+            .append.template("csrf.html", {"msg": "my content"}, request=HttpRequest())
+            .render()
+        )
+        assert "my content" in s
+        assert '<input type="hidden" name="csrfmiddlewaretoken"' in s
         assert '<turbo-stream action="append" target="my-form">' in s
 
     def test_template_multiple(self):
