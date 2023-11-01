@@ -6,4 +6,4 @@ https://django-turbo-response.readthedocs.io/en/latest/
 
 ## Free Hotwire Django eBook
 
-If you are new to Hotwire, you may be interested in this free eBook to learn it [Hotwire Django: The Missing Guide](https://hotwire-django.com/).
+If you are new to Hotwire, you may be interested in this free eBook [Hotwire Django Tutorial](https://tutorial.saashammer.com/).
