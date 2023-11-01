@@ -2,7 +2,7 @@
 *.egg
 *.egg-info
 
-doc/build
+docs/build
 dist
 build
 
@@ -19,7 +19,7 @@ __pycache__
 .pytest_cache/
 .vscode/
 .coverage
-doc/build
+docs/build
 
 node_modules/
 

@@ -1,32 +1,9 @@
-This package provides helpers for server-side rendering of [Hotwired/Turbo](https://hotwired.dev/) streams and frames.
+This package provides helpers for server-side rendering of `Turbo Frame` and `Turbo Stream`, which aim to work with the [Hotwire](https://hotwire.dev/) project.
 
-**Disclaimer**: the Hotwired/Turbo client libraries are, at time of writing, still in Beta. We expect there will be breaking changes until the first stable release. This package, and the Turbo client, should therefore be used with caution in a production environment. The version used in testing is *@hotwired/turbo==7.0.0-beta.8*.
-
-
-## Requirements
-
-This library requires Python 3.8+ and Django 3.0+.
-
-## Installation
-
-> pip install django-turbo-response
-
-To install from Git:
-
-> git clone https://github.com/hotwire-django/django-turbo-response
-
-> cd django-turbo-response
-
-> python setup.py install
-
-Make sure to add *turbo_response* to **INSTALLED_APPS**.
-
-**Note**: This library does not include any client libraries (Turbo or Stimulus). You may wish to add these yourself using your preferred Javascript build tool, or use a CDN. Please refer to the Hotwire documentation on installing these libraries.
-
-Full documentation on ReadTheDocs:
+## Documentation
 
 https://django-turbo-response.readthedocs.io/en/latest/
 
-## License
+## Free Hotwire Django eBook
 
-This project is covered by the MIT license.
+If you are new to Hotwire, you may be interested in this free eBook to learn it [Hotwire Django: The Missing Guide](https://hotwire-django.com/).
