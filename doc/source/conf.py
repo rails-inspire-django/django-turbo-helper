@@ -6,6 +6,8 @@
 
 # -- Path setup --------------------------------------------------------------
 
+import datetime
+
 # Standard Library
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -13,7 +15,6 @@
 #
 import os
 import sys
-import datetime
 
 sys.path.insert(0, os.path.abspath("../src"))
 
@@ -34,9 +35,9 @@ author = "Dan Jacob"
 extensions = ["sphinx.ext.autodoc", "autoapi.extension", "myst_parser"]
 
 source_suffix = {
-    '.rst': 'restructuredtext',
-    '.txt': 'markdown',
-    '.md': 'markdown',
+    ".rst": "restructuredtext",
+    ".txt": "markdown",
+    ".md": "markdown",
 }
 
 # Document Python Code
@@ -51,7 +52,7 @@ templates_path = ["_templates"]
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
+exclude_patterns = []  # type: ignore
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"

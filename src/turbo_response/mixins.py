@@ -23,7 +23,6 @@ class TurboStreamMixin:
         return self.turbo_stream_multiple
 
     def get_turbo_stream(self) -> TurboStreamAction:
-
         target = self.get_turbo_stream_target()
 
         if not target:
@@ -151,7 +150,6 @@ class TurboFormAdapterMixin(TurboFormValidationMixin, FormMixin):
 
 
 class TurboFormModelMixin(TurboFormMixin):
-
     object: Optional[Model]
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
@@ -221,7 +219,6 @@ class TurboStreamFormMixin(TurboStreamMixin, TurboFormMixin):
         return super().get_context_data(**kwargs)
 
     def render_turbo_stream_response(self, **context) -> HttpResponse:
-
         return (
             self.get_turbo_stream()
             .template(
