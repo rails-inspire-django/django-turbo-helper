@@ -6,15 +6,10 @@
 django-turbo-response
 ==========================================
 
+.. include:: ./main.md
+   :parser: myst
+
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :hidden:
 
-.. include:: ./main.rst
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   self

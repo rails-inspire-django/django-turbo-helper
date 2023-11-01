@@ -100,7 +100,6 @@ class TurboStreamTemplateResponse(TurboStreamResponseMixin, TemplateResponse):
         is_multiple: bool = False,
         **kwargs,
     ):
-
         super().__init__(
             request,
             template,
@@ -171,7 +170,6 @@ class TurboFrameTemplateResponse(TemplateResponse):
         dom_id,
         **kwargs,
     ):
-
         super().__init__(
             request,
             template,

@@ -48,3 +48,5 @@ celerybeat-schedule
 :w
 '
 .tox
+
+/venv/

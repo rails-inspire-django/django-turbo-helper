@@ -13,7 +13,7 @@ def render_turbo_stream_template(
     action: Action,
     target: str,
     is_multiple: bool = False,
-    **template_kwargs
+    **template_kwargs,
 ) -> str:
     """Renders a *<turbo-stream>* template.
 
@@ -46,7 +46,7 @@ def render_turbo_frame_template(
     context: Optional[Dict[str, Any]] = None,
     *,
     dom_id: str,
-    **kwargs
+    **kwargs,
 ) -> str:
     """Renders a *<turbo-frame>* template.
 

@@ -1,9 +1,8 @@
 import http
 
+import pytest
 from django import forms
 from django.views.generic import CreateView
-
-import pytest
 
 from turbo_response import Action
 from turbo_response.mixins import TurboFormAdapterMixin
@@ -119,7 +118,6 @@ class TestTurboStreamView:
 
     def test_get_is_safe(self, rf):
         class MyView(TurboStreamView):
-
             turbo_stream_content_safe = True
 
             def get_response_content(self):

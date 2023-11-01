@@ -27,6 +27,5 @@ class TurboMiddleware:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
-
         request.turbo = SimpleLazyObject(lambda: TurboData(request))
         return self.get_response(request)

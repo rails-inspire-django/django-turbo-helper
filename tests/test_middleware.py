@@ -1,6 +1,5 @@
-from django.http import HttpResponse
-
 import pytest
+from django.http import HttpResponse
 
 from turbo_response.middleware import TurboMiddleware
 

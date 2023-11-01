@@ -6,6 +6,8 @@
 
 # -- Path setup --------------------------------------------------------------
 
+import datetime
+
 # Standard Library
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -20,7 +22,7 @@ sys.path.insert(0, os.path.abspath("../src"))
 # -- Project information -----------------------------------------------------
 
 project = "django-turbo-response"
-copyright = "2021, Dan Jacob"
+copyright = f"{datetime.datetime.now().year}, Dan Jacob"
 author = "Dan Jacob"
 
 
@@ -30,8 +32,13 @@ author = "Dan Jacob"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 
-extensions = ["sphinx.ext.autodoc", "autoapi.extension"]
+extensions = ["sphinx.ext.autodoc", "autoapi.extension", "myst_parser"]
 
+source_suffix = {
+    ".rst": "restructuredtext",
+    ".txt": "markdown",
+    ".md": "markdown",
+}
 
 # Document Python Code
 autoapi_type = "python"
@@ -45,26 +52,18 @@ templates_path = ["_templates"]
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
+exclude_patterns = []  # type: ignore
 
+# The name of the Pygments (syntax highlighting) style to use.
+pygments_style = "sphinx"
 
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-# html_theme = "alabaster_hotwire"
+html_theme = "furo"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ["_static"]
-
-
-html_context = {
-    'topbar' : [
-        {"url": "https://turbo-django.readthedocs.io/", "name": "Turbo Django"},
-        {"url": "https://django-turbo-response.readthedocs.io/", "name": "Django Turbo Response", "active": True},
-        {"name": "Stimulus Django"},
-    ]
-}
