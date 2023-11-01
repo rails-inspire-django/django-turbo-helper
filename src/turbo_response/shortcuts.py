@@ -13,7 +13,7 @@ from .stream import TurboStream
 
 
 def redirect_303(to: Union[str, Model], *args, **kwargs) -> HttpResponseSeeOther:
-    """Sends an HTTP 303 redirect.
+    """Obsolete: Sends an HTTP 303 redirect.
 
     :param to:  URL or view name or model instance. If model then calls `get_absolute_url()`.
     """
