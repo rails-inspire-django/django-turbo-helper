@@ -320,26 +320,16 @@ to ensure the FormData object includes the button value.
 
 ## Redirects
 
-As per the [documentation](https://turbo.hotwire.dev/handbook/drive#redirecting-after-a-form-submission), Turbo expects a 303 redirect after a form submission. While this does not appear to be a hard-and-fast rule, you should probably have your view return a 303 instead of a 301 or 302 after a form submission. This package includes a class **turbo_response.HttpResponseSeeOther** and a shortcut **redirect_303** for returning the correct status with a redirect. The form mixin and view classes will return a 303 redirect by default.
+As per the [documentation](https://turbo.hotwire.dev/handbook/drive#redirecting-after-a-form-submission), Turbo expects a 303 redirect after a form submission.
+
+If your project has `PUT`, `PATCH`, `DELETE` requests, then you might need to take a look at this [Clarification on redirect status code (303)](https://github.com/hotwired/turbo/issues/84#issuecomment-862656931)
+
+In Django, you can do it like this:
 
 ```python
-from turbo_response import HttpResponseSeeOther
+from django.shortcuts import redirect
 
-def my_view(request):
-    form = MyForm(request.POST)
-    if form.is_valid():
-        form.save()
-        return HttpResponseSeeOther("/")
-```
-
-Note that the **redirect_303** shortcut works the same way as **django.shortcuts.redirect**: you can use a view name with arguments, a URL string, or a model which has a `get_absolute_url()` method:
-
-```python
-from turbo_response import redirect_303
-
-redirect_303("/")
-redirect_303("blog_detail", id=1, slug=blog.title)
-redirect_303(blog)
+return redirect('https://example.com/', status=303)
 ```
 
 ## Responding with Multiple Streams
