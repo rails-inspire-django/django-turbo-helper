@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from setuptools import find_packages, setup
 
-VERSION = "0.0.52"
+VERSION = "1.0.1"
 
 setup(
     name="django-turbo-response",
@@ -18,13 +18,13 @@ setup(
     packages=find_packages("src"),
     package_dir={"": "src"},
     classifiers=[
-        "Development Status :: 4 - Beta",
         "Framework :: Django",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
 )
