@@ -9,10 +9,8 @@
 name: Upload Python Package
 
 on:
-  pull_request:
-  push:
-    branches:
-      - main
+  release:
+    types: [published]
 
 permissions:
   contents: read
@@ -27,9 +25,13 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
-        python-version: '3.x'
+        python-version: '3.10'
     - name: Install dependencies
       run: |
         python -m pip install poetry
     - name: Build package
       run: poetry build
+    - name: Publish package
+      uses: pypa/gh-action-pypi-publish@v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
