@@ -12,6 +12,7 @@ from .response import (
 from .shortcuts import redirect_303, render_form_response
 from .stream import TurboStream
 from .template import render_turbo_frame_template, render_turbo_stream_template
+from .templatetags.turbo_helper import dom_id
 
 __all__ = [
     "Action",
@@ -29,4 +30,5 @@ __all__ = [
     "render_turbo_frame_template",
     "render_turbo_stream",
     "render_turbo_stream_template",
+    "dom_id",
 ]

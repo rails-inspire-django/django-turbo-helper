@@ -14,7 +14,7 @@ from .renderers import render_turbo_frame, render_turbo_stream
 
 
 class HttpResponseSeeOther(HttpResponseRedirect):
-    """Redirect with 303 status"""
+    """Obsolete: Redirect with 303 status"""
 
     status_code = http.HTTPStatus.SEE_OTHER
 
