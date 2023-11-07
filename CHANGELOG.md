@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.2]
+
+1. Import `dom_id`, `turbo_frame`, `turbo_stream` template tags.
+
 ## [0.0.52] - 2021-9-6
 
 Support multiple targets
