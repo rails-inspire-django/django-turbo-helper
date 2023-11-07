@@ -1,15 +1,20 @@
-.. django-turbo-response documentation master file, created by
-   sphinx-quickstart on Tue Dec 29 02:19:26 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 django-turbo-response
-==========================================
+=====================
 
-.. include:: ./main.md
-   :parser: myst
+This package provides helpers for server-side rendering of *Turbo Frame* and *Turbo Stream*, which aim to work with the `Hotwire <https://hotwire.dev/>`_ project.
+
+.. _topics:
+
+Topics
+------
 
 .. toctree::
-   :hidden:
+   :maxdepth: 2
 
-   self
+   install.md
+   template-tags.md
+   original.md
+   form.md
+   redirect.md
+   channels.md
+   test.md
