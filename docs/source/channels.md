@@ -1,6 +1,6 @@
 # Django-Channels
 
-This library can also be used with `django-channels <https://channels.readthedocs.io/en/stable/>`_. As with multiple streams, you can use the **TurboStream** class to broadcast turbo-stream content from your consumers.
+This library can also be used with [django-channels](https://channels.readthedocs.io/en/stable/). As with multiple streams, you can use the **TurboStream** class to broadcast turbo-stream content from your consumers.
 
 ```python
 from turbo_response import render_turbo_stream, render_turbo_stream_template
