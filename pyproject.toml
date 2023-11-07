@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "django-turbo-response"
+version = "1.0.1"
+description = "Hotwired/Turbo response helpers for Django"
+authors = ["Michael Yin <michaelyin@accordbox.com>"]
+license = "MIT"
+homepage = "https://github.com/hotwire-django/django-turbo-response"
+readme = "README.md"
+packages = [{ include = "turbo_response", from = "src" }]
+
+[tool.poetry.urls]
+Changelog = "https://github.com/hotwire-django/django-turbo-response/releases"
+
+[tool.poetry.dependencies]
+python = ">=3.8"
+django = ">=3.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = [
+  "setuptools >= 61.0.0",
+  "wheel"
+]
+build-backend = "setuptools.build_meta"
