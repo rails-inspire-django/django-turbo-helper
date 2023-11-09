@@ -87,3 +87,11 @@ return TurboStreamResponse(html)
 ```
 
 The code in Django view would be much cleaner and easier to maintain.
+
+## turbo_stream_from
+
+This can help render `turbo-cable-stream-source` in Django template
+
+`<turbo-cable-stream-source>` is a custom element provided by [turbo-rails](https://github.com/hotwired/turbo-rails/blob/097d8f90cf0c5ed24ac6b1a49cead73d49fa8ab5/app/javascript/turbo/cable_stream_source_element.js), with it, we can send Turbo Stream over the websocket connection and update the page in real time.
+
+The `<turbo-cable-stream-source>` is built on Rails ActionCable, which provide many great feature out of the box, such as `Automatic Reconnection`, so we can focus on the business logic.

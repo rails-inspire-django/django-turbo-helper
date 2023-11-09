@@ -31,10 +31,10 @@ def pytest_configure():
             "django.contrib.sessions",
             "django.contrib.sites",
             "turbo_response",
+            "channels",
             "tests.testapp.apps.TestAppConfig",
         ],
         ROOT_URLCONF="tests.testapp.urls",
-        TURBO_RESPONSE_RENDERER="turbo_response.renderers.TemplatesSetting",
     )
 
 
