@@ -119,8 +119,8 @@ class TurboStreamFromTagNode(Node):
         return "<%s>" % self.__class__.__name__
 
     def render(self, context):
+        from ..cable_channel import TurboStreamCableChannel
         from ..channel_helper import generate_signed_stream_key, stream_name_from
-        from ..consumer import TurboStreamCableChannel
 
         stream_name_array = [
             stream_name.resolve(context) for stream_name in self.stream_name_array
