@@ -1,13 +1,13 @@
 import pytest
+from actioncable import ActionCableConsumer, cable_channel_register, compact_encode_json
 from channels.layers import get_channel_layer
 from channels.testing import WebsocketCommunicator
 
+from turbo_response.cable_channel import TurboStreamCableChannel
 from turbo_response.channel_helper import generate_signed_stream_key
-from turbo_response.consumer import (
-    ActionCableConsumer,
-    TurboStreamCableChannel,
-    compact_encode_json,
-)
+
+# register the TurboStreamCableChannel
+cable_channel_register(TurboStreamCableChannel)
 
 
 @pytest.mark.asyncio

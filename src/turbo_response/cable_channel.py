@@ -3,14 +3,13 @@ from django.core.signing import Signer
 from .channel_helper import verify_signed_stream_key
 
 try:
-    from actioncable import ActionCableConsumer, CableChannel, cable_channel_register
+    from actioncable import ActionCableConsumer, CableChannel
 except ImportError as err:
     raise Exception("Please make sure django-actioncable is installed") from err
 
 signer = Signer()
 
 
-@cable_channel_register
 class TurboStreamCableChannel(CableChannel):
     def __init__(self, consumer: ActionCableConsumer, identifier_key, params=None):
         self.params = params if params else {}
