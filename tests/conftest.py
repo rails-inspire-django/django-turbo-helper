@@ -1,3 +1,4 @@
+import os
 import pathlib
 
 import pytest
@@ -35,6 +36,14 @@ def pytest_configure():
             "tests.testapp.apps.TestAppConfig",
         ],
         ROOT_URLCONF="tests.testapp.urls",
+        CHANNEL_LAYERS={
+            "default": {
+                "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
+                "CONFIG": {
+                    "hosts": [os.getenv("CHANNEL_LAYERS", "redis://localhost:6379/0")],
+                },
+            },
+        },
     )
 
 

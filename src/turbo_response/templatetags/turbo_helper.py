@@ -110,6 +110,9 @@ class TurboStreamTagNode(Node):
 
 class TurboStreamFromTagNode(Node):
     def __init__(self, stream_name_array):
+        """
+        TODO: Support override channel
+        """
         self.stream_name_array = stream_name_array
 
     def __repr__(self):
@@ -117,6 +120,7 @@ class TurboStreamFromTagNode(Node):
 
     def render(self, context):
         from ..channel_helper import generate_signed_stream_key, stream_name_from
+        from ..consumer import TurboStreamCableChannel
 
         stream_name_array = [
             stream_name.resolve(context) for stream_name in self.stream_name_array
@@ -124,9 +128,10 @@ class TurboStreamFromTagNode(Node):
         stream_name_string = stream_name_from(stream_name_array)
 
         django_engine = engines["django"]
-        template_string = """<turbo-cable-stream-source channel="TurboStreamsChannel" signed-stream-name="{{ signed_stream_name }}"></turbo-cable-stream-source>"""
+        template_string = """<turbo-cable-stream-source channel="{{ channel }}" signed-stream-name="{{ signed_stream_name }}"></turbo-cable-stream-source>"""
         context = {
             "signed_stream_name": generate_signed_stream_key(stream_name_string),
+            "channel": TurboStreamCableChannel.__name__,
         }
         return django_engine.from_string(template_string).render(context)
 

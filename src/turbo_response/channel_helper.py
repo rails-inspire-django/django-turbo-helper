@@ -1,4 +1,3 @@
-import json
 from typing import List, Tuple, Union
 
 from django.core import signing
@@ -8,8 +7,7 @@ from django.template.loader import render_to_string
 from .templatetags.turbo_helper import dom_id
 
 try:
-    from asgiref.sync import async_to_sync
-    from channels.layers import get_channel_layer
+    from actioncable import cable_broadcast
 except ImportError as err:
     raise Exception("Please make sure django-channels is installed") from err
 
@@ -48,36 +46,32 @@ def verify_signed_stream_key(signed_stream_key: str) -> Tuple[bool, str]:
     return False, ""
 
 
-def generate_channel_group_name(channel: str, stream_name: str):
-    """
-    Generate Django Channel group name from channel and stream_name
-    """
-    return f"{channel}_{stream_name}"
-
-
 def broadcast_render_to(streamables: Union[List, object], template: str, context=None):
+    """
+    This function help render HTML to Turbo Stream Channel
+
+    for example, in Django template, we subscribe to a Turbo stream Channel
+
+    {% turbo_stream_from 'chat' view.kwargs.chat_pk %}
+
+    Then in Python code
+
+    broadcast_render_to(
+        ["chat", instance.chat_id],
+        template="message_append.turbo_stream.html",
+        context={
+            "instance": instance,
+        },
+    )
+    """
     if context is None:
         context = {}
 
     html = render_to_string(template, context=context)
-
     stream_name = stream_name_from(streamables)
-    channel_group_name = generate_channel_group_name("TurboStreamsChannel", stream_name)
-
-    channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-        channel_group_name,
+    cable_broadcast(
+        stream_name,
         {
-            "type": "turbo_stream_message",
-            "data": {
-                "identifier": json.dumps(
-                    {
-                        "channel": "TurboStreamsChannel",
-                        "signed_stream_name": generate_signed_stream_key(stream_name),
-                    },
-                    separators=(",", ":"),
-                ),
-                "message": html,
-            },
+            "message": html,
         },
     )

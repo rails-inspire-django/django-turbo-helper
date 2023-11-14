@@ -1,0 +1,85 @@
+import pytest
+from channels.layers import get_channel_layer
+from channels.testing import WebsocketCommunicator
+
+from turbo_response.channel_helper import generate_signed_stream_key
+from turbo_response.consumer import (
+    ActionCableConsumer,
+    TurboStreamCableChannel,
+    compact_encode_json,
+)
+
+
+@pytest.mark.asyncio
+async def test_subscribe():
+    communicator = WebsocketCommunicator(
+        ActionCableConsumer.as_asgi(), "/cable", subprotocols=["actioncable-v1-json"]
+    )
+    connected, subprotocol = await communicator.connect(timeout=10)
+    assert connected
+    response = await communicator.receive_json_from()
+    assert response == {"type": "welcome"}
+
+    # Subscribe
+    group_name = "test"
+    subscribe_command = {
+        "command": "subscribe",
+        "identifier": compact_encode_json(
+            {
+                "channel": TurboStreamCableChannel.__name__,
+                "signed_stream_name": generate_signed_stream_key(group_name),
+            }
+        ),
+    }
+
+    await communicator.send_to(text_data=compact_encode_json(subscribe_command))
+    response = await communicator.receive_json_from(timeout=10)
+    assert response["type"] == "confirm_subscription"
+
+    # Message
+    channel_layer = get_channel_layer()
+    await channel_layer.group_send(
+        group_name,
+        {
+            "type": "message",
+            "group": group_name,
+            "data": {
+                "message": "html_snippet",
+            },
+        },
+    )
+
+    response = await communicator.receive_json_from(timeout=5)
+    assert response["message"] == "html_snippet"
+
+    # Unsubscribe
+    group_name = "test"
+    subscribe_command = {
+        "command": "unsubscribe",
+        "identifier": compact_encode_json(
+            {
+                "channel": TurboStreamCableChannel.__name__,
+                "signed_stream_name": generate_signed_stream_key(group_name),
+            }
+        ),
+    }
+
+    await communicator.send_to(text_data=compact_encode_json(subscribe_command))
+
+    # Message
+    channel_layer = get_channel_layer()
+    await channel_layer.group_send(
+        group_name,
+        {
+            "type": "message",
+            "group": group_name,
+            "data": {
+                "message": "html_snippet",
+            },
+        },
+    )
+
+    assert await communicator.receive_nothing() is True
+
+    # Close
+    await communicator.disconnect()
