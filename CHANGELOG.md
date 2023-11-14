@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.3]
+
+1. Add `turbo_stream_from` tag and make it work with [django-actioncable](https://github.com/AccordBox/django-actioncable)
+
 ## [1.0.2]
 
 1. Import `dom_id`, `turbo_frame`, `turbo_stream` template tags.
