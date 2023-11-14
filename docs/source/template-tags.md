@@ -94,4 +94,40 @@ This can help render `turbo-cable-stream-source` in Django template
 
 `<turbo-cable-stream-source>` is a custom element provided by [turbo-rails](https://github.com/hotwired/turbo-rails/blob/097d8f90cf0c5ed24ac6b1a49cead73d49fa8ab5/app/javascript/turbo/cable_stream_source_element.js), with it, we can send Turbo Stream over the websocket connection and update the page in real time.
 
-The `<turbo-cable-stream-source>` is built on Rails ActionCable, which provide many great feature out of the box, such as `Automatic Reconnection`, so we can focus on the business logic.
+```{note}
+1. To support Actioncable on the server, please install [django-actioncable](https://github.com/AccordBox/django-actioncable).
+2. Please import `<turbo-cable-stream-source>` in your JavaScript code.
+```
+
+In `routing.py`, register `TurboStreamCableChannel`
+
+```python
+from actioncable import cable_channel_register
+from turbo_response.cable_channel import TurboStreamCableChannel
+
+cable_channel_register(TurboStreamCableChannel)
+```
+
+In Django template, we can subscribe to stream source like this:
+
+```html
+{% turbo_stream_from 'chat' view.kwargs.chat_pk %}
+```
+
+`turbo_stream_from` can accept multiple positional arguments
+
+Then in Python code, we can send Turbo Stream to the stream source like this
+
+```python
+broadcast_render_to(
+    ["chat", instance.chat_id],
+    template="message_append.turbo_stream.html",
+    context={
+        "instance": instance,
+    },
+)
+```
+
+The `["chat", instance.chat_id]` **should** match the positional arguments in the `turbo_stream_from` tag.
+
+The web page can be updated in real time, through Turbo Stream over Websocket.
