@@ -1,5 +1,9 @@
 # Django-Channels
 
+```{warning}
+This approach is not recommended anymore, please consider using [turbo_stream_from](./template-tags.md#turbo-stream-from) instead.
+```
+
 This library can also be used with [django-channels](https://channels.readthedocs.io/en/stable/). As with multiple streams, you can use the **TurboStream** class to broadcast turbo-stream content from your consumers.
 
 ```python
@@ -53,6 +57,3 @@ export default class extends Controller {
   }
 }
 ```
-
-**Note** if you want to add reactivity directly to your models, so that model changes broadcast turbo-streams automatically, we recommend the [turbo-django](https://github.com/hotwire-django/turbo-django) package.
-

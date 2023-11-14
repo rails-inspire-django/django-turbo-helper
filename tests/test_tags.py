@@ -113,7 +113,7 @@ class TestStreamFrom:
         output = render(template, {}).strip()
         assert (
             output
-            == '<turbo-cable-stream-source channel="TurboStreamsChannel" signed-stream-name="test:1DyYXz2Y_VbgIPXC1AQ0ZGHhAx71uaZ36r4DFwXDaiU"></turbo-cable-stream-source>'
+            == '<turbo-cable-stream-source channel="TurboStreamCableChannel" signed-stream-name="test:1DyYXz2Y_VbgIPXC1AQ0ZGHhAx71uaZ36r4DFwXDaiU"></turbo-cable-stream-source>'
         )
 
     def test_dom_id_variable(self):
@@ -125,5 +125,5 @@ class TestStreamFrom:
         output = render(template, {"dom_id": "todo_3"}).strip()
         assert (
             output
-            == '<turbo-cable-stream-source channel="TurboStreamsChannel" signed-stream-name="test_todo_3:7ZS0MxQWhRTCAnG3olGO9AJKfvos3iaHGoBMBt8ZbSM"></turbo-cable-stream-source>'
+            == '<turbo-cable-stream-source channel="TurboStreamCableChannel" signed-stream-name="test_todo_3:7ZS0MxQWhRTCAnG3olGO9AJKfvos3iaHGoBMBt8ZbSM"></turbo-cable-stream-source>'
         )
