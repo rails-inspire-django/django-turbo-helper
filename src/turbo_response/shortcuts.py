@@ -1,4 +1,5 @@
 import http
+from contextlib import contextmanager
 from typing import Dict, List, Optional, Union
 
 from django.db.models import Model
@@ -7,7 +8,7 @@ from django.http import HttpRequest
 from django.shortcuts import resolve_url
 from django.template.response import TemplateResponse
 
-from .constants import Action
+from .constants import TURBO_STREAM_MIME_TYPE, Action, ResponseFormat
 from .response import HttpResponseSeeOther
 from .stream import TurboStream
 
@@ -64,3 +65,34 @@ def render_form_response(
         else http.HTTPStatus.OK,
         **response_kwargs,
     )
+
+
+def get_response_format(request):
+    """
+    Inspired by Rails
+
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream_template }
+    end
+    """
+    if request.accepts(TURBO_STREAM_MIME_TYPE):
+        return ResponseFormat.TurboStream
+    elif request.accepts("application/json"):
+        return ResponseFormat.JSON
+    else:
+        return ResponseFormat.HTML
+
+
+@contextmanager
+def response_format(request):
+    """
+    Get supported response format from request headers
+
+    html, json, turbo_stream
+    """
+    resp_format = get_response_format(request)
+    try:
+        yield resp_format
+    finally:
+        # Clean-up code, if needed
+        pass
