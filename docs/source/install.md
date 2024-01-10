@@ -23,12 +23,12 @@ INSTALLED_APPS = [
 
 ## Middleware
 
-You can optionally install `turbo_response.middleware.TurboMiddleware`. This adds the attribute `turbo` to your `request` if the Turbo client adds `Accept: text/vnd.turbo-stream.html;` to the header:
+You can optionally install `turbo_helper.middleware.TurboMiddleware`. This adds the attribute `turbo` to your `request` if the Turbo client adds `Accept: text/vnd.turbo-stream.html;` to the header:
 
 ```python
 MIDDLEWARE = [
     ...
-    "turbo_response.middleware.TurboMiddleware",
+    "turbo_helper.middleware.TurboMiddleware",
     "django.middleware.common.CommonMiddleware",
     ...
 ]
