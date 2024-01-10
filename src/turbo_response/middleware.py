@@ -8,9 +8,7 @@ from .constants import TURBO_STREAM_MIME_TYPE
 
 class TurboData:
     def __init__(self, request: HttpRequest):
-        self.has_turbo_header = TURBO_STREAM_MIME_TYPE in request.headers.get(
-            "Accept", ""
-        )
+        self.has_turbo_header = request.accepts(TURBO_STREAM_MIME_TYPE)
         self.frame = request.headers.get("Turbo-Frame", None)
 
     def __bool__(self):
