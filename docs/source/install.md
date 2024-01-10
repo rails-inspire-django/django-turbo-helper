@@ -14,7 +14,7 @@ Next update **INSTALLED_APPS**:
 
 ```python
 INSTALLED_APPS = [
-  "turbo_response",
+  "turbo_helper",
   ...
 ]
 ```

@@ -31,7 +31,7 @@ def pytest_configure():
             "django.contrib.contenttypes",
             "django.contrib.sessions",
             "django.contrib.sites",
-            "turbo_response",
+            "turbo_helper",
             "channels",
             "tests.testapp.apps.TestAppConfig",
         ],
