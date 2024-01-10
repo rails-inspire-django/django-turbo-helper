@@ -12,13 +12,25 @@ register = template.Library()
 @register.simple_tag
 def dom_id(instance: Any, prefix: Optional[str] = "") -> str:
     if not isinstance(instance, type) and isinstance(instance, Model):
-        # instance
-        identifier = f"{instance.__class__.__name__.lower()}_{instance.id}"
+        # Django model instance
+        if hasattr(instance, "to_key") and getattr(instance, "to_key"):  # noqa: B009
+            identifier = f"{instance.__class__.__name__.lower()}_{instance.to_key}"
+        elif hasattr(instance, "pk") and getattr(instance, "pk"):  # noqa: B009
+            identifier = f"{instance.__class__.__name__.lower()}_{instance.pk}"
+        else:
+            raise Exception(
+                f"Model instance must have either to_key or pk attribute {instance}"
+            )
     elif isinstance(instance, type) and issubclass(instance, Model):
-        # model class
+        # Django model class
         identifier = f"new_{instance.__name__.lower()}"
     else:
-        identifier = str(instance)
+        if hasattr(instance, "to_key") and getattr(instance, "to_key"):  # noqa: B009
+            # Developer can still use to_key property to generate the identifier
+            identifier = f"{instance.to_key}"
+        else:
+            # Use the string representation
+            identifier = str(instance)
 
     if prefix:
         identifier = f"{prefix}_{identifier}"

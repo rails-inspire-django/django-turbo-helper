@@ -16,6 +16,10 @@ class TestDomId:
         result = dom_id(todo)
         assert "todoitem_1" == result
 
+        setattr(todo, "to_key", "test_1")  # noqa: B010
+        result = dom_id(todo)
+        assert "todoitem_test_1" == result
+
     def test_model(self):
         result = dom_id(TodoItem)
         assert "new_todoitem" == result
