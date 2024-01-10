@@ -50,9 +50,10 @@ As this is such a common pattern, we provide for convenience the **turbo_respons
 ```python
 from django.shortcuts import redirect
 
-from turbo_response import render_form_response
+from turbo_helper import render_form_response
 
 from myapp import MyForm
+
 
 def my_view(request):
     if request.method == "POST":
@@ -70,10 +71,11 @@ If you are using CBVs, this package has a mixin class, **turbo_response.mixins.T
 ```python
 from django.views.generic import FormView
 
-from turbo_response import redirect_303
-from turbo_response.mixins import TurboFormMixin
+from turbo_helper import redirect_303
+from turbo_helper.mixins import TurboFormMixin
 
 from myapp import MyForm
+
 
 class MyView(TurboFormMixin, FormView):
     template_name = "my_form.html"
@@ -95,9 +97,10 @@ from django.shortcuts import redirect_303
 from django.template.response import TemplateResponse
 from django.views.generic import FormView
 
-from turbo_response import TurboStream
+from turbo_helper import TurboStream
 
 from myapp import MyForm
+
 
 def my_view(request):
     if request.method == "POST":
@@ -150,7 +153,8 @@ As this is a useful pattern in many situations, for example when handling forms 
 
 ```python
 from django.views.generic import FormView
-from turbo_response.mixins import TurboStreamFormMixin
+from turbo_helper.mixins import TurboStreamFormMixin
+
 
 class MyView(TurboStreamFormMixin, FormView):
     turbo_stream_target = "form-target"
@@ -169,7 +173,8 @@ As with the form mixin above, the package includes a number of view classes usin
 So the above example could be rewritten as:
 
 ```python
-from turbo_response.views import TurboStreamFormView
+from turbo_helper.views import TurboStreamFormView
+
 
 class MyView(TurboStreamFormView):
     turbo_stream_target = "form-target"

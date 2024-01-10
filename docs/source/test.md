@@ -18,7 +18,8 @@ To simulate the Turbo-Stream header, you should set **HTTP_ACCEPT**.
 
 ```python
 from django.test import TestCase
-from turbo_response.constants import TURBO_STREAM_MIME_TYPE
+from turbo_helper.constants import TURBO_STREAM_MIME_TYPE
+
 
 class TestViews(TestCase):
 

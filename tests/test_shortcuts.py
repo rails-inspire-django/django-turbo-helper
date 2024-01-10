@@ -3,7 +3,7 @@ import http
 import pytest
 from django import forms
 
-from turbo_response.shortcuts import redirect_303, render_form_response
+from turbo_helper.shortcuts import redirect_303, render_form_response
 
 pytestmark = pytest.mark.django_db
 

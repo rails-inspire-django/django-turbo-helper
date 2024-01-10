@@ -74,7 +74,7 @@ Notes:
 You can return Turbo Stream resposne in Django view like this:
 
 ```python
-from turbo_response.response import TurboStreamResponse
+from turbo_helper.response import TurboStreamResponse
 from django.template.loader import render_to_string
 
 context = {}
@@ -110,7 +110,7 @@ In `routing.py`, register `TurboStreamCableChannel`
 
 ```python
 from actioncable import cable_channel_register
-from turbo_response.cable_channel import TurboStreamCableChannel
+from turbo_helper.cable_channel import TurboStreamCableChannel
 
 cable_channel_register(TurboStreamCableChannel)
 ```
@@ -128,7 +128,7 @@ In Django template, we can subscribe to stream source like this:
 Then in Python code, we can send Turbo Stream to the stream source like this
 
 ```python
-from turbo_response.channel_helper import broadcast_render_to
+from turbo_helper.channel_helper import broadcast_render_to
 
 broadcast_render_to(
     ["chat", instance.chat_id],

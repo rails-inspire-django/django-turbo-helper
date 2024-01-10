@@ -1,6 +1,6 @@
 from django.http import HttpRequest
 
-from turbo_response import (
+from turbo_helper import (
     Action,
     render_turbo_frame_template,
     render_turbo_stream_template,

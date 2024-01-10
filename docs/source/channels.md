@@ -7,13 +7,13 @@ This approach is not recommended anymore, please consider using [turbo_stream_fr
 This library can also be used with [django-channels](https://channels.readthedocs.io/en/stable/). As with multiple streams, you can use the **TurboStream** class to broadcast turbo-stream content from your consumers.
 
 ```python
-from turbo_response import render_turbo_stream, render_turbo_stream_template
+from turbo_helper import render_turbo_stream, render_turbo_stream_template
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
+
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
 
     async def chat_message(self, event):
-
         # DB methods omitted for brevity
         message = await self.get_message(event["message"]["id"])
         num_unread_messages = await self.get_num_unread_messages()
@@ -21,13 +21,13 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         if message:
             await self.send(
                 TurboStream("unread_message_counter")
-                .replace.render(str(num_unread_messages))
+                    .replace.render(str(num_unread_messages))
             )
 
             await self.send(
                 TurboStream("messages").append.template(
-                  "chat/_message.html",
-                  {"message": message, "user": self.scope['user']},
+                    "chat/_message.html",
+                    {"message": message, "user": self.scope['user']},
                 ).render()
             )
 ```
