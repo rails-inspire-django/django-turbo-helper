@@ -9,7 +9,7 @@ def get_response():
     return lambda req: HttpResponse()
 
 
-class TestTurboMiddeware:
+class TestTurboMiddleware:
     def test_accept_header_not_found(self, rf, get_response):
         req = rf.get("/", HTTP_ACCEPT="text/html")
         TurboMiddleware(get_response)(req)
