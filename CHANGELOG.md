@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.0]
+
+1. Rename from `turbo_response` to `turbo_helper`
+2. Make `dom_id` respect `to_key` method just like Rails
+3. Add `response_format` so developer can return different response format in clean way.
+
 ## [1.0.3]
 
 1. Add `turbo_stream_from` tag and make it work with [django-actioncable](https://github.com/AccordBox/django-actioncable)
