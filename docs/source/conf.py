@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath("../src"))
 
 # -- Project information -----------------------------------------------------
 
-project = "django-turbo-response"
+project = "django-turbo-helper"
 copyright = f"{datetime.datetime.now().year}, Michael Yin"
 author = "Michael Yin"
 

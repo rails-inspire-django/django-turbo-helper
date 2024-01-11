@@ -1,4 +1,4 @@
-django-turbo-response
+django-turbo-helper
 =====================
 
 This package provides helpers for server-side rendering of *Turbo Frame* and *Turbo Stream*, which aim to work with the `Hotwire <https://hotwire.dev/>`_ project.

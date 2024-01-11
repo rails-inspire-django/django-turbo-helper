@@ -7,7 +7,7 @@ This library requires Python 3.8+ and Django 3.2+.
 ## Getting Started
 
 ```shell
-pip install django-turbo-response
+pip install django-turbo-helper
 ```
 
 Next update **INSTALLED_APPS**:

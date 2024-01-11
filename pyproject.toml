@@ -4,12 +4,12 @@ version = "2.0.0"
 description = "Hotwired/Turbo response helpers for Django"
 authors = ["Michael Yin <michaelyin@accordbox.com>"]
 license = "MIT"
-homepage = "https://github.com/rails-inspire-django/django-turbo-response"
+homepage = "https://github.com/rails-inspire-django/django-turbo-helper"
 readme = "README.md"
 packages = [{ include = "turbo_helper", from = "src" }]
 
 [tool.poetry.urls]
-Changelog = "https://github.com/rails-inspire-django/django-turbo-response/releases"
+Changelog = "https://github.com/rails-inspire-django/django-turbo-helper/releases"
 
 [tool.poetry.dependencies]
 python = ">=3.8"

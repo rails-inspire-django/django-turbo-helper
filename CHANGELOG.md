@@ -58,7 +58,7 @@ Use file-based templates for rendering streams/frames
 
 ## [0.0.39] - 2021-4-2
 
-Fix for https://github.com/rails-inspire-django/django-turbo-response/issues/5
+Fix for https://github.com/rails-inspire-django/django-turbo-helper/issues/5
 
 ## [0.0.36] - 2021-3-30
 
