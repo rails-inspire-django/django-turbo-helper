@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-turbo-helper"
-version = "1.0.3"
+version = "1.0.4"
 description = "Hotwired/Turbo response helpers for Django"
 authors = ["Michael Yin <michaelyin@accordbox.com>"]
 license = "MIT"
