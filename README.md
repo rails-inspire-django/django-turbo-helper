@@ -1,8 +1,8 @@
-This package provides helpers for server-side rendering of `Turbo Frame` and `Turbo Stream`, which aim to work with the [Hotwire](https://hotwire.dev/) project.
+This package provides some helper functions for working with [Hotwire](https://hotwire.dev/) in Django, inspired by Rails.
 
 ## Documentation
 
-https://django-turbo-response.readthedocs.io/en/latest/
+https://django-turbo-response.readthedocs.io
 
 ## Free Hotwire Django eBook
 
