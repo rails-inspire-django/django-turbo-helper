@@ -1,6 +1,6 @@
 import http
 
-from turbo_response import TurboFrame
+from turbo_helper import TurboFrame
 
 
 class TestTurboFrame:

@@ -3,8 +3,8 @@ from actioncable import ActionCableConsumer, cable_channel_register, compact_enc
 from channels.layers import get_channel_layer
 from channels.testing import WebsocketCommunicator
 
-from turbo_response.cable_channel import TurboStreamCableChannel
-from turbo_response.channel_helper import generate_signed_stream_key
+from turbo_helper.cable_channel import TurboStreamCableChannel
+from turbo_helper.channel_helper import generate_signed_stream_key
 
 # register the TurboStreamCableChannel
 cable_channel_register(TurboStreamCableChannel)

@@ -4,9 +4,9 @@ import pytest
 from django import forms
 from django.views.generic import CreateView
 
-from turbo_response import Action
-from turbo_response.mixins import TurboFormAdapterMixin
-from turbo_response.views import (
+from turbo_helper import Action
+from turbo_helper.mixins import TurboFormAdapterMixin
+from turbo_helper.views import (
     TurboCreateView,
     TurboFormView,
     TurboFrameTemplateView,

@@ -1,15 +1,15 @@
 [tool.poetry]
-name = "django-turbo-response"
+name = "django-turbo-helper"
 version = "1.0.3"
 description = "Hotwired/Turbo response helpers for Django"
 authors = ["Michael Yin <michaelyin@accordbox.com>"]
 license = "MIT"
-homepage = "https://github.com/hotwire-django/django-turbo-response"
+homepage = "https://github.com/rails-inspire-django/django-turbo-response"
 readme = "README.md"
-packages = [{ include = "turbo_response", from = "src" }]
+packages = [{ include = "turbo_helper", from = "src" }]
 
 [tool.poetry.urls]
-Changelog = "https://github.com/hotwire-django/django-turbo-response/releases"
+Changelog = "https://github.com/rails-inspire-django/django-turbo-response/releases"
 
 [tool.poetry.dependencies]
 python = ">=3.8"

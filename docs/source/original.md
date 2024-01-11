@@ -9,7 +9,7 @@ A couple of classes, **TurboFrame** and **TurboStream**, provide the basic API f
 To render plain strings:
 
 ```python
-from turbo_response import TurboFrame, TurboStream, Action
+from turbo_helper import TurboFrame, TurboStream, Action
 
 # returns <turbo-stream action="replace" target="msg"><template>OK</template></turbo-stream>
 TurboStream("msg").replace.render("OK")
@@ -102,7 +102,8 @@ Each item in the cart has an inline edit form that might look like this:
 ```
 
 ```python
-from turbo_response import TurboStreamResponse, TurboStream
+from turbo_helper import TurboStreamResponse, TurboStream
+
 
 def update_cart_item(request, item_id):
     # item saved to e.g. session or db
@@ -121,7 +122,8 @@ def update_cart_item(request, item_id):
 Or using a generator:
 
 ```python
-from turbo_response import TurboStreamStreamingResponse, TurboStream
+from turbo_helper import TurboStreamStreamingResponse, TurboStream
+
 
 def update_cart_item(request, item_id):
     # item saved to e.g. session or db
@@ -134,6 +136,7 @@ def update_cart_item(request, item_id):
     def render_response():
         yield TurboStream("nav-cart-total").replace.render(total_amount)
         yield TurboStream("cart-summary-total").replace.render(total_amount)
+
     return TurboStreamStreamingResponse(render_response())
 ```
 
@@ -146,8 +149,9 @@ Note that this technique is something of an anti-pattern; if you have to update 
 You can accomplish the above using the **turbo_stream_response** decorator with your view. This will check the output and wrap the response in a **TurboStreamResponse** or **TurboStreamStreamingResponse**:
 
 ```python
-from turbo_response import TurboStream
-from turbo_response.decorators import turbo_stream_response
+from turbo_helper import TurboStream
+from turbo_helper.decorators import turbo_stream_response
+
 
 @turbo_stream_response
 def update_cart_item(request, item_id):

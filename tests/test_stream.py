@@ -2,7 +2,7 @@ import http
 
 from django.http import HttpRequest
 
-from turbo_response import TurboStream
+from turbo_helper import TurboStream
 
 
 class TestTurboStream:

@@ -2,7 +2,7 @@ import pytest
 from django.template import Context, Template
 
 from tests.testapp.models import TodoItem
-from turbo_response.templatetags.turbo_helper import dom_id
+from turbo_helper.templatetags.turbo_helper import dom_id
 
 pytestmark = pytest.mark.django_db
 

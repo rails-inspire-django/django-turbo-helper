@@ -1,7 +1,7 @@
 import pytest
 from django.http import HttpResponse
 
-from turbo_response.middleware import TurboMiddleware
+from turbo_helper.middleware import TurboMiddleware
 
 
 @pytest.fixture

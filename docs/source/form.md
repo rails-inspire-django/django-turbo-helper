@@ -45,14 +45,15 @@ def my_view(request):
     return TemplateResponse(request, "my_form.html", {"form": my_form}, status=status)
 ```
 
-As this is such a common pattern, we provide for convenience the **turbo_response.render_form_response** shortcut function which automatically sets the correct status depending on the form state (and adds "form" to the template context):
+As this is such a common pattern, we provide for convenience the **turbo_helper.render_form_response** shortcut function which automatically sets the correct status depending on the form state (and adds "form" to the template context):
 
 ```python
 from django.shortcuts import redirect
 
-from turbo_response import render_form_response
+from turbo_helper import render_form_response
 
 from myapp import MyForm
+
 
 def my_view(request):
     if request.method == "POST":
@@ -65,15 +66,16 @@ def my_view(request):
     return render_form_response(request, form, "my_form.html")
 ```
 
-If you are using CBVs, this package has a mixin class, **turbo_response.mixins.TurboFormMixin** that sets the correct status automatically to 422 for an invalid form:
+If you are using CBVs, this package has a mixin class, **turbo_helper.mixins.TurboFormMixin** that sets the correct status automatically to 422 for an invalid form:
 
 ```python
 from django.views.generic import FormView
 
-from turbo_response import redirect_303
-from turbo_response.mixins import TurboFormMixin
+from turbo_helper import redirect_303
+from turbo_helper.mixins import TurboFormMixin
 
 from myapp import MyForm
+
 
 class MyView(TurboFormMixin, FormView):
     template_name = "my_form.html"
@@ -84,9 +86,9 @@ class MyView(TurboFormMixin, FormView):
 
 In addition you can just subclass these views for common cases:
 
-- **turbo_response.views.TurboFormView**
-- **turbo_response.views.TurboCreateView**
-- **turbo_response.views.TurboUpdateView**
+- **turbo_helper.views.TurboFormView**
+- **turbo_helper.views.TurboCreateView**
+- **turbo_helper.views.TurboUpdateView**
 
 In some cases you may wish to return a turbo-stream response containing just the form when the form is invalid instead of a full page visit. In this case just return a stream rendering the form partial in the usual manner. For example:
 
@@ -95,9 +97,10 @@ from django.shortcuts import redirect_303
 from django.template.response import TemplateResponse
 from django.views.generic import FormView
 
-from turbo_response import TurboStream
+from turbo_helper import TurboStream
 
 from myapp import MyForm
+
 
 def my_view(request):
     if request.method == "POST":
@@ -146,11 +149,12 @@ And your templates would look like this:
 </form>
 ```
 
-As this is a useful pattern in many situations, for example when handling forms inside modals, this package provides a mixin class **turbo_response.mixins.TurboStreamFormMixin**:
+As this is a useful pattern in many situations, for example when handling forms inside modals, this package provides a mixin class **turbo_helper.mixins.TurboStreamFormMixin**:
 
 ```python
 from django.views.generic import FormView
-from turbo_response.mixins import TurboStreamFormMixin
+from turbo_helper.mixins import TurboStreamFormMixin
+
 
 class MyView(TurboStreamFormMixin, FormView):
     turbo_stream_target = "form-target"
@@ -162,14 +166,15 @@ This mixin will automatically add the target name to the template context as *tu
 
 As with the form mixin above, the package includes a number of view classes using this mixin:
 
-- **turbo_response.views.TurboStreamFormView**
-- **turbo_response.views.TurboStreamCreateView**
-- **turbo_response.views.TurboStreamUpdateView**
+- **turbo_helper.views.TurboStreamFormView**
+- **turbo_helper.views.TurboStreamCreateView**
+- **turbo_helper.views.TurboStreamUpdateView**
 
 So the above example could be rewritten as:
 
 ```python
-from turbo_response.views import TurboStreamFormView
+from turbo_helper.views import TurboStreamFormView
+
 
 class MyView(TurboStreamFormView):
     turbo_stream_target = "form-target"

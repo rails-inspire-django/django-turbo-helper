@@ -2,12 +2,8 @@ import http
 
 from django.http import HttpResponse
 
-from turbo_response import (
-    TurboStream,
-    TurboStreamResponse,
-    TurboStreamStreamingResponse,
-)
-from turbo_response.decorators import turbo_stream_response
+from turbo_helper import TurboStream, TurboStreamResponse, TurboStreamStreamingResponse
+from turbo_helper.decorators import turbo_stream_response
 
 
 class TestTurboStreamResponse:
