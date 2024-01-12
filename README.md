@@ -7,7 +7,7 @@
 
 **`django-turbo-response` has been renamed to `django-turbo-helper` since version 2.x.x**
 
-1. For `django-turbo-response` user, please check https://django-turbo-helper.readthedocs.io/en/1.0.3/
+1. For legacy `django-turbo-response` user, please check https://django-turbo-helper.readthedocs.io/en/1.0.3/
 2. For `django-turbo-helper` user, please check https://django-turbo-helper.readthedocs.io/
 
 ## Free Hotwire Django eBook
