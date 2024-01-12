@@ -1,57 +1,80 @@
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
-from django.utils.html import format_html
+from django.template import engines
+from django.utils.html import escape
 from django.utils.safestring import mark_safe
-
-from .constants import Action
 
 
 def render_turbo_stream(
-    action: Action,
+    action: str,
+    content: str,
+    attributes: Dict[str, Any],
     target: Optional[str] = None,
-    content: str = "",
-    is_safe: bool = False,
-    is_multiple: bool = False,
+    targets: Optional[str] = None,
 ) -> str:
-    """Wraps content in correct <turbo-stream> tags.
+    element_attributes = {}
+    for key, value in attributes.items():
+        # convert data_xxx to data-xxx
+        if key.startswith("data"):
+            element_attributes[key.replace("_", "-")] = value
+        else:
+            element_attributes[key] = value
 
-    :param action: action type
-    :param target: the DOM ID target of the stream or CSS selector for multiple targetss
-    :param content: content to be wrapped. Can be empty.
-    :param is_safe: mark content safe for HTML escaping.
-    :param is_multiple: multiple targets
+    element_attributes_array = []
+    for key, value in element_attributes.items():
+        # TODO: bool type django/forms/widgets/attrs.html
+        element_attributes_array.append(f'{key}="{escape(value)}"')
 
-    :return: *<turbo-stream>* string
-    """
+    attribute_string = mark_safe(" ".join(element_attributes_array))
 
-    if is_safe:
-        content = mark_safe(content)
-
-    return format_html(
-        '<turbo-stream action="{}" {}="{}">' "<template>{}</template></turbo-stream>",
-        action.value,
-        "targets" if is_multiple else "target",
-        target,
-        content,
-    )
+    django_engine = engines["django"]
+    template_string = """<turbo-stream action="{{ action }}"{% if target %} target="{{ target }}"{% else %} targets="{{ targets }}"{% endif %}{% if attribute_string %} {{ attribute_string }}{% endif %}><template>{{ content|default:'' }}</template></turbo-stream>"""
+    context = {
+        "content": content,
+        "action": action,
+        "target": target,
+        "targets": targets,
+        "attribute_string": attribute_string,
+    }
+    return django_engine.from_string(template_string).render(context)
 
 
-def render_turbo_frame(
-    dom_id: str,
-    content: str = "",
-    is_safe: bool = False,
-) -> str:
-    """
+def render_turbo_frame(frame_id: str, content: str, attributes: Dict[str, Any]) -> str:
+    # convert data_xxx to data-xxx
+    element_attributes = {}
+    for key, value in attributes.items():
+        if key.startswith("data"):
+            element_attributes[key.replace("_", "-")] = value
+        else:
+            element_attributes[key] = value
 
-    Wraps a response in correct *<turbo-frame>* tags.
+    element_attributes_array = []
+    for key, value in element_attributes.items():
+        # TODO: bool type django/forms/widgets/attrs.html
+        element_attributes_array.append(f'{key}="{escape(value)}"')
 
-    :param dom_id: a DOM ID present in the content
-    :param content: content of the turbo-frame
-    :param is_safe: mark content safe for HTML escaping.
+    attribute_string = mark_safe(" ".join(element_attributes_array))
 
-    :return: *<turbo-frame>* string
-    """
-    if is_safe:
-        content = mark_safe(content)
+    django_engine = engines["django"]
+    template_string = """<turbo-frame id="{{ frame_id }}"{% if attribute_string %} {{ attribute_string }}{% endif %}>{{ content }}</turbo-frame>"""  # noqa
+    context = {
+        "frame_id": frame_id,
+        "content": content,
+        "attribute_string": attribute_string,
+    }
+    return django_engine.from_string(template_string).render(context)
 
-    return format_html('<turbo-frame id="{}">{}</turbo-frame>', dom_id, content)
+
+def render_turbo_stream_from(stream_name_array: List[Any]):
+    from .cable_channel import TurboStreamCableChannel
+    from .channel_helper import generate_signed_stream_key, stream_name_from
+
+    stream_name_string = stream_name_from(stream_name_array)
+
+    django_engine = engines["django"]
+    template_string = """<turbo-cable-stream-source channel="{{ channel }}" signed-stream-name="{{ signed_stream_name }}"></turbo-cable-stream-source>"""  # noqa
+    context = {
+        "signed_stream_name": generate_signed_stream_key(stream_name_string),
+        "channel": TurboStreamCableChannel.__name__,
+    }
+    return django_engine.from_string(template_string).render(context)

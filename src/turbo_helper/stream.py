@@ -1,166 +1,140 @@
-from typing import Any, Dict, List, Optional, Union
+from django.template.loader import render_to_string
 
-from django.http import HttpRequest
-
-from .constants import Action
-from .renderers import render_turbo_stream
-from .response import TurboStreamResponse, TurboStreamTemplateResponse
-from .template import render_turbo_stream_template
-
-
-class TurboStreamTemplate:
-    """Wraps template functionality."""
-
-    def __init__(
-        self,
-        template_name: Union[str, List[str]],
-        context: Optional[Dict[str, Any]] = None,
-        *,
-        action: Action,
-        target: str,
-        is_multiple: bool = False,
-        **template_kwargs,
-    ):
-        self.action = action
-        self.target = target
-        self.is_multiple = is_multiple
-        self.template_name = template_name
-        self.context = context
-        self.template_kwargs = template_kwargs
-
-    def render(self, **kwargs) -> str:
-        return render_turbo_stream_template(
-            self.template_name,
-            self.context,
-            action=self.action,
-            target=self.target,
-            is_multiple=self.is_multiple,
-            **{**self.template_kwargs, **kwargs},
-        )
-
-    def response(
-        self, request: Optional[HttpRequest] = None, **kwargs
-    ) -> TurboStreamTemplateResponse:
-        request = request or self.template_kwargs.pop("request", None)
-        return TurboStreamTemplateResponse(
-            request,
-            self.template_name,
-            self.context,
-            action=self.action,
-            target=self.target,
-            is_multiple=self.is_multiple,
-            **{**self.template_kwargs, **kwargs},
-        )
-
-
-class TurboStreamAction:
-    """Returns strings and responses for a specific Turbo Stream action type."""
-
-    def __init__(self, target: str, action: Action, is_multiple: bool = False):
-        """
-        :param target: Turbo Stream target
-        :param action: Turbo Stream action
-        """
-        self.action = action
-        self.target = target
-        self.is_multiple = is_multiple
-
-    def render(
-        self,
-        content: str = "",
-        **kwargs,
-    ) -> str:
-        """
-        :param content: enclosed content
-
-        :return: a *<turbo-stream>* string
-        """
-        return render_turbo_stream(
-            action=self.action,
-            target=self.target,
-            is_multiple=self.is_multiple,
-            content=content,
-            **kwargs,
-        )
-
-    def response(
-        self,
-        content: str = "",
-        **kwargs,
-    ) -> TurboStreamResponse:
-        """
-        :param content: enclosed content
-        :return: a *<turbo-stream>* HTTP response wrapper
-        """
-        return TurboStreamResponse(
-            action=self.action,
-            target=self.target,
-            is_multiple=self.is_multiple,
-            content=content,
-            **kwargs,
-        )
-
-    def template(
-        self,
-        template_name: Union[str, List[str]],
-        context: Optional[Dict[str, Any]] = None,
-        **template_kwargs,
-    ) -> TurboStreamTemplate:
-        """
-        :param template_name: Django template name
-        :param context: template context
-
-        :return: a *<turbo-stream>* template wrapper
-        """
-        return TurboStreamTemplate(
-            template_name,
-            context,
-            action=self.action,
-            target=self.target,
-            is_multiple=self.is_multiple,
-            **template_kwargs,
-        )
+from turbo_helper.renderers import render_turbo_stream
+from turbo_helper.response import TurboStreamResponse
 
 
 class TurboStream:
     """
-    Class for creating Turbo Stream strings and responses.
+    https://github.com/hotwired/turbo-rails/blob/066396c67d4cee740c0348089955d7e8cdaa2cb0/app/models/turbo/streams/tag_builder.rb
     """
 
-    def __init__(self, target: str, is_multiple: bool = False):
+    def __init__(self):
+        self.registered_actions = []
+
+    def is_registered(self, name):
+        return name in self.registered_actions
+
+    def render_action(self, action, target, content=None, **kwargs):
+        if not content and kwargs.get("template", None):
+            # render template content
+            template = kwargs.pop("template")
+            context = kwargs.pop("context", {})
+            request = kwargs.pop("request", None)
+
+            content = render_to_string(template, context=context, request=request)
+
+        return render_turbo_stream(
+            action=action, content=content, target=target, attributes=kwargs
+        )
+
+    def render_action_all(self, action, targets, content=None, **kwargs):
+        if not content and kwargs.get("template", None):
+            # render template content
+            template = kwargs.pop("template")
+            context = kwargs.pop("context", {})
+            request = kwargs.pop("request", None)
+
+            content = render_to_string(template, context=context, request=request)
+
+        return render_turbo_stream(
+            action=action, content=content, targets=targets, attributes=kwargs
+        )
+
+    def response(self, *args, **kwargs):
         """
-        :param target: stream target
+        Shortcut for TurboStreamResponse
         """
-        self.target = target
-        self.is_multiple = is_multiple
+        return TurboStreamResponse(*args, **kwargs)
 
-    def action(self, action: Action) -> TurboStreamAction:
-        return TurboStreamAction(self.target, action, is_multiple=self.is_multiple)
 
-    @property
-    def after(self) -> TurboStreamAction:
-        return self.action(Action.AFTER)
+turbo_stream = TurboStream()
 
-    @property
-    def append(self) -> TurboStreamAction:
-        return self.action(Action.APPEND)
 
-    @property
-    def before(self) -> TurboStreamAction:
-        return self.action(Action.BEFORE)
+def register_turbo_stream_action(name):
+    def decorator(func):
+        if hasattr(turbo_stream, name):
+            raise AttributeError(
+                f"TurboStream action '{name}' already exists in turbo_stream"
+            )
+        setattr(turbo_stream, name, func)
+        turbo_stream.registered_actions.append(name)
+        return func
 
-    @property
-    def prepend(self) -> TurboStreamAction:
-        return self.action(Action.PREPEND)
+    return decorator
 
-    @property
-    def remove(self) -> TurboStreamAction:
-        return self.action(Action.REMOVE)
 
-    @property
-    def replace(self) -> TurboStreamAction:
-        return self.action(Action.REPLACE)
+################################################################################
 
-    @property
-    def update(self) -> TurboStreamAction:
-        return self.action(Action.UPDATE)
+
+@register_turbo_stream_action("append")
+def append(target, content=None, **kwargs):
+    return turbo_stream.render_action("append", target, content, **kwargs)
+
+
+@register_turbo_stream_action("after")
+def after(target, content=None, **kwargs):
+    return turbo_stream.render_action("after", target, content, **kwargs)
+
+
+@register_turbo_stream_action("before")
+def before(target, content=None, **kwargs):
+    return turbo_stream.render_action("before", target, content, **kwargs)
+
+
+@register_turbo_stream_action("prepend")
+def prepend(target, content=None, **kwargs):
+    return turbo_stream.render_action("prepend", target, content, **kwargs)
+
+
+@register_turbo_stream_action("remove")
+def remove(target, **kwargs):
+    return turbo_stream.render_action("remove", target, **kwargs)
+
+
+@register_turbo_stream_action("replace")
+def replace(target, content=None, **kwargs):
+    return turbo_stream.render_action("replace", target, content, **kwargs)
+
+
+@register_turbo_stream_action("update")
+def update(target, content=None, **kwargs):
+    return turbo_stream.render_action("update", target, content, **kwargs)
+
+
+################################################################################
+
+
+@register_turbo_stream_action("append_all")
+def append_all(targets, content=None, **kwargs):
+    return turbo_stream.render_action_all("append", targets, content, **kwargs)
+
+
+@register_turbo_stream_action("after_all")
+def after_all(targets, content=None, **kwargs):
+    return turbo_stream.render_action_all("after", targets, content, **kwargs)
+
+
+@register_turbo_stream_action("before_all")
+def before_all(targets, content=None, **kwargs):
+    return turbo_stream.render_action_all("before", targets, content, **kwargs)
+
+
+@register_turbo_stream_action("prepend_all")
+def prepend_all(targets, content=None, **kwargs):
+    return turbo_stream.render_action_all("prepend", targets, content, **kwargs)
+
+
+@register_turbo_stream_action("remove_all")
+def remove_all(targets, **kwargs):
+    return turbo_stream.render_action_all("remove", targets, **kwargs)
+
+
+@register_turbo_stream_action("replace_all")
+def replace_all(targets, content=None, **kwargs):
+    return turbo_stream.render_action_all("replace", targets, content, **kwargs)
+
+
+@register_turbo_stream_action("update_all")
+def update_all(targets, content=None, **kwargs):
+    return turbo_stream.render_action_all("update", targets, content, **kwargs)

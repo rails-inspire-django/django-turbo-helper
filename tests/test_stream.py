@@ -1,136 +1,110 @@
-import http
-
 from django.http import HttpRequest
+from django.utils.safestring import mark_safe
 
-from turbo_helper import TurboStream
+from turbo_helper import (
+    TURBO_STREAM_CONTENT_TYPE,
+    register_turbo_stream_action,
+    turbo_stream,
+)
 
 
 class TestTurboStream:
     def test_render(self):
-        s = TurboStream("my-form").append.render("OK")
+        s = turbo_stream.append("dom_id", "OK")
         assert (
             s
-            == '<turbo-stream action="append" target="my-form"><template>OK</template></turbo-stream>'
+            == '<turbo-stream action="append" target="dom_id"><template>OK</template></turbo-stream>'
         )
 
-    def test_render_multiple(self):
-        s = TurboStream(".my-forms", is_multiple=True).append.render("OK")
+    def test_render_escape_behavior(self):
+        s = turbo_stream.append("dom_id", "<script></script>")
         assert (
             s
-            == '<turbo-stream action="append" targets=".my-forms"><template>OK</template></turbo-stream>'
+            == '<turbo-stream action="append" target="dom_id"><template>&lt;script&gt;&lt;/script&gt;</template></turbo-stream>'
         )
 
-    def test_render_xss(self):
-        s = TurboStream("my-form").append.render("<script></script>")
+        s = turbo_stream.append("dom_id", mark_safe("<script></script>"))
         assert (
             s
-            == '<turbo-stream action="append" target="my-form"><template>&lt;script&gt;&lt;/script&gt;</template></turbo-stream>'
-        )
-
-    def test_render_is_safe(self):
-        s = TurboStream("my-form").append.render("<script></script>", is_safe=True)
-        assert (
-            s
-            == '<turbo-stream action="append" target="my-form"><template><script></script></template></turbo-stream>'
+            == '<turbo-stream action="append" target="dom_id"><template><script></script></template></turbo-stream>'
         )
 
     def test_template(self):
-        s = (
-            TurboStream("my-form")
-            .append.template("simple.html", {"msg": "my content"})
-            .render()
+        s = turbo_stream.append(
+            "dom_id", template="simple.html", context={"msg": "my content"}
         )
         assert "my content" in s
-        assert '<turbo-stream action="append" target="my-form">' in s
+        assert '<turbo-stream action="append" target="dom_id">' in s
 
     def test_template_csrf(self):
-        s = (
-            TurboStream("my-form")
-            .append.template("csrf.html", {"msg": "my content"}, request=HttpRequest())
-            .render()
+        s = turbo_stream.append(
+            "dom_id",
+            template="csrf.html",
+            context={"msg": "my content"},
+            request=HttpRequest(),
         )
+
         assert "my content" in s
         assert '<input type="hidden" name="csrfmiddlewaretoken"' in s
-        assert '<turbo-stream action="append" target="my-form">' in s
-
-    def test_template_multiple(self):
-        s = (
-            TurboStream(".my-forms", is_multiple=True)
-            .append.template("simple.html", {"msg": "my content"})
-            .render()
-        )
-        assert "my content" in s
-        assert '<turbo-stream action="append" targets=".my-forms">' in s
-
-    def test_template_xss(self):
-        s = (
-            TurboStream("my-form")
-            .append.template("simple.html", {"msg": "<script></script>"})
-            .render()
-        )
-        assert "&lt;script&gt;&lt;/script&gt;" in s
-        assert '<turbo-stream action="append" target="my-form">' in s
-
-    def test_template_with_req_init(self, rf):
-        s = (
-            TurboStream("my-form")
-            .append.template("simple.html", {"msg": "my content"}, request=rf.get("/"))
-            .render()
-        )
-        assert "my content" in s
-        assert '<turbo-stream action="append" target="my-form">' in s
+        assert '<turbo-stream action="append" target="dom_id">' in s
 
     def test_template_with_req_arg(self, rf):
-        s = (
-            TurboStream("my-form")
-            .append.template("simple.html", {"msg": "my content"})
-            .render(request=rf.get("/"))
+        s = turbo_stream.append(
+            "dom_id",
+            template="simple.html",
+            context={"msg": "my content"},
+            request=rf.get("/"),
         )
         assert "my content" in s
-        assert '<turbo-stream action="append" target="my-form">' in s
+        assert '<turbo-stream action="append" target="dom_id">' in s
 
-    def test_response(self):
-        resp = TurboStream("my-form").append.response("OK")
-        assert resp.status_code == http.HTTPStatus.OK
-        assert b"OK" in resp.content
-        assert b'<turbo-stream action="append" target="my-form"' in resp.content
-
-    def test_response_xss(self):
-        resp = TurboStream("my-form").append.response("<script></script>")
-        assert resp.status_code == http.HTTPStatus.OK
-        assert b"&lt;script&gt;&lt;/script&gt;" in resp.content
-        assert b'<turbo-stream action="append" target="my-form"' in resp.content
-
-    def test_response_is_safe(self):
-        resp = TurboStream("my-form").append.response("<script></script>", is_safe=True)
-        assert resp.status_code == http.HTTPStatus.OK
-        assert b"<script></script>" in resp.content
-        assert b'<turbo-stream action="append" target="my-form"' in resp.content
-
-    def test_template_response_req_init(self, rf):
-        req = rf.get("/")
-        resp = (
-            TurboStream("my-form")
-            .append.template("simple.html", {"msg": "my content"}, request=req)
-            .response()
+    def test_template_multiple_targets(self):
+        s = turbo_stream.append_all(
+            ".old_records", template="simple.html", context={"msg": "my content"}
         )
-        assert resp.status_code == http.HTTPStatus.OK
-        assert "is_turbo_stream" in resp.context_data
-        assert resp._request == req
-        content = resp.render().content
-        assert b"my content" in content
-        assert b'<turbo-stream action="append" target="my-form"' in content
+        assert "my content" in s
+        assert '<turbo-stream action="append" targets=".old_records">' in s
 
-    def test_template_response(self, rf):
-        req = rf.get("/")
-        resp = (
-            TurboStream("my-form")
-            .append.template("simple.html", {"msg": "my content"})
-            .response(req)
+    def test_custom_register(self):
+        # register toast action
+        @register_turbo_stream_action("toast")
+        def toast(target, message, position="left"):
+            return turbo_stream.render_action(
+                "toast", target=target, data_message=message, data_position=position
+            )
+
+        s = turbo_stream.toast("dom_id", message="hello world", position="right")
+        assert (
+            '<turbo-stream action="toast" target="dom_id" data-message="hello world" data-position="right">'
+            in s
         )
-        assert resp.status_code == http.HTTPStatus.OK
-        assert "is_turbo_stream" in resp.context_data
-        assert resp._request == req
-        content = resp.render().content
-        assert b"<div>my content</div>" in content
-        assert b'<turbo-stream action="append" target="my-form"' in content
+
+        # test attributes escape
+        s = turbo_stream.toast("dom_id", message='hello "world"', position="right")
+        assert "hello &quot;world&quot;" in s
+
+    def test_response(self, rf):
+        response = turbo_stream.response(
+            [
+                turbo_stream.append("dom_id", "OK"),
+                turbo_stream.append(
+                    "dom_id_2",
+                    template="simple.html",
+                    context={"msg": "my content"},
+                    request=rf.get("/"),
+                ),
+            ]
+        )
+
+        assert response.headers["content-type"] == TURBO_STREAM_CONTENT_TYPE
+
+        assert (
+            '<turbo-stream action="append" target="dom_id"><template>OK</template></turbo-stream>'
+            in response.content.decode("utf-8")
+        )
+
+        assert "my content" in response.content.decode("utf-8")
+        assert (
+            '<turbo-stream action="append" target="dom_id_2">'
+            in response.content.decode("utf-8")
+        )

@@ -2,15 +2,40 @@ from typing import Any, Optional
 
 from django import template
 from django.db.models.base import Model
-from django.template import Node, TemplateSyntaxError, engines
+from django.template import Node, TemplateSyntaxError
 from django.template.base import token_kwargs
-from django.utils.safestring import mark_safe
+
+from turbo_helper.renderers import (
+    render_turbo_frame,
+    render_turbo_stream,
+    render_turbo_stream_from,
+)
 
 register = template.Library()
 
 
 @register.simple_tag
 def dom_id(instance: Any, prefix: Optional[str] = "") -> str:
+    """
+    Generate a unique identifier for a Django model instance, class, or even Python object.
+
+    Args:
+        instance (Any): The instance or class for which the identifier is generated.
+        prefix (Optional[str]): An optional prefix to prepend to the identifier. Defaults to an empty string.
+
+    Returns:
+        str: The generated identifier.
+
+    Raises:
+        Exception: If the model instance does not have either the `to_key` or `pk` attribute.
+
+    Note:
+        - If `instance` is a Django model instance, the identifier is generated based on the `to_key` or `pk` attribute.
+        - If `instance` is a Django model class, the identifier is generated as `new_<class_name>`.
+        - If `instance` is neither a model instance nor a model class, the identifier is generated based on the `to_key`
+          attribute if available, otherwise it uses the string representation of the instance.
+        - The `prefix` argument can be used to prepend a prefix to the generated identifier.
+    """
     if not isinstance(instance, type) and isinstance(instance, Model):
         # Django model instance
         if hasattr(instance, "to_key") and getattr(instance, "to_key"):  # noqa: B009
@@ -54,34 +79,19 @@ class TurboFrameTagNode(Node):
             key: str(value.resolve(context))
             for key, value in self.extra_context.items()
         }
-        element_attributes = {}
-        for key, value in attributes.items():
-            # convert data_xxx to data-xxx
-            if key.startswith("data"):
-                element_attributes[key.replace("_", "-")] = value
-            else:
-                element_attributes[key] = value
 
-        element_attributes_array = []
-        for key, value in element_attributes.items():
-            element_attributes_array.append(f'{key}="{value}"')
-
-        attribute_string = mark_safe(" ".join(element_attributes_array))
-
-        django_engine = engines["django"]
-        template_string = """<turbo-frame id="{{ frame_id }}"{% if attribute_string %} {{ attribute_string }}{% endif %}>{{ children }}</turbo-frame>"""
-        context = {
-            "children": children,
-            "frame_id": self.frame_id.resolve(context),
-            "attribute_string": attribute_string,
-        }
-        return django_engine.from_string(template_string).render(context)
+        return render_turbo_frame(
+            frame_id=self.frame_id.resolve(context),
+            attributes=attributes,
+            content=children,
+        )
 
 
 class TurboStreamTagNode(Node):
-    def __init__(self, action, target, nodelist, extra_context=None):
+    def __init__(self, action, target, targets, nodelist, extra_context=None):
         self.action = action
         self.target = target
+        self.targets = targets
         self.nodelist = nodelist
         self.extra_context = extra_context or {}
 
@@ -95,29 +105,14 @@ class TurboStreamTagNode(Node):
             key: str(value.resolve(context))
             for key, value in self.extra_context.items()
         }
-        element_attributes = {}
-        for key, value in attributes.items():
-            # convert data_xxx to data-xxx
-            if key.startswith("data"):
-                element_attributes[key.replace("_", "-")] = value
-            else:
-                element_attributes[key] = value
 
-        element_attributes_array = []
-        for key, value in element_attributes.items():
-            element_attributes_array.append(f'{key}="{value}"')
-
-        attribute_string = mark_safe(" ".join(element_attributes_array))
-
-        django_engine = engines["django"]
-        template_string = """<turbo-stream action="{{ action }}" target="{{ target }}"{% if attribute_string %} {{ attribute_string }}{% endif %}><template>{{ children }}</template></turbo-stream>"""
-        context = {
-            "children": children,
-            "action": self.action.resolve(context),
-            "target": self.target.resolve(context),
-            "attribute_string": attribute_string,
-        }
-        return django_engine.from_string(template_string).render(context)
+        return render_turbo_stream(
+            action=self.action.resolve(context),
+            target=self.target.resolve(context) if self.target else None,
+            targets=self.targets.resolve(context) if self.targets else None,
+            content=children,
+            attributes=attributes,
+        )
 
 
 class TurboStreamFromTagNode(Node):
@@ -131,21 +126,11 @@ class TurboStreamFromTagNode(Node):
         return "<%s>" % self.__class__.__name__
 
     def render(self, context):
-        from ..cable_channel import TurboStreamCableChannel
-        from ..channel_helper import generate_signed_stream_key, stream_name_from
-
         stream_name_array = [
             stream_name.resolve(context) for stream_name in self.stream_name_array
         ]
-        stream_name_string = stream_name_from(stream_name_array)
 
-        django_engine = engines["django"]
-        template_string = """<turbo-cable-stream-source channel="{{ channel }}" signed-stream-name="{{ signed_stream_name }}"></turbo-cable-stream-source>"""
-        context = {
-            "signed_stream_name": generate_signed_stream_key(stream_name_string),
-            "channel": TurboStreamCableChannel.__name__,
-        }
-        return django_engine.from_string(template_string).render(context)
+        return render_turbo_stream_from(stream_name_array)
 
 
 @register.tag("turbo_frame")
@@ -212,7 +197,53 @@ def turbo_stream_tag(parser, token):
     # Delete the token that triggered this function from the parser's token stream
     parser.delete_first_token()
 
-    return TurboStreamTagNode(action, target, nodelist, extra_context=extra_context)
+    return TurboStreamTagNode(
+        action,
+        target=target,
+        targets=None,
+        nodelist=nodelist,
+        extra_context=extra_context,
+    )
+
+
+@register.tag("turbo_stream_all")
+def turbo_stream_all_tag(parser, token):
+    args = token.split_contents()
+
+    if len(args) < 3:
+        raise TemplateSyntaxError(
+            "'turbo_stream_all' tag requires two arguments, first is action, second is the target_id"
+        )
+
+    action = parser.compile_filter(args[1])
+    targets = parser.compile_filter(args[2])
+
+    # Get all elements of the list except the first one
+    remaining_bits = args[3:]
+
+    # Parse the remaining bits as keyword arguments
+    extra_context = token_kwargs(remaining_bits, parser, support_legacy=True)
+
+    # If there are still remaining bits after parsing the keyword arguments,
+    # raise an exception indicating that an invalid token was received
+    if remaining_bits:
+        raise TemplateSyntaxError(
+            "%r received an invalid token: %r" % (args[0], remaining_bits[0])
+        )
+
+    # Parse the content between the start and end tags
+    nodelist = parser.parse(("endturbo_stream_all",))
+
+    # Delete the token that triggered this function from the parser's token stream
+    parser.delete_first_token()
+
+    return TurboStreamTagNode(
+        action,
+        target=None,
+        targets=targets,
+        nodelist=nodelist,
+        extra_context=extra_context,
+    )
 
 
 @register.tag("turbo_stream_from")
