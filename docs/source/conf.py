@@ -1,22 +1,13 @@
-# Configuration file for the Sphinx documentation builder.
-#
-# This file only contains a selection of the most common options. For a full
-# list see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
-
 # -- Path setup --------------------------------------------------------------
+# https://github.com/evansd/whitenoise/blob/main/docs/conf.py
 
 import datetime
-
-# Standard Library
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-import os
 import sys
+import tomllib
+from pathlib import Path
 
-sys.path.insert(0, os.path.abspath("../src"))
+here = Path(__file__).parent.resolve()
+sys.path.insert(0, str(here / ".." / ".." / "src"))
 
 
 # -- Project information -----------------------------------------------------
@@ -24,6 +15,27 @@ sys.path.insert(0, os.path.abspath("../src"))
 project = "django-turbo-helper"
 copyright = f"{datetime.datetime.now().year}, Michael Yin"
 author = "Michael Yin"
+
+# The version info for the project you're documenting, acts as replacement for
+# |version| and |release|, also used in various other places throughout the
+# built documents.
+#
+# The short X.Y version.
+
+
+def _get_version() -> str:
+    with (here / ".." / ".." / "pyproject.toml").open("rb") as fp:
+        data = tomllib.load(fp)
+    version: str = data["tool"]["poetry"]["version"]
+    return version
+
+
+version = _get_version()
+# The full version, including alpha/beta/rc tags.
+release = version
+
+# Set the default version
+default_version = "latest"
 
 
 # -- General configuration ---------------------------------------------------
