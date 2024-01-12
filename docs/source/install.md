@@ -1,7 +1,5 @@
 # Installation
 
-**`django-turbo-response` has been renamed to `django-turbo-helper`, please update your requirements and update imports from `turbo_response` to `turbo_helper`.**
-
 ## Requirements
 
 This library requires Python 3.8+ and Django 3.2+.
