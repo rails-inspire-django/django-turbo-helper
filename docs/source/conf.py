@@ -34,9 +34,6 @@ version = _get_version()
 # The full version, including alpha/beta/rc tags.
 release = version
 
-# Set the default version
-default_version = "latest"
-
 
 # -- General configuration ---------------------------------------------------
 
