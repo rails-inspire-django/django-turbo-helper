@@ -18,8 +18,5 @@ django = ">=3.0"
 [tool.poetry.dev-dependencies]
 
 [build-system]
-requires = [
-  "setuptools >= 61.0.0",
-  "wheel"
-]
-build-backend = "setuptools.build_meta"
+requires = ["setuptools", "poetry_core>=1.0"]
+build-backend = "poetry.core.masonry.api"
