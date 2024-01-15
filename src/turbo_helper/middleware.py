@@ -12,6 +12,9 @@ class TurboData:
         self.frame = request.headers.get("Turbo-Frame", None)
 
     def __bool__(self):
+        """
+        TODO: Deprecate
+        """
         return self.has_turbo_header
 
 

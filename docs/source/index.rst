@@ -1,7 +1,7 @@
 django-turbo-helper
 =====================
 
-This package provides helpers for server-side rendering of *Turbo Frame* and *Turbo Stream*, which aim to work with the `Hotwire <https://hotwire.dev/>`_ project.
+Hotwire/Turbo helpers for Django, inspired by Rails.
 
 .. warning::
     ``django-turbo-response`` has been renamed to ``django-turbo-helper`` since version 2.x.x.
@@ -17,9 +17,9 @@ Topics
    :maxdepth: 2
 
    install.md
-   template-tags.md
-   original.md
-   form.md
+   dom_id.md
+   turbo_frame.md
+   turbo_stream.md
+   real-time-updates.md
    redirect.md
-   channels.md
    test.md

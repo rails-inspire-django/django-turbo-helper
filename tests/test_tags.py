@@ -107,6 +107,32 @@ class TestStream:
         )
 
 
+class TestStreamAll:
+    def test_string(self):
+        template = """
+        {% load turbo_helper %}
+
+        {% turbo_stream_all "remove" ".old_records" %}{% endturbo_stream_all %}
+        """
+        output = render(template, {}).strip()
+        assert (
+            output
+            == '<turbo-stream action="remove" targets=".old_records"><template></template></turbo-stream>'
+        )
+
+    def test_dom_id_variable(self):
+        template = """
+        {% load turbo_helper %}
+
+        {% turbo_stream_all "remove" dom_id %}{% endturbo_stream_all %}
+        """
+        output = render(template, {"dom_id": ".test"}).strip()
+        assert (
+            output
+            == '<turbo-stream action="remove" targets=".test"><template></template></turbo-stream>'
+        )
+
+
 class TestStreamFrom:
     def test_string(self):
         template = """
