@@ -55,7 +55,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 
 Notes:
 
-1. If you are using Python 3.11+,
-2. If the client `Accept` turbo stream, we return turbo stream response.
-3. If not, we return normal HTML response as fallback solution.
-4. This is useful when we want to migrate our Django app from normal web page to turbo stream gradually.
+1. If the client `Accept` turbo stream, we return turbo stream response.
+2. If not, we return normal HTML response as fallback solution.
+3. This is useful when we want to migrate our Django app from normal web page to turbo stream gradually.
+4. If you are using Python 3.10+, you can use `match` statement instead of `if` statement.
