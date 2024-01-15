@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.0]
+
+**Breaking Change**
+
+1. Refactored the whole project and the way to render Turbo Frame and Turbo Stream.
+2. Please check the documentation to see how to use the new API.
+
+## [2.0.1]
+
+1. Update doc config
+2. Update `pyproject.toml`
+
 ## [2.0.0]
 
 1. Rename from `turbo_response` to `turbo_helper`
