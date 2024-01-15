@@ -1,10 +1,10 @@
 # Installation
 
-.. note::
+```{note}
+This package does not include any Javascript library, you may wish to add these yourself using your preferred Javascript build tool, or use a CDN.
 
-   This install does not include any Javascript library, you may wish to add these yourself using your preferred Javascript build tool, or use a CDN.
-
-   Please check [Hotwire Doc](https://turbo.hotwired.dev/handbook/installing)
+Please check <a href="https://turbo.hotwired.dev/handbook/installing" target="_blank">Hotwire Doc</a>
+```
 
 ## Requirements
 
