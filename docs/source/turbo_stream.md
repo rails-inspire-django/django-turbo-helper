@@ -12,7 +12,12 @@ turbo_stream.append("dom_id", "OK")
 turbo_stream.append("dom_id", content="OK")
 
 # template example
-turbo_stream.append("dom_id", template="simple.html", context={"msg": "my content"}, request=request)
+turbo_stream.append(
+  "dom_id",
+  template="simple.html",
+  context={"msg": "my content"},
+  request=request
+)
 ```
 
 Turbo Stream built-in actions are supported in syntax `turbo_stream.xxx`:
@@ -34,8 +39,18 @@ from turbo_helper import TurboStreamResponse
 
 # render multiple turbo stream elements in one response
 return TurboStreamResponse([
-  turbo_stream.append("message", template="message.html", context={"msg": "my content"}, request=request),
-  turbo_stream.update("form", template="form.html", context={"form": form}, request=request),
+  turbo_stream.append(
+    "message",
+    template="message.html",
+    context={"msg": "my content"},
+    request=request
+  ),
+  turbo_stream.update(
+    "form",
+    template="form.html",
+    context={"form": form},
+    request=request
+  ),
 ])
 ```
 
@@ -46,8 +61,18 @@ from turbo_helper import turbo_stream
 
 # render multiple turbo stream elements in one response
 return turbo_stream.response([
-  turbo_stream.append("message", template="message.html", context={"msg": "my content"}, request=request),
-  turbo_stream.update("form", template="form.html", context={"form": form}, request=request),
+  turbo_stream.append(
+    "message",
+    template="message.html",
+    context={"msg": "my content"},
+    request=request
+  ),
+  turbo_stream.update(
+    "form",
+    template="form.html",
+    context={"form": form},
+    request=request
+  ),
 ])
 ```
 
