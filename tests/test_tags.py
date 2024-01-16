@@ -111,7 +111,7 @@ class TestStream:
         @register_turbo_stream_action("toast")
         def toast(target, content=None, **kwargs):
             position = kwargs.get("position", "left")
-            return turbo_stream.render_action(
+            return turbo_stream.action(
                 "toast", target=target, message=kwargs["message"], position=position
             )
 

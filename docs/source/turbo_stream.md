@@ -80,17 +80,19 @@ You can extend Turbo Stream Action by `register_turbo_stream_action` decorator.
 
 ```python
 from turbo_helper import (
-    register_turbo_stream_action,
-    turbo_stream,
+  register_turbo_stream_action,
+  turbo_stream,
 )
+
 
 # register toast action
 @register_turbo_stream_action("toast")
 def toast(target, content=None, **kwargs):
-    position = kwargs.get('position', 'left')
-    return turbo_stream.render_action(
-        "toast", target=target, message=kwargs['message'], position=position
-    )
+  position = kwargs.get('position', 'left')
+  return turbo_stream.action(
+    "toast", target=target, message=kwargs['message'], position=position
+  )
+
 
 turbo_stream.toast("dom_id", message="hello world", position="right")
 # <turbo-stream action="toast" target="dom_id" message="hello world" position="right">
