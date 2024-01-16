@@ -5,11 +5,8 @@ from django.db.models.base import Model
 from django.template import Node, TemplateSyntaxError
 from django.template.base import token_kwargs
 
-from turbo_helper.renderers import (
-    render_turbo_frame,
-    render_turbo_stream,
-    render_turbo_stream_from,
-)
+from turbo_helper import turbo_stream
+from turbo_helper.renderers import render_turbo_frame, render_turbo_stream_from
 
 register = template.Library()
 
@@ -106,13 +103,25 @@ class TurboStreamTagNode(Node):
             for key, value in self.extra_context.items()
         }
 
-        return render_turbo_stream(
-            action=self.action.resolve(context),
-            target=self.target.resolve(context) if self.target else None,
-            targets=self.targets.resolve(context) if self.targets else None,
-            content=children,
-            attributes=attributes,
-        )
+        target = self.target.resolve(context) if self.target else None
+        targets = self.targets.resolve(context) if self.targets else None
+
+        if target:
+            action = self.action.resolve(context)
+            func = getattr(turbo_stream, f"{action}")
+            return func(
+                target=target,
+                content=children,
+                **attributes,
+            )
+        elif targets:
+            action = self.action.resolve(context)
+            func = getattr(turbo_stream, f"{action}_all")
+            return func(
+                targets=targets,
+                content=children,
+                **attributes,
+            )
 
 
 class TurboStreamFromTagNode(Node):

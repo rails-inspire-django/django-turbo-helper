@@ -106,6 +106,18 @@ class TestStream:
             == '<turbo-stream action="append" target="test"><template>Test</template></turbo-stream>'
         )
 
+    def test_custom_register(self, register_toast_action):
+        template = """
+        {% load turbo_helper %}
+
+        {% turbo_stream "toast" dom_id message="Hello Word" position="right" %}{% endturbo_stream %}
+        """
+        output = render(template, {"dom_id": "test"}).strip()
+        assert (
+            '<turbo-stream action="toast" target="test" message="Hello Word" position="right">'
+            in output
+        )
+
 
 class TestStreamAll:
     def test_string(self):

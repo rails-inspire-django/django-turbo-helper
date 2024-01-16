@@ -52,3 +52,21 @@ def todo():
     from tests.testapp.models import TodoItem
 
     return TodoItem.objects.create(description="test")
+
+
+@pytest.fixture()
+def register_toast_action():
+    from turbo_helper import register_turbo_stream_action, turbo_stream
+
+    @register_turbo_stream_action("toast")
+    def toast(target, content=None, **kwargs):
+        position = kwargs.get("position", "left")
+        return turbo_stream.action(
+            "toast", target=target, message=kwargs["message"], position=position
+        )
+
+    yield
+
+    # cleanup
+    delattr(turbo_stream, "toast")
+    turbo_stream.registered_actions.remove("toast")
