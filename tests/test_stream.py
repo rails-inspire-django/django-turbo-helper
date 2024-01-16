@@ -66,16 +66,16 @@ class TestTurboStream:
         assert '<turbo-stream action="append" targets=".old_records">' in s
 
     def test_custom_register(self):
-        # register toast action
         @register_turbo_stream_action("toast")
-        def toast(target, message, position="left"):
+        def toast(target, content=None, **kwargs):
+            position = kwargs.get("position", "left")
             return turbo_stream.render_action(
-                "toast", target=target, data_message=message, data_position=position
+                "toast", target=target, message=kwargs["message"], position=position
             )
 
         s = turbo_stream.toast("dom_id", message="hello world", position="right")
         assert (
-            '<turbo-stream action="toast" target="dom_id" data-message="hello world" data-position="right">'
+            '<turbo-stream action="toast" target="dom_id" message="hello world" position="right">'
             in s
         )
 

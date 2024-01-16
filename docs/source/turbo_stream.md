@@ -86,14 +86,22 @@ from turbo_helper import (
 
 # register toast action
 @register_turbo_stream_action("toast")
-def toast(target, message, position="left"):
-  return turbo_stream.render_action(
-    "toast", target=target, data_message=message, data_position=position
-  )
-
+def toast(target, content=None, **kwargs):
+    position = kwargs.get('position', 'left')
+    return turbo_stream.render_action(
+        "toast", target=target, message=kwargs['message'], position=position
+    )
 
 turbo_stream.toast("dom_id", message="hello world", position="right")
-# <turbo-stream action="toast" target="dom_id" data-message="hello world" data-position="right">
+# <turbo-stream action="toast" target="dom_id" message="hello world" position="right">
+```
+
+Or you can do it in template:
+
+```django
+{% load turbo_helper %}
+
+{% turbo_stream "toast" "target" message="Hello Word" position="right" %}{% endturbo_stream %}
 ```
 
 ## Targeting Multiple Elements
