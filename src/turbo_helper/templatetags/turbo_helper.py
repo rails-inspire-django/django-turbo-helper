@@ -118,7 +118,7 @@ class TurboStreamTagNode(Node):
             action = self.action.resolve(context)
             func = getattr(turbo_stream, f"{action}_all")
             return func(
-                target=target,
+                targets=targets,
                 content=children,
                 **attributes,
             )

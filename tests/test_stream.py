@@ -1,11 +1,7 @@
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 
-from turbo_helper import (
-    TURBO_STREAM_CONTENT_TYPE,
-    register_turbo_stream_action,
-    turbo_stream,
-)
+from turbo_helper import TURBO_STREAM_CONTENT_TYPE, turbo_stream
 
 
 class TestTurboStream:
@@ -65,14 +61,7 @@ class TestTurboStream:
         assert "my content" in s
         assert '<turbo-stream action="append" targets=".old_records">' in s
 
-    def test_custom_register(self):
-        @register_turbo_stream_action("toast")
-        def toast(target, content=None, **kwargs):
-            position = kwargs.get("position", "left")
-            return turbo_stream.action(
-                "toast", target=target, message=kwargs["message"], position=position
-            )
-
+    def test_custom_register(self, register_toast_action):
         s = turbo_stream.toast("dom_id", message="hello world", position="right")
         assert (
             '<turbo-stream action="toast" target="dom_id" message="hello world" position="right">'

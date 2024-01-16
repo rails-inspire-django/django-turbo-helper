@@ -2,7 +2,6 @@ import pytest
 from django.template import Context, Template
 
 from tests.testapp.models import TodoItem
-from turbo_helper import register_turbo_stream_action, turbo_stream
 from turbo_helper.templatetags.turbo_helper import dom_id
 
 pytestmark = pytest.mark.django_db
@@ -107,14 +106,7 @@ class TestStream:
             == '<turbo-stream action="append" target="test"><template>Test</template></turbo-stream>'
         )
 
-    def test_custom_register(self):
-        @register_turbo_stream_action("toast")
-        def toast(target, content=None, **kwargs):
-            position = kwargs.get("position", "left")
-            return turbo_stream.action(
-                "toast", target=target, message=kwargs["message"], position=position
-            )
-
+    def test_custom_register(self, register_toast_action):
         template = """
         {% load turbo_helper %}
 
