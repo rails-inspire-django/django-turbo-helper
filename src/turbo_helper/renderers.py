@@ -22,13 +22,15 @@ def render_turbo_stream(
 
     element_attributes_array = []
     for key, value in element_attributes.items():
+        if value is None:
+            continue
         # TODO: bool type django/forms/widgets/attrs.html
         element_attributes_array.append(f'{key}="{escape(value)}"')
 
     attribute_string = mark_safe(" ".join(element_attributes_array))
 
     django_engine = engines["django"]
-    template_string = """<turbo-stream action="{{ action }}"{% if target %} target="{{ target }}"{% else %} targets="{{ targets }}"{% endif %}{% if attribute_string %} {{ attribute_string }}{% endif %}><template>{{ content|default:'' }}</template></turbo-stream>"""
+    template_string = """<turbo-stream action="{{ action }}"{% if target %} target="{{ target }}"{% elif targets %} targets="{{ targets }}"{% endif %}{% if attribute_string %} {{ attribute_string }}{% endif %}><template>{{ content|default:'' }}</template></turbo-stream>"""
     context = {
         "content": content,
         "action": action,
@@ -43,6 +45,7 @@ def render_turbo_frame(frame_id: str, content: str, attributes: Dict[str, Any]) 
     # convert data_xxx to data-xxx
     element_attributes = {}
     for key, value in attributes.items():
+        # convert data_xxx to data-xxx
         if key.startswith("data"):
             element_attributes[key.replace("_", "-")] = value
         else:
@@ -50,6 +53,8 @@ def render_turbo_frame(frame_id: str, content: str, attributes: Dict[str, Any]) 
 
     element_attributes_array = []
     for key, value in element_attributes.items():
+        if value is None:
+            continue
         # TODO: bool type django/forms/widgets/attrs.html
         element_attributes_array.append(f'{key}="{escape(value)}"')
 
