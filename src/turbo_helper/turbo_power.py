@@ -64,11 +64,11 @@ def graft(targets=None, parent=None, **attributes):
 
 @register_turbo_stream_action("morph")
 def morph(targets=None, html=None, **attributes):
-    html = html or attributes["content"]
+    html = html or attributes.pop("content", None)
     return custom_action_all(
         "morph",
         targets=targets,
-        content=mark_safe(html),
+        content=mark_safe(html) if html else None,
         **attributes,
     )
 
