@@ -60,3 +60,14 @@ and it can generate HTML snippet like this
 And registering the action handler on the frontend side, we can add css class on server side, without writing Javascript code.
 
 Now "django-turbo-helper" already contains some `turbo_power` actions, please check the source code and test cases for more details.
+
+| Turbo Power Actions |
+|---------------------|
+| graft               |
+| morph               |
+| add_css_class       |
+| dispatch_event      |
+| notification        |
+| redirect_to         |
+| turbo_frame_reload  |
+| turbo_frame_set_src |
