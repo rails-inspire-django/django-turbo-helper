@@ -116,12 +116,24 @@ class TurboStreamTagNode(Node):
             )
         elif targets:
             action = self.action.resolve(context)
-            func = getattr(turbo_stream, f"{action}_all")
-            return func(
-                targets=targets,
-                content=children,
-                **attributes,
-            )
+            func = getattr(turbo_stream, f"{action}_all", None)
+
+            if func:
+                return func(
+                    targets=targets,
+                    content=children,
+                    **attributes,
+                )
+            else:
+                # fallback to pass targets to the single target handler
+                # we do this because of turbo_power
+                action = self.action.resolve(context)
+                func = getattr(turbo_stream, f"{action}")
+                return func(
+                    targets=targets,
+                    content=children,
+                    **attributes,
+                )
 
 
 class TurboStreamFromTagNode(Node):

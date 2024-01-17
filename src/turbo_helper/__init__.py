@@ -1,9 +1,11 @@
-from .constants import TURBO_STREAM_MIME_TYPE as TURBO_STREAM_CONTENT_TYPE
 from .constants import ResponseFormat
 from .response import HttpResponseSeeOther, TurboStreamResponse
 from .shortcuts import redirect_303, response_format
 from .stream import register_turbo_stream_action, turbo_stream
 from .templatetags.turbo_helper import dom_id
+
+# extend turbo_stream actions, inspired by https://github.com/marcoroth/turbo_power
+from .turbo_power import *  # noqa
 
 __all__ = [
     "turbo_stream",
@@ -14,5 +16,4 @@ __all__ = [
     "dom_id",
     "response_format",
     "ResponseFormat",
-    "TURBO_STREAM_CONTENT_TYPE",
 ]
