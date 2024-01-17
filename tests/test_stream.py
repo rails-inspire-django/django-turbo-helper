@@ -1,7 +1,8 @@
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 
-from turbo_helper import TURBO_STREAM_CONTENT_TYPE, turbo_stream
+from turbo_helper import turbo_stream
+from turbo_helper.constants import TURBO_STREAM_MIME_TYPE
 
 
 class TestTurboStream:
@@ -85,7 +86,7 @@ class TestTurboStream:
             ]
         )
 
-        assert response.headers["content-type"] == TURBO_STREAM_CONTENT_TYPE
+        assert response.headers["content-type"] == TURBO_STREAM_MIME_TYPE
 
         assert (
             '<turbo-stream action="append" target="dom_id"><template>OK</template></turbo-stream>'
