@@ -99,38 +99,6 @@ Notes:
 3. Other arguments can be passed as `key=value` pairs
 4. We can generate **multiple**  turbo stream elements in one template and render it in one response, and update multiple part of the page in one response.
 
-## Extend Turbo Stream Action
-
-You can extend Turbo Stream Action by `register_turbo_stream_action` decorator.
-
-```python
-from turbo_helper import (
-  register_turbo_stream_action,
-  turbo_stream,
-)
-
-
-# register toast action
-@register_turbo_stream_action("toast")
-def toast(target, content=None, **kwargs):
-  position = kwargs.get('position', 'left')
-  return turbo_stream.action(
-    "toast", target=target, message=kwargs['message'], position=position
-  )
-
-
-turbo_stream.toast("dom_id", message="hello world", position="right")
-# <turbo-stream action="toast" target="dom_id" message="hello world" position="right">
-```
-
-Or you can do it in template:
-
-```django
-{% load turbo_helper %}
-
-{% turbo_stream "toast" "target" message="Hello Word" position="right" %}{% endturbo_stream %}
-```
-
 ## Targeting Multiple Elements
 
 To target multiple elements with a single action, use the `targets` attribute with a CSS query selector instead of the `target` attribute

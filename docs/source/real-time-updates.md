@@ -1,4 +1,4 @@
-# turbo_stream_from
+# Update Page in Real Time via Websocket
 
 Use Websocket and Turbo Stream to update the web page in real time, without writing Javascript.
 

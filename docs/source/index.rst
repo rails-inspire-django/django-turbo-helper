@@ -21,6 +21,7 @@ Topics
    turbo_frame.md
    turbo_stream.md
    real-time-updates.md
+   extend-turbo-stream.md
    multi-format.md
    redirect.md
    test.md
