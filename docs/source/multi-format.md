@@ -9,13 +9,13 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       if @post.save
-        format.turbo_stream { render turbo_stream: turbo_stream.append(@post) }
-        format.json { render json: @post, status: :created }
         format.html { redirect_to @post, notice: 'Post was successfully created.' }
+        format.json { render json: @post, status: :created }
+        format.turbo_stream { render turbo_stream: turbo_stream.append(@post) }
       else
-        format.turbo_stream { render turbo_stream: turbo_stream.replace('new_post', partial: 'posts/form', locals: { post: @post }) }
-        format.json { render json: @post.errors, status: :unprocessable_entity }
         format.html { render :new }
+        format.json { render json: @post.errors, status: :unprocessable_entity }
+        format.turbo_stream { render turbo_stream: turbo_stream.replace('new_post', partial: 'posts/form', locals: { post: @post }) }
       end
     end
   end
@@ -33,29 +33,34 @@ from turbo_helper import (
 )
 
 class TaskCreateView(LoginRequiredMixin, CreateView):
-  def form_valid(self, form):
-    response = super().form_valid(form)
-    request = self.request
-    messages.success(request, "Created successfully")
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        request = self.request
+        messages.success(request, "Created successfully")
 
-    with response_format(request) as resp_format:
-      if resp_format == ResponseFormat.TurboStream:
-        return TurboStreamResponse(
-          render_to_string(
-            "demo_tasks/partial/task_create_success.turbo_stream.html",
-            context={
-              "form": TaskForm(),
-            },
-            request=self.request,
-          ),
-        )
-      else:
-        return response
+        with respond_to(request) as resp_format:
+            if resp_format.html:
+                return response
+            if resp_format.turbo_stream:
+                return TurboStreamResponse(
+                    render_to_string(
+                        "demo_tasks/partial/task_create_success.turbo_stream.html",
+                        context={
+                            "form": TaskForm(),
+                        },
+                        request=self.request,
+                    ),
+                )
 ```
 
 Notes:
 
-1. If the client `Accept` turbo stream, we return turbo stream response.
-2. If not, we return normal HTML response as fallback solution.
+1. If the browser accepts HTML, we return HTML response.
+2. If the browser accepts turbo stream, we return turbo stream response.
 3. This is useful when we want to migrate our Django app from normal web page to turbo stream gradually.
-4. If you are using Python 3.10+, you can use `match` statement instead of `if` statement.
+
+```{note}
+Most browsers send Accept: `*/*` by default, so this would return True for all content types.
+
+To avoid problem, it is recommned to put resp_format.html logic at the top since the order matters.
+```
