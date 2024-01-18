@@ -22,7 +22,7 @@ In `routing.py`, register `TurboStreamCableChannel`
 
 ```python
 from actioncable import cable_channel_register
-from turbo_helper.cable_channel import TurboStreamCableChannel
+from turbo_helper.channels.streams_channel import TurboStreamCableChannel
 
 cable_channel_register(TurboStreamCableChannel)
 ```
@@ -40,15 +40,16 @@ In Django template, we can subscribe to stream source like this:
 Then in Python code, we can send Turbo Stream to the stream source like this
 
 ```python
-from turbo_helper.channel_helper import broadcast_render_to
+
+from turbo_helper.channels.broadcasts import broadcast_render_to
 
 broadcast_render_to(
-    "chat",
-    instance.chat_id,
-    template="message_append.turbo_stream.html",
-    context={
-        "instance": instance,
-    },
+  "chat",
+  instance.chat_id,
+  template="message_append.turbo_stream.html",
+  context={
+    "instance": instance,
+  },
 )
 ```
 

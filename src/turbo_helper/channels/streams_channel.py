@@ -1,11 +1,7 @@
+from actioncable import ActionCableConsumer, CableChannel
 from django.core.signing import Signer
 
-from .channel_helper import verify_signed_stream_key
-
-try:
-    from actioncable import ActionCableConsumer, CableChannel
-except ImportError as err:
-    raise Exception("Please make sure django-actioncable is installed") from err
+from .stream_name import verify_signed_stream_key
 
 signer = Signer()
 

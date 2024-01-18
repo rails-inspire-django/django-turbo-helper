@@ -71,8 +71,11 @@ def render_turbo_frame(frame_id: str, content: str, attributes: Dict[str, Any]) 
 
 
 def render_turbo_stream_from(stream_name_array: List[Any]):
-    from .cable_channel import TurboStreamCableChannel
-    from .channel_helper import generate_signed_stream_key, stream_name_from
+    from turbo_helper.channels.stream_name import (
+        generate_signed_stream_key,
+        stream_name_from,
+    )
+    from turbo_helper.channels.streams_channel import TurboStreamCableChannel
 
     stream_name_string = stream_name_from(*stream_name_array)
 
