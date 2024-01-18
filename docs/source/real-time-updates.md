@@ -43,7 +43,8 @@ Then in Python code, we can send Turbo Stream to the stream source like this
 from turbo_helper.channel_helper import broadcast_render_to
 
 broadcast_render_to(
-    ["chat", instance.chat_id],
+    "chat",
+    instance.chat_id,
     template="message_append.turbo_stream.html",
     context={
         "instance": instance,
@@ -51,6 +52,7 @@ broadcast_render_to(
 )
 ```
 
-The `["chat", instance.chat_id]` **should** match the positional arguments in the `turbo_stream_from` tag.
+1. `arguments` **should** match the arguments passed in the `turbo_stream_from` tag.
+2. `keyword arguments` `template` and `context` are used to render the template.
 
 The web page can be updated in real time, through Turbo Stream over Websocket.

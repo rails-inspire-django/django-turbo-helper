@@ -14,6 +14,7 @@ Changelog = "https://github.com/rails-inspire-django/django-turbo-helper/release
 [tool.poetry.dependencies]
 python = ">=3.8"
 django = ">=3.0"
+django-actioncable = ">=1.0.4"
 
 [tool.poetry.dev-dependencies]
 

@@ -74,7 +74,7 @@ def render_turbo_stream_from(stream_name_array: List[Any]):
     from .cable_channel import TurboStreamCableChannel
     from .channel_helper import generate_signed_stream_key, stream_name_from
 
-    stream_name_string = stream_name_from(stream_name_array)
+    stream_name_string = stream_name_from(*stream_name_array)
 
     django_engine = engines["django"]
     template_string = """<turbo-cable-stream-source channel="{{ channel }}" signed-stream-name="{{ signed_stream_name }}"></turbo-cable-stream-source>"""  # noqa

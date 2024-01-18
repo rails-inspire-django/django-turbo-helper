@@ -1,28 +1,23 @@
-from typing import List, Tuple, Union
+from typing import Tuple
 
+from actioncable import cable_broadcast
 from django.core import signing
 from django.core.signing import Signer
 from django.template.loader import render_to_string
 
 from .templatetags.turbo_helper import dom_id
 
-try:
-    from actioncable import cable_broadcast
-except ImportError as err:
-    raise Exception("Please make sure django-channels is installed") from err
-
-
 signer = Signer()
 
 
-def stream_name_from(streamables: Union[List, object]) -> str:
+def stream_name_from(*streamables) -> str:
     """
     Generate stream_name from a list of objects or a single object.
     """
-    if isinstance(streamables, list):
-        return "_".join(stream_name_from(streamable) for streamable in streamables)
+    if len(streamables) == 1:
+        return dom_id(streamables[0])
     else:
-        return dom_id(streamables)
+        return "_".join(stream_name_from(streamable) for streamable in streamables)
 
 
 def generate_signed_stream_key(stream_name: str) -> str:
@@ -46,8 +41,10 @@ def verify_signed_stream_key(signed_stream_key: str) -> Tuple[bool, str]:
     return False, ""
 
 
-def broadcast_render_to(streamables: Union[List, object], template: str, context=None):
+def broadcast_render_to(*args, **kwargs):
     """
+    Rails: Turbo::Streams::Broadcasts#broadcast_render_to
+
     This function help render HTML to Turbo Stream Channel
 
     for example, in Django template, we subscribe to a Turbo stream Channel
@@ -57,21 +54,23 @@ def broadcast_render_to(streamables: Union[List, object], template: str, context
     Then in Python code
 
     broadcast_render_to(
-        ["chat", instance.chat_id],
+        "chat",
+        instance.chat_id,
         template="message_append.turbo_stream.html",
         context={
             "instance": instance,
         },
     )
     """
-    if context is None:
-        context = {}
+    template = kwargs.pop("template", None)
+    broadcast_stream_to(
+        *args, content=render_to_string(template_name=template, **kwargs)
+    )
 
-    html = render_to_string(template, context=context)
-    stream_name = stream_name_from(streamables)
+
+def broadcast_stream_to(*args, content):
+    stream_name = stream_name_from(*args)
     cable_broadcast(
-        stream_name,
-        {
-            "message": html,
-        },
+        group_name=stream_name,
+        message=content,
     )
