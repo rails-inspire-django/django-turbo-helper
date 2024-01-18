@@ -18,30 +18,34 @@ def redirect_303(to: Union[str, Model], *args, **kwargs) -> HttpResponseSeeOther
     return HttpResponseSeeOther(resolve_url(to, *args, **kwargs))
 
 
-def get_response_format(request):
+def get_respond_to(request):
+    resp_format = ResponseFormat()
+
+    # TODO: move logic to ResponseFormat class
+    if request.accepts(TURBO_STREAM_MIME_TYPE):
+        resp_format.turbo_stream = True
+
+    if request.accepts("application/json"):
+        resp_format.json = True
+
+    if request.accepts("text/html"):
+        resp_format.html = True
+
+    return resp_format
+
+
+@contextmanager
+def respond_to(request):
     """
     Inspired by Rails
+
+    https://www.writesoftwarewell.com/how-respond_to-method-works-rails/
 
     respond_to do |format|
       format.turbo_stream { render turbo_stream: turbo_stream_template }
     end
     """
-    if request.accepts(TURBO_STREAM_MIME_TYPE):
-        return ResponseFormat.TurboStream
-    elif request.accepts("application/json"):
-        return ResponseFormat.JSON
-    else:
-        return ResponseFormat.HTML
-
-
-@contextmanager
-def response_format(request):
-    """
-    Get supported response format from request headers
-
-    html, json, turbo_stream
-    """
-    resp_format = get_response_format(request)
+    resp_format: ResponseFormat = get_respond_to(request)
     try:
         yield resp_format
     finally:

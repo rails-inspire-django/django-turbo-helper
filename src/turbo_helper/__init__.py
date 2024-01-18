@@ -1,6 +1,5 @@
-from .constants import ResponseFormat
 from .response import HttpResponseSeeOther, TurboStreamResponse
-from .shortcuts import redirect_303, response_format
+from .shortcuts import redirect_303, respond_to
 from .stream import register_turbo_stream_action, turbo_stream
 from .templatetags.turbo_helper import dom_id
 
@@ -14,6 +13,5 @@ __all__ = [
     "HttpResponseSeeOther",
     "redirect_303",
     "dom_id",
-    "response_format",
-    "ResponseFormat",
+    "respond_to",
 ]
