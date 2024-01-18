@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.1]
+
+1. Update to work with django-actioncable>=1.0.4
+2. Support part of [turbo_power](https://github.com/marcoroth/turbo_power) turbo stream actions.
+3. Update multi-format response solution.
+
 ## [2.1.0]
 
 **Breaking Change**
