@@ -64,6 +64,34 @@ def register_turbo_stream_action(name):
     return decorator
 
 
+def action_proxy(action, target=None, targets=None, **kwargs):
+    """
+    https://github.com/marcoroth/turbo_power-rails/issues/35
+    """
+    if target:
+        func = getattr(turbo_stream, f"{action}")
+        return func(
+            target=target,
+            **kwargs,
+        )
+    elif targets:
+        func = getattr(turbo_stream, f"{action}_all", None)
+
+        if func:
+            return func(
+                targets=targets,
+                **kwargs,
+            )
+        else:
+            # fallback to pass targets to the single target handler
+            # we do this because of turbo_power
+            func = getattr(turbo_stream, f"{action}")
+            return func(
+                targets=targets,
+                **kwargs,
+            )
+
+
 ################################################################################
 
 

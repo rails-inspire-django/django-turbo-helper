@@ -5,8 +5,8 @@ from django.db.models.base import Model
 from django.template import Node, TemplateSyntaxError
 from django.template.base import token_kwargs
 
-from turbo_helper import turbo_stream
 from turbo_helper.renderers import render_turbo_frame, render_turbo_stream_from
+from turbo_helper.stream import action_proxy
 
 register = template.Library()
 
@@ -96,6 +96,7 @@ class TurboStreamTagNode(Node):
         return "<%s>" % self.__class__.__name__
 
     def render(self, context):
+        action = self.action.resolve(context)
         children = self.nodelist.render(context)
 
         attributes = {
@@ -106,34 +107,13 @@ class TurboStreamTagNode(Node):
         target = self.target.resolve(context) if self.target else None
         targets = self.targets.resolve(context) if self.targets else None
 
-        if target:
-            action = self.action.resolve(context)
-            func = getattr(turbo_stream, f"{action}")
-            return func(
-                target=target,
-                content=children,
-                **attributes,
-            )
-        elif targets:
-            action = self.action.resolve(context)
-            func = getattr(turbo_stream, f"{action}_all", None)
-
-            if func:
-                return func(
-                    targets=targets,
-                    content=children,
-                    **attributes,
-                )
-            else:
-                # fallback to pass targets to the single target handler
-                # we do this because of turbo_power
-                action = self.action.resolve(context)
-                func = getattr(turbo_stream, f"{action}")
-                return func(
-                    targets=targets,
-                    content=children,
-                    **attributes,
-                )
+        return action_proxy(
+            action=action,
+            target=target,
+            targets=targets,
+            content=children,
+            **attributes,
+        )
 
 
 class TurboStreamFromTagNode(Node):
