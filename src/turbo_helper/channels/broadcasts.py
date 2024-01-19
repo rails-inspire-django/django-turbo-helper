@@ -1,12 +1,13 @@
 from actioncable import cable_broadcast
 from django.template.loader import render_to_string
 
+from turbo_helper.renderers import render_turbo_stream_refresh
 from turbo_helper.stream import action_proxy
 
 from .stream_name import stream_name_from
 
 
-def broadcast_render_to(*args, **kwargs):
+def broadcast_render_to(*streamables, **kwargs):
     """
     Rails: Turbo::Streams::Broadcasts#broadcast_render_to
 
@@ -29,7 +30,7 @@ def broadcast_render_to(*args, **kwargs):
     """
     template = kwargs.pop("template", None)
     broadcast_stream_to(
-        *args, content=render_to_string(template_name=template, **kwargs)
+        *streamables, content=render_to_string(template_name=template, **kwargs)
     )
 
 
@@ -58,8 +59,13 @@ def broadcast_action_to(*streamables, action, target=None, targets=None, **kwarg
     broadcast_stream_to(*streamables, content=content)
 
 
-def broadcast_stream_to(*args, content):
-    stream_name = stream_name_from(*args)
+def broadcast_refresh_to(*streamables, request, **kwargs):
+    content = render_turbo_stream_refresh(request_id=request.turbo.request_id, **kwargs)
+    broadcast_stream_to(*streamables, content=content)
+
+
+def broadcast_stream_to(*streamables, content):
+    stream_name = stream_name_from(*streamables)
     cable_broadcast(
         group_name=stream_name,
         message=content,

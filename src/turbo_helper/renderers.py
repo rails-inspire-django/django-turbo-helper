@@ -7,7 +7,7 @@ from django.utils.safestring import mark_safe
 
 def render_turbo_stream(
     action: str,
-    content: str,
+    content: Optional[str],
     attributes: Dict[str, Any],
     target: Optional[str] = None,
     targets: Optional[str] = None,
@@ -86,3 +86,14 @@ def render_turbo_stream_from(stream_name_array: List[Any]):
         "channel": TurboStreamCableChannel.__name__,
     }
     return django_engine.from_string(template_string).render(context)
+
+
+def render_turbo_stream_refresh(request_id, **attributes):
+    attributes["request-id"] = request_id
+    return render_turbo_stream(
+        action="refresh",
+        content=None,
+        target=None,
+        targets=None,
+        attributes=attributes,
+    )

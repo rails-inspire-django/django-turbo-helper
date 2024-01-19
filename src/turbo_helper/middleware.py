@@ -8,14 +8,18 @@ from .constants import TURBO_STREAM_MIME_TYPE
 
 class TurboData:
     def __init__(self, request: HttpRequest):
-        self.has_turbo_header = request.accepts(TURBO_STREAM_MIME_TYPE)
+        # be careful about the */* from browser
+        self.accept_turbo_stream = TURBO_STREAM_MIME_TYPE in request.headers.get(
+            "Accept", ""
+        )
         self.frame = request.headers.get("Turbo-Frame", None)
+        self.request_id = request.headers.get("X-Turbo-Request-Id", None)
 
     def __bool__(self):
         """
         TODO: Deprecate
         """
-        return self.has_turbo_header
+        return self.accept_turbo_stream
 
 
 class TurboMiddleware:
