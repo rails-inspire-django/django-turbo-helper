@@ -1,3 +1,4 @@
+from .middleware import get_current_request
 from .response import HttpResponseSeeOther, TurboStreamResponse
 from .shortcuts import redirect_303, respond_to
 from .stream import register_turbo_stream_action, turbo_stream
@@ -14,4 +15,5 @@ __all__ = [
     "redirect_303",
     "dom_id",
     "respond_to",
+    "get_current_request",
 ]

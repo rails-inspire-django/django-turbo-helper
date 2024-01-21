@@ -1,9 +1,39 @@
+import threading
 from typing import Callable
 
 from django.http import HttpRequest, HttpResponse
 from django.utils.functional import SimpleLazyObject
 
 from .constants import TURBO_STREAM_MIME_TYPE
+
+_thread_locals = threading.local()
+
+
+def get_current_request():
+    return getattr(_thread_locals, "request", None)
+
+
+def set_current_request(request):
+    setattr(_thread_locals, "request", request)  # noqa: B010
+
+
+class SetCurrentRequest:
+    """
+    Can let developer access Django request from anywhere
+
+    https://github.com/zsoldosp/django-currentuser
+    https://stackoverflow.com/questions/4716330/accessing-the-users-request-in-a-post-save-signal
+    """
+
+    def __init__(self, request):
+        self.request = request
+
+    def __enter__(self):
+        set_current_request(self.request)
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        # cleanup
+        set_current_request(None)
 
 
 class TurboData:
@@ -32,5 +62,7 @@ class TurboMiddleware:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
-        request.turbo = SimpleLazyObject(lambda: TurboData(request))
-        return self.get_response(request)
+        with SetCurrentRequest(request):
+            request.turbo = SimpleLazyObject(lambda: TurboData(request))
+            response = self.get_response(request)
+        return response
