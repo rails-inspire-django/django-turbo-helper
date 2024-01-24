@@ -1,6 +1,3 @@
-from functools import partial
-
-from django.db import transaction
 from django.db.models.signals import post_delete, post_save
 
 
@@ -8,9 +5,8 @@ def after_create_commit(sender):
     def decorator(handler_func):
         def wrapper(sender, instance, created, **kwargs):
             if created:
-                transaction.on_commit(
-                    # Call the original signal handler function
-                    partial(handler_func, instance, created=created, **kwargs)
+                handler_func(
+                    sender=sender, instance=instance, created=created, **kwargs
                 )
 
         # Connect the wrapper function to the post_save signal
@@ -27,9 +23,8 @@ def after_update_commit(sender):
     def decorator(handler_func):
         def wrapper(sender, instance, created, **kwargs):
             if not created:
-                transaction.on_commit(
-                    # Call the original signal handler function
-                    partial(handler_func, instance, created=created, **kwargs)
+                handler_func(
+                    sender=sender, instance=instance, created=created, **kwargs
                 )
 
         # Connect the wrapper function to the post_save signal
@@ -45,10 +40,7 @@ def after_update_commit(sender):
 def after_delete_commit(sender):
     def decorator(handler_func):
         def wrapper(sender, instance, **kwargs):
-            transaction.on_commit(
-                # Call the original signal handler function
-                partial(handler_func, instance, **kwargs)
-            )
+            handler_func(sender=sender, instance=instance, **kwargs)
 
         # Connect the wrapper function to the post_delete signal
         post_delete.connect(wrapper, sender=sender)
