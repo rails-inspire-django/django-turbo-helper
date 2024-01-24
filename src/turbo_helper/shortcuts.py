@@ -21,14 +21,20 @@ def redirect_303(to: Union[str, Model], *args, **kwargs) -> HttpResponseSeeOther
 def get_respond_to(request):
     resp_format = ResponseFormat()
 
-    # TODO: move logic to ResponseFormat class
-    if request.accepts(TURBO_STREAM_MIME_TYPE):
+    accept_header = request.headers.get("Accept", "*/*")
+
+    # Most browsers send Accept: */* by default, so this would return True for all content types
+    # we do explicitly check here
+    if TURBO_STREAM_MIME_TYPE in accept_header:
         resp_format.turbo_stream = True
 
-    if request.accepts("application/json"):
+    # Most browsers send Accept: */* by default, so this would return True for all content types
+    # we do explicitly check here
+    if "application/json" in accept_header:
         resp_format.json = True
 
     if request.accepts("text/html"):
+        # fallback
         resp_format.html = True
 
     return resp_format

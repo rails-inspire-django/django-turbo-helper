@@ -7,7 +7,7 @@ from django.utils.safestring import mark_safe
 
 def render_turbo_stream(
     action: str,
-    content: str,
+    content: Optional[str],
     attributes: Dict[str, Any],
     target: Optional[str] = None,
     targets: Optional[str] = None,
@@ -71,8 +71,11 @@ def render_turbo_frame(frame_id: str, content: str, attributes: Dict[str, Any]) 
 
 
 def render_turbo_stream_from(stream_name_array: List[Any]):
-    from .cable_channel import TurboStreamCableChannel
-    from .channel_helper import generate_signed_stream_key, stream_name_from
+    from turbo_helper.channels.stream_name import (
+        generate_signed_stream_key,
+        stream_name_from,
+    )
+    from turbo_helper.channels.streams_channel import TurboStreamCableChannel
 
     stream_name_string = stream_name_from(*stream_name_array)
 
@@ -83,3 +86,14 @@ def render_turbo_stream_from(stream_name_array: List[Any]):
         "channel": TurboStreamCableChannel.__name__,
     }
     return django_engine.from_string(template_string).render(context)
+
+
+def render_turbo_stream_refresh(request_id, **attributes):
+    attributes["request-id"] = request_id
+    return render_turbo_stream(
+        action="refresh",
+        content=None,
+        target=None,
+        targets=None,
+        attributes=attributes,
+    )
