@@ -28,8 +28,8 @@ We can do similar approach with `turbo_helper`
 
 ```python
 from turbo_helper import (
-  ResponseFormat,
-  response_format,
+  TurboStreamResponse,
+  respond_to,
 )
 
 class TaskCreateView(LoginRequiredMixin, CreateView):
@@ -39,18 +39,18 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
         messages.success(request, "Created successfully")
 
         with respond_to(request) as resp_format:
-            if resp_format.html:
-                return response
-            if resp_format.turbo_stream:
-                return TurboStreamResponse(
-                    render_to_string(
-                        "demo_tasks/partial/task_create_success.turbo_stream.html",
-                        context={
-                            "form": TaskForm(),
-                        },
-                        request=self.request,
-                    ),
-                )
+          if resp_format.turbo_stream:
+            return TurboStreamResponse(
+              render_to_string(
+                "task_create_success.turbo_stream.html",
+                context={
+                  "form": TaskForm(),
+                },
+                request=self.request,
+              ),
+            )
+          if resp_format.html:
+            return response
 ```
 
 Notes:
