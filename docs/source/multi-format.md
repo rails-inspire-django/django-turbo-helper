@@ -55,12 +55,10 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 
 Notes:
 
-1. If the browser accepts HTML, we return HTML response.
-2. If the browser accepts turbo stream, we return turbo stream response.
-3. This is useful when we want to migrate our Django app from normal web page to turbo stream gradually.
+1. If the browser accepts turbo stream, we return turbo stream response.
+2. If the browser accepts HTML, we return HTML response.
+3. This is useful when we want to **migrate our Django app from normal web page to turbo stream gradually**.
 
 ```{note}
-Most browsers send Accept: `*/*` by default, so this would return True for all content types.
-
-To avoid problem, it is recommned to put resp_format.html logic at the top since the order matters.
+Please **put the non html response before html response**, and use html response as the fallback response.
 ```

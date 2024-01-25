@@ -1,4 +1,4 @@
-# Update Page in Real Time via Websocket
+# Real Time Updates via Websocket
 
 Use Websocket and Turbo Stream to update the web page in real time, without writing Javascript.
 
@@ -16,7 +16,7 @@ To import `turbo-cable-stream-source` element to the frontend, there are two way
 
 Or you can [Jump start frontend project bundled by Webpack](https://github.com/AccordBox/python-webpack-boilerplate#jump-start-frontend-project-bundled-by-webpack) and install it via `npm install`
 
-After frontend work is done, to support Actioncable on the server, please install [django-actioncable](https://github.com/AccordBox/django-actioncable).
+After frontend is setup, to support Actioncable protocol on the server side, please install [django-actioncable](https://github.com/AccordBox/django-actioncable).
 
 In `routing.py`, register `TurboStreamCableChannel`
 
@@ -27,7 +27,7 @@ from turbo_helper.channels.streams_channel import TurboStreamCableChannel
 cable_channel_register(TurboStreamCableChannel)
 ```
 
-In Django template, we can subscribe to stream source like this:
+In Django template, we can subscribe to stream source like this, it has nearly the same syntax as Rails `turbo_stream_from`:
 
 ```html
 {% load turbo_helper %}
@@ -57,3 +57,43 @@ broadcast_render_to(
 2. `keyword arguments` `template` and `context` are used to render the template.
 
 The web page can be updated in real time, through Turbo Stream over Websocket.
+
+## Broadcasts
+
+### broadcast_action_to
+
+Under `turbo_helper.channels.broadcasts`, there are some other helper functions to broadcast Turbo Stream to the stream source, just like Rails:
+
+```python
+def broadcast_action_to(*streamables, action, target=None, targets=None, **kwargs):
+```
+
+The `broadcast_action_to` function is inspired by Rails and is designed to facilitate broadcasting actions to multiple streamable objects. It accepts a variable number of streamables as arguments, which represent the objects that will receive the broadcasted actions.
+
+The function requires an `action` parameter, which specifies the type of action to be performed.
+
+Example:
+
+```python
+broadcast_action_to(
+    "chat",
+    instance.chat_id,
+    action="append",
+    template="message_content.html",
+    context={
+        "instance": instance,
+    },
+    target=dom_id(instance.chat_id, "message_list"),
+)
+```
+
+### broadcast_refresh_to
+
+This is for Rails 8 refresh action, and it would broadcast something like this via the websocket to trigger the page refresh:
+
+```html
+<turbo-stream
+  request-id="ca519ab9-1138-4625-abc2-6049317321a9"
+  action="refresh">
+</turbo-stream>
+```

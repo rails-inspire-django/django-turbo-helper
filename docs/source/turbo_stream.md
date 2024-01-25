@@ -20,7 +20,12 @@ turbo_stream.append(
 )
 ```
 
-Turbo Stream built-in actions are supported in syntax `turbo_stream.xxx`:
+Notes:
+
+1. `request`, `context` are optional
+2. If `content` is not set, then `template` is required to render the `content`.
+
+Turbo Stream built-in actions are all supported in syntax `turbo_stream.xxx`:
 
 - append
 - prepend
