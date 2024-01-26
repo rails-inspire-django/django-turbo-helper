@@ -1,15 +1,9 @@
 import pytest
-from bs4 import BeautifulSoup
 
+from tests.utils import assert_dom_equal
 from turbo_helper import turbo_stream
 
 pytestmark = pytest.mark.django_db
-
-
-def assert_dom_equal(expected_html, actual_html):
-    expected_soup = BeautifulSoup(expected_html, "html.parser")
-    actual_soup = BeautifulSoup(actual_html, "html.parser")
-    assert str(expected_soup) == str(actual_soup)
 
 
 class TestGraft:

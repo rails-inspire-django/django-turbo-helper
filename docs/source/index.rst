@@ -23,5 +23,6 @@ Topics
    real-time-updates.md
    extend-turbo-stream.md
    multi-format.md
+   signal-decorator.md
    redirect.md
    test.md
