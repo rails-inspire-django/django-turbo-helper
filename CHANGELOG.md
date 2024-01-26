@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.3]
+
+1. Work with `Turbo 8 morph-refreshes`
+2. Add decorator `after_create_commit, after_update_commit, after_destroy_commit`.
+3. Add `broadcast_action_to`, `broadcast_refresh_to` to broadcast action to the channels.
+
 ## [2.1.2]
 
 1. Update to work with django-actioncable>=1.0.4
