@@ -1,0 +1,5 @@
+{% load turbo_helper %}
+
+{% turbo_stream 'append' 'todo_list' %}
+  <div>{{ instance.description }}</div>
+{% endturbo_stream %}
