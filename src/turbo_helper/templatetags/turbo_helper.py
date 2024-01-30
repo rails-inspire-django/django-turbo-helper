@@ -3,7 +3,9 @@ from typing import Any, Optional
 from django import template
 from django.db.models.base import Model
 from django.template import Node, TemplateSyntaxError
+from django.core.exceptions import ValidationError
 from django.template.base import token_kwargs
+from django.utils.html import format_html
 
 from turbo_helper.renderers import render_turbo_frame, render_turbo_stream_from
 from turbo_helper.stream import action_proxy
@@ -260,3 +262,19 @@ def turbo_stream_from_tag(parser, token):
     stream_name_array = [parser.compile_filter(bit) for bit in remaining_bits]
 
     return TurboStreamFromTagNode(stream_name_array)
+
+
+@register.simple_tag
+def turbo_refreshes_with(method='replace', scroll='reset') -> str:
+    valid_methods = ['replace', 'morph']
+    valid_scrolls = ['reset', 'preserve']
+
+    if method not in valid_methods:
+        raise ValidationError(f"Invalid refresh option '{method}'")
+    if scroll not in valid_scrolls:
+        raise ValidationError(f"Invalid scroll option '{scroll}'")
+
+    meta_tags = f'<meta name="turbo-refresh-method" content="{method}">'
+    meta_tags += f'<meta name="turbo-refresh-scroll" content="{scroll}">'
+
+    return format_html(meta_tags)

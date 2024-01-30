@@ -1,4 +1,5 @@
 import pytest
+from django.core.exceptions import ValidationError
 from django.template import Context, Template
 
 from tests.testapp.models import TodoItem
@@ -169,3 +170,37 @@ class TestStreamFrom:
             output
             == '<turbo-cable-stream-source channel="TurboStreamCableChannel" signed-stream-name="test_todo_3:7ZS0MxQWhRTCAnG3olGO9AJKfvos3iaHGoBMBt8ZbSM"></turbo-cable-stream-source>'
         )
+
+
+class TestRefreshesWith:
+    def test_turbo_refreshes_with_tag(self):
+        template = """
+        {% load turbo_helper %}
+
+        {% turbo_refreshes_with method='replace' scroll='reset' %}
+        """
+
+        output = render(template, {}).strip()
+
+        expected_method_tag = '<meta name="turbo-refresh-method" content="replace">'
+        expected_scroll_tag = '<meta name="turbo-refresh-scroll" content="reset">'
+
+        assert expected_method_tag in output
+        assert expected_scroll_tag in output
+
+    def test_invalid_options(self):
+        with pytest.raises(ValidationError):
+            template = """
+            {% load turbo_helper %}
+
+            {% turbo_refreshes_with method='invalid' scroll='reset' %}
+            """
+            output = render(template, {}).strip()
+
+        with pytest.raises(ValidationError):
+            template = """
+            {% load turbo_helper %}
+
+            {% turbo_refreshes_with method='replace' scroll='invalid' %}
+            """
+            output = render(template, {}).strip()
