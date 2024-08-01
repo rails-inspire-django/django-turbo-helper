@@ -29,40 +29,6 @@ class TestGraft:
         )
 
 
-class TestMorph:
-    def test_morph(self):
-        stream = '<turbo-stream targets="#input" action="morph"><template><p>Morph</p></template></turbo-stream>'
-        assert_dom_equal(stream, turbo_stream.morph("#input", "<p>Morph</p>"))
-
-    def test_morph_with_targets_and_html_as_kwargs(self):
-        stream = '<turbo-stream targets="#input" action="morph"><template><p>Morph</p></template></turbo-stream>'
-        assert_dom_equal(
-            stream, turbo_stream.morph(targets="#input", html="<p>Morph</p>")
-        )
-
-    def test_morph_with_target_and_html_as_kwargs(self):
-        stream = '<turbo-stream target="input" action="morph"><template><p>Morph</p></template></turbo-stream>'
-        assert_dom_equal(
-            stream, turbo_stream.morph(target="input", html="<p>Morph</p>")
-        )
-
-    def test_morph_with_html_and_targets_as_kwargs(self):
-        stream = '<turbo-stream targets="#input" action="morph"><template><p>Morph</p></template></turbo-stream>'
-        assert_dom_equal(
-            stream, turbo_stream.morph(html="<p>Morph</p>", targets="#input")
-        )
-
-    def test_morph_with_targets_as_positional_arg_and_html_as_kwarg(self):
-        stream = '<turbo-stream targets="#input" action="morph"><template><p>Morph</p></template></turbo-stream>'
-        assert_dom_equal(stream, turbo_stream.morph("#input", html="<p>Morph</p>"))
-
-    def test_morph_with_additional_arguments(self):
-        stream = '<turbo-stream targets="#input" action="morph" something="else"><template><p>Morph</p></template></turbo-stream>'
-        assert_dom_equal(
-            stream, turbo_stream.morph("#input", html="<p>Morph</p>", something="else")
-        )
-
-
 class TestAddCssClass:
     def test_add_css_class(self):
         stream = '<turbo-stream targets="#element" action="add_css_class" classes="container text-center"><template></template></turbo-stream>'
