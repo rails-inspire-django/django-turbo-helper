@@ -64,7 +64,6 @@ Now "django-turbo-helper" already contains some `turbo_power` actions, please ch
 | Turbo Power Actions |
 |---------------------|
 | graft               |
-| morph               |
 | add_css_class       |
 | dispatch_event      |
 | notification        |
