@@ -49,6 +49,25 @@ def custom_action_all(action, targets=None, content=None, **kwargs):
     )
 
 
+################################################################################
+
+"""
+When defining custom action, `target` or `targets` are both supported
+
+def example_action(targets=None, **attributes):
+    pass
+
+This action by default will use `targets` as the target selector
+
+turbo_stream.example_action("A")
+Generate: <turbo-stream targets="A"
+
+if you want to use `target` as the target selector, should explicitly pass the target
+
+turbo_stream.example_action(target="A")
+Generate: <turbo-stream target="A"
+"""
+
 # DOM Actions
 
 
@@ -58,17 +77,6 @@ def graft(targets=None, parent=None, **attributes):
         "graft",
         targets=targets,
         parent=parent,
-        **attributes,
-    )
-
-
-@register_turbo_stream_action("morph")
-def morph(targets=None, html=None, **attributes):
-    html = html or attributes.pop("content", None)
-    return custom_action_all(
-        "morph",
-        targets=targets,
-        content=mark_safe(html) if html else None,
         **attributes,
     )
 

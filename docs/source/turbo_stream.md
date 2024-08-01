@@ -34,6 +34,7 @@ Turbo Stream built-in actions are all supported in syntax `turbo_stream.xxx`:
 - remove
 - before
 - after
+- morph
 
 ### TurboStreamResponse
 

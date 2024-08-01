@@ -30,3 +30,19 @@ Notes:
 2. The function decorated by `after_create_commit`, `after_update_commit`, receive the same arguments as `post_save` signal handler.
 3. The function decorated by `after_delete_commit` receive the same arguments as `post_delete` signal handler.
 4. This can make our code more clear, especially when we need to some broadcasts.
+
+## django-lifecycle
+
+Another approach is to use `django-lifecycle` package, which is inspired by Rails' `ActiveRecord` callbacks.
+
+So we can write the code in Django model like this:
+
+```python
+@hook(AFTER_UPDATE, on_commit=True)
+def broadcast_updated(self):
+    pass
+
+@hook(BEFORE_DELETE)
+def broadcast_deleted(self):
+    pass
+```
