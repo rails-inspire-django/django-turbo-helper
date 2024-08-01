@@ -81,6 +81,22 @@ return turbo_stream.response([
 ])
 ```
 
+## Morph Method
+
+As for `update` and `replace` actions, we can set `[method="morph"]` to make it work.
+
+```python
+turbo_stream.update("target", content="some html", method="morph")
+```
+
+In Django template:
+
+```html
+{% load turbo_helper %}
+
+{% turbo_stream "update" "target" method="morph" %}some html{% endturbo_stream %}
+```
+
 ## Render from Django Template
 
 `turbo_stream` can help us generate `turbo-stream` element in Django template.
