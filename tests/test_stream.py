@@ -1,6 +1,7 @@
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 
+from tests.test_tags import render
 from tests.utils import assert_dom_equal
 from turbo_helper import turbo_stream
 from turbo_helper.constants import TURBO_STREAM_MIME_TYPE
@@ -101,22 +102,26 @@ class TestTurboStream:
         )
 
 
-class TestMorph:
-    def test_morph(self):
-        stream = '<turbo-stream target="#input" action="morph"><template><p>Morph</p></template></turbo-stream>'
-        assert_dom_equal(
-            stream, turbo_stream.morph("#input", mark_safe("<p>Morph</p>"))
-        )
-
-    def test_morph_with_targets_as_positional_arg_and_html_as_kwarg(self):
-        stream = '<turbo-stream targets=".test" action="morph_all"><template><p>Morph</p></template></turbo-stream>'
-        assert_dom_equal(
-            stream, turbo_stream.morph_all(".test", mark_safe("<p>Morph</p>"))
-        )
-
-    def test_morph_with_additional_arguments(self):
-        stream = '<turbo-stream target="#input" action="morph" something="else"><template><p>Morph</p></template></turbo-stream>'
+class TestMorphMethod:
+    def test_update_morph_method(self):
+        stream = '<turbo-stream target="#input" action="update" method="morph"><template><p>Morph</p></template></turbo-stream>'
         assert_dom_equal(
             stream,
-            turbo_stream.morph("#input", mark_safe("<p>Morph</p>"), something="else"),
+            turbo_stream.update("#input", mark_safe("<p>Morph</p>"), method="morph"),
         )
+
+    def test_replace_morph_method(self):
+        stream = '<turbo-stream target="#input" action="replace" method="morph"><template><p>Morph</p></template></turbo-stream>'
+        assert_dom_equal(
+            stream,
+            turbo_stream.replace("#input", mark_safe("<p>Morph</p>"), method="morph"),
+        )
+
+    def test_tag(self, register_toast_action):
+        template = """
+        {% load turbo_helper %}
+
+        {% turbo_stream "update" dom_id method="morph" %}{% endturbo_stream %}
+        """
+        output = render(template, {"dom_id": "test"}).strip()
+        assert '<turbo-stream action="update" target="test" method="morph">' in output

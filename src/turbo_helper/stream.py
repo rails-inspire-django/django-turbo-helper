@@ -130,11 +130,6 @@ def update(target, content=None, **kwargs):
     return turbo_stream.action("update", target, content, **kwargs)
 
 
-@register_turbo_stream_action("morph")
-def morph(target, content=None, **kwargs):
-    return turbo_stream.action("morph", target, content, **kwargs)
-
-
 ################################################################################
 
 
@@ -171,8 +166,3 @@ def replace_all(targets, content=None, **kwargs):
 @register_turbo_stream_action("update_all")
 def update_all(targets, content=None, **kwargs):
     return turbo_stream.action_all("update", targets, content, **kwargs)
-
-
-@register_turbo_stream_action("morph_all")
-def morph_all(targets, content=None, **kwargs):
-    return turbo_stream.action_all("morph_all", targets, content, **kwargs)
