@@ -17,6 +17,7 @@ Topics
    :maxdepth: 2
 
    install.md
+   form-submission.md
    dom_id.md
    turbo_frame.md
    turbo_stream.md
@@ -24,5 +25,4 @@ Topics
    extend-turbo-stream.md
    multi-format.md
    signal-decorator.md
-   redirect.md
    test.md

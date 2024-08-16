@@ -1,3 +1,4 @@
+import http
 import threading
 from typing import Callable
 
@@ -53,9 +54,13 @@ class TurboData:
 
 
 class TurboMiddleware:
-    """Adds `turbo` attribute to request:
+    """
+    Task 1: Adds `turbo` attribute to request:
     1. `request.turbo` : True if request contains turbo header
     2. `request.turbo.frame`: DOM ID of requested Turbo-Frame (or None)
+
+    Task 2: Auto change status code for Turbo Drive
+    https://turbo.hotwired.dev/handbook/drive#redirecting-after-a-form-submission
     """
 
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
@@ -64,5 +69,21 @@ class TurboMiddleware:
     def __call__(self, request: HttpRequest) -> HttpResponse:
         with SetCurrentRequest(request):
             request.turbo = SimpleLazyObject(lambda: TurboData(request))
+
             response = self.get_response(request)
+
+            if (
+                request.method == "POST"
+                and request.headers.get("X-Turbo-Request-Id")
+                and response.get("Content-Type") != "text/vnd.turbo-stream.html"
+            ):
+                if response.status_code == http.HTTPStatus.OK:
+                    response.status_code = http.HTTPStatus.UNPROCESSABLE_ENTITY
+
+                if response.status_code in (
+                    http.HTTPStatus.MOVED_PERMANENTLY,
+                    http.HTTPStatus.FOUND,
+                ):
+                    response.status_code = http.HTTPStatus.SEE_OTHER
+
         return response

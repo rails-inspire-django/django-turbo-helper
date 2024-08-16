@@ -37,7 +37,7 @@ MIDDLEWARE = [
 ]
 ```
 
-With the `TurboMiddleware` we have `request.turbo` object which we can access in Django view or template.
+With the `TurboMiddleware` we have `request.turbo` object which we can access in Django view or template. It will also help us to change the response status code to `422` if the POST request come from Turbo and the form validation failed.
 
 If the request originates from a turbo-frame, we can get the value from the `request.turbo.frame`
 
