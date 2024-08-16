@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-turbo-helper"
-version = "2.1.3"
+version = "2.1.4"
 description = "Hotwire/Turbo helpers for Django, inspired by Rails."
 authors = ["Michael Yin <michaelyin@accordbox.com>"]
 license = "MIT"
