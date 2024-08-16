@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.4]
+
+1. Automatically change the status code in the middleware to 422 for failed form submissions requested by Turbo.
+2. Add doc about `django-lifecycle` package.
+3. Add doc about `morph` method in Turbo Stream.
+
 ## [2.1.3]
 
 1. Work with `Turbo 8 morph-refreshes`
