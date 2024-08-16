@@ -21,7 +21,8 @@ class TestTurboMiddleware:
         headers = {
             "ACCEPT": "text/html",
         }
-        req = rf.get("/", headers=headers)
+        headers = {f"HTTP_{key.upper()}": value for key, value in headers.items()}
+        req = rf.get("/", **headers)
         TurboMiddleware(get_response)(req)
         assert not req.turbo
         assert req.turbo.frame is None
@@ -30,7 +31,8 @@ class TestTurboMiddleware:
         headers = {
             "ACCEPT": "text/vnd.turbo-stream.html",
         }
-        req = rf.get("/", headers=headers)
+        headers = {f"HTTP_{key.upper()}": value for key, value in headers.items()}
+        req = rf.get("/", **headers)
         TurboMiddleware(get_response)(req)
         assert req.turbo
         assert req.turbo.frame is None
@@ -40,7 +42,10 @@ class TestTurboMiddleware:
             "ACCEPT": "text/vnd.turbo-stream.html",
             "TURBO_FRAME": "my-playlist",
         }
-        req = rf.get("/", headers=headers)
+        headers = {
+            f"HTTP_{key.upper()}": value for key, value in headers.items()
+        }  # Add "HTTP_" prefix
+        req = rf.get("/", **headers)
         TurboMiddleware(get_response)(req)
         assert req.turbo
         assert req.turbo.frame == "my-playlist"
@@ -52,10 +57,10 @@ class TestTurboMiddlewareAutoChangeStatusCode:
             "ACCEPT": "text/vnd.turbo-stream.html",
             "X-Turbo-Request-Id": "d4165765-488b-41a0-82b6-39126c40e3e0",
         }
-        req = rf.post(
-            "/",
-            headers=headers,
-        )
+        headers = {
+            f"HTTP_{key.upper()}": value for key, value in headers.items()
+        }  # Add "HTTP_" prefix
+        req = rf.post("/", **headers)
 
         def form_submission(request):
             # in Django, failed form submission will return 200
@@ -73,10 +78,10 @@ class TestTurboMiddlewareAutoChangeStatusCode:
             "ACCEPT": "text/vnd.turbo-stream.html",
             "X-Turbo-Request-Id": "d4165765-488b-41a0-82b6-39126c40e3e0",
         }
-        req = rf.post(
-            "/",
-            headers=headers,
-        )
+        headers = {
+            f"HTTP_{key.upper()}": value for key, value in headers.items()
+        }  # Add "HTTP_" prefix
+        req = rf.post("/", **headers)
 
         def form_submission(request):
             # in Django, failed form submission will return 301, 302
@@ -94,10 +99,10 @@ class TestTurboMiddlewareAutoChangeStatusCode:
             "ACCEPT": "text/vnd.turbo-stream.html",
             "X-Turbo-Request-Id": "d4165765-488b-41a0-82b6-39126c40e3e0",
         }
-        req = rf.post(
-            "/",
-            headers=headers,
-        )
+        headers = {
+            f"HTTP_{key.upper()}": value for key, value in headers.items()
+        }  # Add "HTTP_" prefix
+        req = rf.post("/", **headers)
 
         def form_submission(request):
             return TurboStreamResponse()
