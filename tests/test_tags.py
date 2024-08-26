@@ -68,7 +68,7 @@ class TestClassNames:
         output = render(template, {}).strip()
         assert_dom_equal(
             output,
-            '<div class="test1 test2 test3 ring-slate-900/5 dark:bg-slate-800 %}"></div>',
+            '<div class="test1 test2 test3 ring-slate-900/5 dark:bg-slate-800"></div>',
         )
 
 
