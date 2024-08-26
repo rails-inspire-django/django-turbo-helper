@@ -1,9 +1,10 @@
+from template_simplify import dom_id
+
 from .middleware import get_current_request
 from .response import HttpResponseSeeOther, TurboStreamResponse
 from .shortcuts import redirect_303, respond_to
 from .signals import after_create_commit, after_delete_commit, after_update_commit
 from .stream import register_turbo_stream_action, turbo_stream
-from .templatetags.turbo_helper import dom_id
 
 # extend turbo_stream actions, inspired by https://github.com/marcoroth/turbo_power
 from .turbo_power import *  # noqa
