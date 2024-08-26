@@ -2,6 +2,7 @@ import pytest
 from django.template import Context, Template
 
 from tests.testapp.models import TodoItem
+from tests.utils import assert_dom_equal
 from turbo_helper.templatetags.turbo_helper import dom_id
 
 pytestmark = pytest.mark.django_db
@@ -31,6 +32,44 @@ class TestDomId:
     def test_prefix(self, todo):
         result = dom_id(todo, "test")
         assert "test_todoitem_1" == result
+
+    def test_value_override(self):
+        template = """
+        {% load turbo_helper %}
+
+        {% dom_id first as dom_id %}
+        <div id="{{ dom_id }}"></div>
+
+        {% dom_id second as dom_id %}
+        <div id="{{ dom_id }}"></div>
+
+        <div id="{{ dom_id }}"></div>
+        """
+        output = render(
+            template,
+            {
+                "first": "first",
+                "second": "second",
+            },
+        ).strip()
+        assert_dom_equal(
+            output,
+            '<div id="first"></div> <div id="second"></div> <div id="second"></div>',
+        )
+
+
+class TestClassNames:
+    def test_logic(self):
+        template = """
+        {% load turbo_helper %}
+
+        <div class="{% class_names test1=True 'test2' "test3" test5=False ring-slate-900/5=True dark:bg-slate-800=True %}"></div>
+        """
+        output = render(template, {}).strip()
+        assert_dom_equal(
+            output,
+            '<div class="test1 test2 test3 ring-slate-900/5 dark:bg-slate-800"></div>',
+        )
 
 
 class TestFrame:

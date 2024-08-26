@@ -1,3 +1,4 @@
+import re
 from typing import Any, Optional
 
 from django import template
@@ -58,6 +59,87 @@ def dom_id(instance: Any, prefix: Optional[str] = "") -> str:
         identifier = f"{prefix}_{identifier}"
 
     return identifier
+
+
+ATTRIBUTE_RE = re.compile(
+    r"""
+    (?P<attr>
+        [@\w:_\.\/-]+
+    )
+    (?P<sign>
+        \+?=
+    )
+    (?P<value>
+    ['"]? # start quote
+        [^"']*
+    ['"]? # end quote
+    )
+""",
+    re.VERBOSE | re.UNICODE,
+)
+
+
+VALUE_RE = re.compile(
+    r"""
+    ['"]            # start quote (required)
+    (?P<value>
+        [^"']*      # match any character except quotes
+    )
+    ['"]            # end quote (required)
+    """,
+    re.VERBOSE | re.UNICODE,
+)
+
+
+@register.tag
+def class_names(parser, token):
+    error_msg = f"{token.split_contents()[0]!r} tag requires " "a list of css classes"
+    try:
+        bits = token.split_contents()
+        tag_name = bits[0]  # noqa
+        attr_list = bits[1:]
+    except ValueError as exc:
+        raise TemplateSyntaxError(error_msg) from exc
+
+    css_ls = []
+    css_dict = {}
+    for pair in attr_list:
+        attribute_match = ATTRIBUTE_RE.match(pair) or VALUE_RE.match(pair)
+
+        if attribute_match:
+            dct = attribute_match.groupdict()
+            attr = dct.get("attr", None)
+            # sign = dct.get("sign", None)
+            value = parser.compile_filter(dct["value"])
+            if attr:
+                css_dict[attr] = value
+            else:
+                css_ls.append(value)
+        else:
+            raise TemplateSyntaxError("class_names found supported token: " + f"{pair}")
+
+    return ClassNamesNode(css_ls=css_ls, css_dict=css_dict)
+
+
+class ClassNamesNode(Node):
+    def __init__(self, css_ls, css_dict):
+        self.css_ls = css_ls
+        self.css_dict = css_dict
+
+    def render(self, context):
+        final_css = []
+
+        # for common css classes
+        for value in self.css_ls:
+            final_css.append(value.token)
+
+        # for conditionals
+        for attr, expression in self.css_dict.items():
+            real_value = expression.resolve(context)
+            if real_value:
+                final_css.append(attr)
+
+        return " ".join(final_css)
 
 
 class TurboFrameTagNode(Node):
