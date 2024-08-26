@@ -1,4 +1,6 @@
-# dom_id
+# DOM Helper
+
+## dom_id
 
 `dom_id` is a helper method that returns a unique DOM ID based on the object's class name and ID
 
@@ -22,3 +24,17 @@ from turbo_helper import dom_id
 
 target = dom_id(instance, "detail_container")
 ```
+
+## class_names
+
+Inspired by JS [classnames](https://www.npmjs.com/package/classnames) and Rails `class_names`
+
+`class_names` can help conditionally render css classes
+
+```javascript
+<div class="{% class_names test1=True 'test2' ring-slate-900/5=True already-sign-in=request.user.is_authenticated %}"></div>
+
+'<div class="test1 test2 ring-slate-900/5 dark:bg-slate-800 %}"></div>'
+```
+
+It can also work well with TailwindCSS's some special css char such as `/` and `:`

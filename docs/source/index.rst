@@ -18,7 +18,7 @@ Topics
 
    install.md
    form-submission.md
-   dom_id.md
+   dom_helper.md
    turbo_frame.md
    turbo_stream.md
    real-time-updates.md
