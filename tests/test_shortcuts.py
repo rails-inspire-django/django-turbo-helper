@@ -42,7 +42,7 @@ class TestResponseTo:
             assert not resp.json
 
         req = rf.get(
-            "/", HTTP_ACCEPT="text/html; charset=utf-8, application/json; q=0.9"
+            "/", HTTP_ACCEPT="text/html, application/json;q=0.9"
         )
         with respond_to(req) as resp:
             assert not resp.turbo_stream
