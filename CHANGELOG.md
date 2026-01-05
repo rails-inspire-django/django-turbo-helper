@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.5]
+
+1. Drop Python version below 3.10
+2. Drop Django version below 5.2
+
 ## [2.1.4]
 
 1. Automatically change the status code in the middleware to 422 for failed form submissions requested by Turbo.

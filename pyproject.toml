@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-turbo-helper"
-version = "2.1.4"
+version = "2.1.5"
 description = "Hotwire/Turbo helpers for Django, inspired by Rails."
 authors = ["Michael Yin <michaelyin@accordbox.com>"]
 license = "MIT"
@@ -12,7 +12,7 @@ packages = [{ include = "turbo_helper", from = "src" }]
 Changelog = "https://github.com/rails-inspire-django/django-turbo-helper/releases"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.13"
+python = ">=3.10"
 django = ">=5.2"
 django-actioncable = ">=1.0.4"
 django-template-simplify = ">=1.0.2"
