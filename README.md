@@ -10,6 +10,10 @@
 1. For legacy `django-turbo-response` user, please check https://django-turbo-helper.readthedocs.io/en/1.0.3/
 2. For `django-turbo-helper` user, please check https://django-turbo-helper.readthedocs.io/
 
-## Free Hotwire Django eBook
+## Stay In Touch
 
-If you are new to Hotwire, you may be interested in this free eBook [Hotwire Django Tutorial](https://tutorial.saashammer.com/).
+[Contact](https://saashammer.com/about/#contact)
+
+## Hotwire + Django Boilerplate
+
+Looking for a complete SaaS starter? Check out [SaaS Hammer](https://saashammer.com) — a production-ready Hotwire + Django boilerplate with authentication, billing, pre-built components and more.

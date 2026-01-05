@@ -12,8 +12,8 @@ packages = [{ include = "turbo_helper", from = "src" }]
 Changelog = "https://github.com/rails-inspire-django/django-turbo-helper/releases"
 
 [tool.poetry.dependencies]
-python = ">=3.8"
-django = ">=3.0"
+python = ">=3.10,<3.13"
+django = ">=5.2"
 django-actioncable = ">=1.0.4"
 django-template-simplify = ">=1.0.2"
 
