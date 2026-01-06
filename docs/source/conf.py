@@ -78,5 +78,5 @@ html_theme = "furo"
 # so a file named "default.css" will overwrite the builtin "default.css".
 
 html_theme_options = {
-    "announcement": 'If you are new to Hotwire, you may be interested in this free eBook <a href="https://tutorial.saashammer.com/" rel="nofollow" target="_blank">Hotwire Django Tutorial</a>',
+    "announcement": 'Follow me on <a href="https://x.com/michaelyinplus" rel="nofollow" target="_blank">X (@michaelyinplus)</a> for more useful tips about Hotwire and Django!',
 }
